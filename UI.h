@@ -20,9 +20,9 @@ public:
 
 	void ReadFile(ifstream);                // reads a text file in specified format
 
-	void Input();                   // allows to take input from user
+	// void Input();                   // allows to take input from user
 
-	void Output();                  // allows to output to user
+	// void Output();                  // allows to output to user
 
 
 	~UserInterface();

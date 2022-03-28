@@ -139,10 +139,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Cargo.h" />
+    <ClInclude Include="Company.h" />
+    <ClInclude Include="Event.h" />
+    <ClInclude Include="LinkedStack.h" />
+    <ClInclude Include="Node.h" />
+    <ClInclude Include="stack.h" />
+    <ClInclude Include="truck.h" />
     <ClInclude Include="UI.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Cargo.cpp" />
+    <ClCompile Include="Company.cpp" />
+    <ClCompile Include="Event.cpp" />
+    <ClCompile Include="LinkedStack.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Node.cpp" />
+    <ClCompile Include="truck.cpp" />
     <ClCompile Include="UI.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
