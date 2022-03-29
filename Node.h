@@ -8,6 +8,10 @@ class Node
 	Node<T>* Next;
 
 public:
+	Node()
+	{
+		Next = nullptr;
+	}
 
 	void SetNext(Node<T>* inP)
 	{

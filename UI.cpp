@@ -31,8 +31,23 @@ UserInterface::UserInterface()
 
 }
 
-void UserInterface::ReadFile(ifstream InputFile)
+int UserInterface::ReadFile(int lines,int entries,string filename)
 {
+	ifstream infile(filename);
+	string ignored;
+	int dummy;
+	for (int i = 0; i < lines; i++)
+	{
+		getline(infile, ignored);
+	}
+	for (int i = 0; i < entries; i++)
+	{
+		infile >> dummy;
+	}
+	int returning;
+	infile >> returning;
+	return returning;
+
 
 }
 

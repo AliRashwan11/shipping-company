@@ -142,8 +142,10 @@
     <ClInclude Include="Cargo.h" />
     <ClInclude Include="Company.h" />
     <ClInclude Include="Event.h" />
+    <ClInclude Include="LinkedQueue.h" />
     <ClInclude Include="LinkedStack.h" />
     <ClInclude Include="Node.h" />
+    <ClInclude Include="Queue.h" />
     <ClInclude Include="stack.h" />
     <ClInclude Include="truck.h" />
     <ClInclude Include="UI.h" />
@@ -157,6 +159,9 @@
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="truck.cpp" />
     <ClCompile Include="UI.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="input.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

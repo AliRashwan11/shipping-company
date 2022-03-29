@@ -30,38 +30,44 @@ public:
 
 	bool pop()
 	{
-		if (isEmpty())
+		if (isEmpty() == 1)
 		{
 			return false;
 		}
 		else
 		{
-			if (Top->GetNext())
+			Node<T>* Temp = NULL;
+			if (Top->GetNext() != nullptr)
 			{
-				Node<T>* temp = Top;
+				Temp = Top;
 				Top = Top->GetNext();
+				delete Temp;
 			}
 			else
+			{
 				Top = nullptr;
-
+			}
 			return true;
 			
 		}
 	}
 
+
+
 	void push(T pushedItem)
 	{
 		
-		Node<T> newNode;
-		newNode.SetItem(pushedItem);
-		Top = &newNode;
+		Node<T>* newNode = new Node<T>;
+		newNode->SetItem(pushedItem);
 		if (isEmpty())
 		{
-			Top->SetNext(nullptr);
+			newNode->SetNext(nullptr);
+			Top = newNode;
 		}
 		else
 		{
-			Top->SetNext(Top);
+			newNode->SetNext(Top);
+			Top = newNode;
 		}
 	}
 
@@ -72,11 +78,11 @@ public:
 			T it = Top->GetItem();
 			return it;
 		}
-
+		return -1;                                           // works for int data type
 	}
 
 
-	void display()
+	void display()                                              // remove after testing
 	{
 		if (Top)
 			cout << Top->GetItem() << endl;
