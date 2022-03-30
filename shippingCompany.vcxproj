@@ -145,6 +145,7 @@
     <ClInclude Include="LinkedQueue.h" />
     <ClInclude Include="LinkedStack.h" />
     <ClInclude Include="Node.h" />
+    <ClInclude Include="NormalTrucks.h" />
     <ClInclude Include="Queue.h" />
     <ClInclude Include="stack.h" />
     <ClInclude Include="truck.h" />
@@ -157,6 +158,7 @@
     <ClCompile Include="LinkedStack.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Node.cpp" />
+    <ClCompile Include="NormalTrucks.cpp" />
     <ClCompile Include="truck.cpp" />
     <ClCompile Include="UI.cpp" />
   </ItemGroup>
