@@ -1,5 +1,4 @@
 #pragma once
-#include "LinkedQueue.h"
 
 class truck 
 {
@@ -8,7 +7,7 @@ class truck
 	int TruckSpeed;
 	int MaintenanceTime;
 	int DeliveryInterval;
-	int type;                                                // 0 for normal , 1 for special , 2 for vip                                     
+	int TruckType;                                                // 0 for normal , 1 for special , 2 for vip                                     
 
 public:
 
@@ -22,12 +21,14 @@ public:
 * 
 */
 
-	virtual void SetTruckCapacity(int);
-	virtual int GetTruckCapacity();
-	virtual void SetTruckSpeed(int);
-	virtual int GetTruckSpeed();
-	virtual void SetMaintenanceTime(int);
-	virtual int GetMaintenanceTime();
+	void SetTruckCapacity(int);
+	int GetTruckCapacity();
+	void SetTruckSpeed(int);
+	int GetTruckSpeed();
+	void SetMaintenanceTime(int);
+	int GetMaintenanceTime();
+	int GetTruckType();
+
 	// virtual int GetDeliveryInterval();             to be implemented later
 
 

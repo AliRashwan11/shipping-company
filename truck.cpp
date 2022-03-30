@@ -4,7 +4,7 @@ truck::truck(int typenum)
 {
 	if (typenum != 0 && typenum != 1 && typenum != 2)               // 0 for normal , 1 for special , 2 for VIP
 		typenum = 0;
-	type = typenum;
+	TruckType = typenum;
 	TruckCapacity = 0;
 	TruckSpeed = 0;
 	MaintenanceTime = 0;
@@ -34,6 +34,11 @@ int truck::GetMaintenanceTime()
 int truck::GetTruckCapacity()
 {
 	return TruckCapacity;
+}
+
+int truck::GetTruckType()
+{
+	return TruckType;
 }
 
 int truck::GetTruckSpeed()
