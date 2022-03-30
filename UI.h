@@ -19,7 +19,7 @@ public:
 
 	void OutputInterface();         // outputs chosen mode of interface
 
-	int ReadFile(int,int,string);                // reads a text file in specified format
+	int ReadFile(int,int,string);                // reads a text file in specified format 
 
 	// void Input();                   // allows to take input from user
 

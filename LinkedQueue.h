@@ -21,7 +21,7 @@ public:
 
 	bool isEmpty()
 	{
-		if (Front)
+		if (Front !=nullptr)
 			return false;
 		return true;
 	}
@@ -31,6 +31,7 @@ public:
 	{
 		Node<T>* newNode = new Node<T>;
 		newNode->SetItem(item);
+		newNode->SetNext(nullptr);
 		if (isEmpty())
 		{
 			Front = newNode;
@@ -38,9 +39,18 @@ public:
 		}
 		else
 		{
-			Node<T>* temp = Rear;
-			Rear = newNode;
-			Rear->SetNext(temp);
+			if (Front == Rear)
+			{
+				Rear = newNode;
+				Front->SetNext(Rear);
+			}
+			else
+			{
+				Rear->SetNext(newNode);
+				Rear = newNode;
+			
+			}
+			
 		}
 	}
 
@@ -60,8 +70,8 @@ public:
 			}
 			else
 			{
-				Node<T>* temp = Rear;
-				Rear = Rear->GetNext();
+				Node<T>* temp = Front;
+				Front = Front->GetNext();
 				delete temp;
 			}
 			return true;
