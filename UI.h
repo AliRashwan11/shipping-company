@@ -12,14 +12,17 @@ using namespace std;
 class UserInterface
 {
 	int Mode;                       // indicates mode of interface < choosen by the user >
+	string inputFileName;
 
 public:
 
-	UserInterface();                           // enables user to choose mode of interface ( Sets Mode data member )
+	UserInterface(string inputfilename);                           // enables user to choose mode of interface ( Sets Mode data member )
 
 	void OutputInterface();         // outputs chosen mode of interface
 
 	int ReadFile(int,int,string);                // reads a text file in specified format 
+
+	string GetInputFileName();
 
 	// void Input();                   // allows to take input from user
 

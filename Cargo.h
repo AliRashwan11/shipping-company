@@ -7,6 +7,7 @@ class Cargo                                                   // class to instan
 	int DeliveryDistance;                                     // in KMs
 	int Cost;
 	int CargoType;                                            // 0 for normal , 1 for special , 2 for VIP
+	int ID;
 
 public:
 
@@ -15,11 +16,13 @@ public:
 	void SetLoadUnloadTime(int);
 	void SetDeliveryDistance(int);
 	void SetCost(int);
+	void SetID(int);
 	int GetPreparationTime();
 	int GetLoadUnloadTime();
 	int GetDeliveryDistance();
 	int GetCost();
 	int GetCargoType();
+	int GetID();
 
 };
 

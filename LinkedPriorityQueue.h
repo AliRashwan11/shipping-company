@@ -1,18 +1,16 @@
 #pragma once
-#include"Queue.h"
-#include"Node.h"
+#include "PriorityQueue.h"
 
 
 template<typename T>
-class LinkedQueue : public Queue<T>
+class LinkedPriorityQueue : public PriorityQueue<T>
 {
-
 	Node<T>* Front;
 	Node<T>* Rear;
 
 public:
 
-	LinkedQueue()
+	LinkedPriorityQueue()
 	{
 		Front = nullptr;
 		Rear = nullptr;
@@ -21,36 +19,76 @@ public:
 
 	bool isEmpty()
 	{
-		if (Front !=nullptr)
+		if (Front != nullptr)
 			return false;
 		return true;
 	}
 
 
-	void Enqueue(T item)
+	void Enqueue(T item , int priority)
 	{
+
 		Node<T>* newNode = new Node<T>;
 		newNode->SetItem(item);
 		newNode->SetNext(nullptr);
+		newNode->SetPriority(priority);
+
+		int priorityOfFront =-1;
+
+
 		if (isEmpty())
 		{
 			Front = newNode;
 			Rear = newNode;
+			return;
 		}
 		else
 		{
+			priorityOfFront = Front->GetPriority();
+
 			if (Front == Rear)
 			{
-				Rear = newNode;
+				if (priorityOfFront >= priority)
+				{
+					Rear = newNode;
+				}
+				else
+				{
+					Front = newNode;
+				}
+
 				Front->SetNext(Rear);
+
 			}
 			else
 			{
-				Rear->SetNext(newNode);
-				Rear = newNode;
+				Node<T>* ptr = Front;
+				if (ptr->GetPriority() < priority)
+				{
+					Front = newNode;
+					Front->SetNext(ptr);
+					return;
+				}
+				
+				while (ptr->GetNext())
+				{
+					if (ptr->GetNext()->GetPriority() >= priority)
+					{
+						ptr = ptr->GetNext();
+					}
+					else
+						break;
+					
+				}
+
+				Node<T>* temp = ptr->GetNext();
+				ptr->SetNext(newNode);
+				newNode->SetNext(temp);
 			
+				
+
 			}
-			
+
 		}
 	}
 
@@ -90,15 +128,15 @@ public:
 		else
 		{
 			peeked = Front->GetItem();
-			return true ;
+			return true;
 		}
 	}
 
 
-
-
-	~LinkedQueue()
+	~LinkedPriorityQueue()
 	{
 
 	}
+
+
 };

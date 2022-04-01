@@ -30,6 +30,10 @@ void Cargo::SetCost(int cost)
 	Cost = cost;
 }
 
+void Cargo::SetID(int a)
+{
+	ID = a;
+}
 
 int Cargo::GetCargoType()
 {
@@ -54,4 +58,9 @@ int Cargo::GetLoadUnloadTime()
 int Cargo::GetPreparationTime()
 {
 	return PreparationTime;
+}
+
+int Cargo::GetID()
+{
+	return ID;
 }

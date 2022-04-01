@@ -48,6 +48,15 @@
     <ClInclude Include="NormalTrucks.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="LinkedPriorityQueue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PriorityQueue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ReadyEvent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="UI.cpp">
@@ -71,10 +80,10 @@
     <ClCompile Include="LinkedStack.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Node.cpp">
+    <ClCompile Include="NormalTrucks.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="NormalTrucks.cpp">
+    <ClCompile Include="ReadyEvent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -6,11 +6,14 @@ class Node
 {
 	T item;
 	Node<T>* Next;
+	int priority;
 
 public:
+
 	Node()
 	{
 		Next = nullptr;
+		priority = 0;
 	}
 
 	void SetNext(Node<T>* inP)
@@ -33,7 +36,15 @@ public:
 		return item;
 	}
 
+	int GetPriority()
+	{
+		return priority;
+	}
 
+	void SetPriority(int a)
+	{
+		priority = a;
+	}
 
 };
 

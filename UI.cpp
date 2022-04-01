@@ -1,8 +1,9 @@
 #include "UI.h"
 
 
-UserInterface::UserInterface()
+UserInterface::UserInterface(string filename)
 {
+	inputFileName = filename;
 	Mode = 0;
 	cout << "Choose Mode .. Interactive (1) - Step-By-Step (2) - Silent (3) " << endl;
 	int mode = 0;
@@ -33,22 +34,64 @@ UserInterface::UserInterface()
 
 int UserInterface::ReadFile(int lines,int entries,string filename)
 {
+	inputFileName = filename;
 	ifstream infile(filename);
 	string ignored;
-	int dummy;
+	char dummychar;
 	for (int i = 0; i < lines; i++)
 	{
 		getline(infile, ignored);
 	}
-	for (int i = 0; i < entries; i++)
+	string str;
+	if (lines >= 6)
 	{
-		infile >> dummy;
+
+		if (entries == 1 || entries == 2)
+		{
+			int dummy;
+
+			for (int i = 0; i < entries; i++)
+			{
+				infile >> dummy;
+
+			}
+
+			infile >> str;
+
+			if (str.size() == 2)
+				return (str[1] - '0');
+			return stoi(str);
+
+		}
+		else
+		{
+			string dummy;
+			for (int i = 0; i < (entries - 1); i++)
+			{
+				infile >> dummy;
+			}
+			infile >> str;
+			return stoi(str);
+
+		}
 	}
-	int returning;
-	infile >> returning;
-	return returning;
+	else
+	{
+		string dummy;
+		for (int i = 0; i < entries; i++)
+		{
+			infile >> dummy;
+		}
+		infile >> str;
+		return stoi(str);
+	}
 
 
+}
+
+string UserInterface::GetInputFileName()
+{
+	return inputFileName;
 }
 
 
