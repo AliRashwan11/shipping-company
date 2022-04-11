@@ -13,13 +13,6 @@ public:
 
 	truck(int);
 
-/*
-* 	 void LoadTruckInfo()                           
-* {
-* 
-* }
-* 
-*/
 
 	void SetTruckCapacity(int);
 	int GetTruckCapacity();
@@ -30,6 +23,8 @@ public:
 	int GetTruckType();
 
 	// virtual int GetDeliveryInterval();             to be implemented later
+
+
 
 
 };

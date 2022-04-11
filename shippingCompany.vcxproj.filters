@@ -13,78 +13,81 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="UI">
+      <UniqueIdentifier>{f3cadb04-d077-4c91-861e-b0da02ff8478}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ADT%27s">
+      <UniqueIdentifier>{13e49cf1-0729-4ae3-a4e9-08a144609827}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="company">
+      <UniqueIdentifier>{71d368c1-14d1-4221-95eb-67cf601aec9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="events">
+      <UniqueIdentifier>{fd368917-c86c-404a-85e3-aef9900ffead}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="UI.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Company.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Cargo.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="truck.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Event.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="stack.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LinkedStack.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Node.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="UI.h">
+      <Filter>UI</Filter>
+    </ClInclude>
     <ClInclude Include="Queue.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LinkedQueue.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="NormalTrucks.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="LinkedPriorityQueue.h">
-      <Filter>Header Files</Filter>
+      <Filter>ADT%27s</Filter>
     </ClInclude>
     <ClInclude Include="PriorityQueue.h">
-      <Filter>Header Files</Filter>
+      <Filter>ADT%27s</Filter>
+    </ClInclude>
+    <ClInclude Include="LinkedStack.h">
+      <Filter>ADT%27s</Filter>
+    </ClInclude>
+    <ClInclude Include="LinkedQueue.h">
+      <Filter>ADT%27s</Filter>
+    </ClInclude>
+    <ClInclude Include="LinkedPriorityQueue.h">
+      <Filter>ADT%27s</Filter>
+    </ClInclude>
+    <ClInclude Include="stack.h">
+      <Filter>ADT%27s</Filter>
+    </ClInclude>
+    <ClInclude Include="Company.h">
+      <Filter>company</Filter>
+    </ClInclude>
+    <ClInclude Include="Cargo.h">
+      <Filter>company</Filter>
+    </ClInclude>
+    <ClInclude Include="truck.h">
+      <Filter>company</Filter>
+    </ClInclude>
+    <ClInclude Include="Event.h">
+      <Filter>events</Filter>
     </ClInclude>
     <ClInclude Include="ReadyEvent.h">
-      <Filter>Header Files</Filter>
+      <Filter>events</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="UI.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Company.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="UI.cpp">
+      <Filter>UI</Filter>
     </ClCompile>
     <ClCompile Include="Cargo.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>company</Filter>
+    </ClCompile>
+    <ClCompile Include="Company.cpp">
+      <Filter>company</Filter>
     </ClCompile>
     <ClCompile Include="truck.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>company</Filter>
     </ClCompile>
     <ClCompile Include="Event.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="LinkedStack.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="NormalTrucks.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>events</Filter>
     </ClCompile>
     <ClCompile Include="ReadyEvent.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>events</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

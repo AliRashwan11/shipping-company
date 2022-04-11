@@ -1,9 +1,10 @@
 #include "UI.h"
 
 
-UserInterface::UserInterface(string filename)
+UserInterface::UserInterface()
 {
-	inputFileName = filename;
+	Day = 0;
+	Hour = 0;
 	Mode = 0;
 	cout << "Choose Mode .. Interactive (1) - Step-By-Step (2) - Silent (3) " << endl;
 	int mode = 0;
@@ -32,75 +33,12 @@ UserInterface::UserInterface(string filename)
 
 }
 
-int UserInterface::ReadFile(int lines,int entries,string filename)
-{
-	inputFileName = filename;
-	ifstream infile(filename);
-	string ignored;
-	char dummychar;
-	for (int i = 0; i < lines; i++)
-	{
-		getline(infile, ignored);
-	}
-	string str;
-	if (lines >= 6)
-	{
-
-		if (entries == 1 || entries == 2)
-		{
-			int dummy;
-
-			for (int i = 0; i < entries; i++)
-			{
-				infile >> dummy;
-
-			}
-
-			infile >> str;
-
-			if (str.size() == 2)
-				return (str[1] - '0');
-			return stoi(str);
-
-		}
-		else
-		{
-			string dummy;
-			for (int i = 0; i < (entries - 1); i++)
-			{
-				infile >> dummy;
-			}
-			infile >> str;
-			return stoi(str);
-
-		}
-	}
-	else
-	{
-		string dummy;
-		for (int i = 0; i < entries; i++)
-		{
-			infile >> dummy;
-		}
-		infile >> str;
-		return stoi(str);
-	}
-
-
-}
-
-string UserInterface::GetInputFileName()
-{
-	return inputFileName;
-}
-
 
 
 
 void UserInterface::OutputInterface()
 {
-	int day = 0;
-	int hour = 0;
+	
 	int key = 10000;
 
 	if (Mode == 1)
@@ -111,7 +49,7 @@ void UserInterface::OutputInterface()
 		while (entry == 1)
 		{
 			cout << "Press ENTER to advance an hour .. Press any other key to stop simulation " << endl;
-			cout << "Current Time (Day:Hour) : " << day << ":" << hour << endl;
+			cout << "Current Time (Day:Hour) : " << Day << ":" << Hour << endl;
 
 			// output the simulated trcuks,cargos,...
 
@@ -120,11 +58,11 @@ void UserInterface::OutputInterface()
 				entry = 0;
 			else
 			{
-				hour++;
-				if (hour == 24)
+				Hour++;
+				if (Hour == 24)
 				{
-					hour = 0;
-					day++;
+					Hour = 0;
+					Day++;
 				}
 				system("cls");                                                       // clears console
 			}
@@ -135,15 +73,15 @@ void UserInterface::OutputInterface()
 		system("cls");
 		for (;;)
 		{
-			cout << "Current Time (Day:Hour) : " << day << ":" << hour << endl;
+			cout << "Current Time (Day:Hour) : " << Day << ":" << Hour << endl;
 
 			// output the simulated trcuks,cargos,...
 
-			hour++;
-			if (hour == 24)
+			Hour++;
+			if (Hour == 24)
 			{
-				hour = 0;
-				day++;
+				Hour = 0;
+				Day++;
 			}
 
 			Sleep(1000);
@@ -160,6 +98,15 @@ void UserInterface::OutputInterface()
 
 }
 
+int UserInterface::GetDay()
+{
+	return Day;
+}
+
+int UserInterface::GetHour()
+{
+	return Hour;
+}
 
 
 

@@ -7,7 +7,7 @@ Cargo::Cargo(int a)
 	if (a != 0 && a != 1 && a != 2)
 		a = 0;
 	CargoType = a;
-
+	intruck = nullptr;
 }
 
 void Cargo::SetPreparationTime(int time)

@@ -1,4 +1,5 @@
 #include"UI.h"
+#include"Company.h"
 #include "LinkedStack.h"
 #include "LinkedQueue.h"
 #include "truck.h"
@@ -10,13 +11,13 @@
 int main()
 {
 
-	UserInterface mainInterface("input.txt");
-	mainInterface.OutputInterface();
+	//UserInterface mainInterface;
+	//mainInterface.OutputInterface();
 
 
-	cout << mainInterface.ReadFile(5, 5, "input.txt") << endl;
+	Company mainCompany("input.txt");
 
-	
+	mainCompany.PrintEmptyTrucks();
 
 	return 0;
 

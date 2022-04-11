@@ -58,7 +58,7 @@ public:
 	{
 		if (isEmpty())
 		{
-			dequeued = -1;
+			// dequeued = -1;
 			return false;                         // empty queue
 		}
 		else

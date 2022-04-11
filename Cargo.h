@@ -1,4 +1,5 @@
 #pragma once
+#include"truck.h"
 
 class Cargo                                                   // class to instantiate a cargo object
 {
@@ -8,6 +9,7 @@ class Cargo                                                   // class to instan
 	int Cost;
 	int CargoType;                                            // 0 for normal , 1 for special , 2 for VIP
 	int ID;
+	truck* intruck;
 
 public:
 

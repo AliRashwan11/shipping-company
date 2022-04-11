@@ -11,22 +11,21 @@ using namespace std;
 
 class UserInterface
 {
+	int Hour;
+	int Day;
 	int Mode;                       // indicates mode of interface < choosen by the user >
 	string inputFileName;
 
 public:
 
-	UserInterface(string inputfilename);                           // enables user to choose mode of interface ( Sets Mode data member )
+	UserInterface();                           // enables user to choose mode of interface ( Sets Mode data member )
 
 	void OutputInterface();         // outputs chosen mode of interface
 
-	int ReadFile(int,int,string);                // reads a text file in specified format 
+	int GetHour();
+	int GetDay();
 
-	string GetInputFileName();
-
-	// void Input();                   // allows to take input from user
-
-	// void Output();                  // allows to output to user
+	// void OutputFile();                  // allows to output to user
 
 
 	~UserInterface();
