@@ -11,13 +11,10 @@
 int main()
 {
 
-	//UserInterface mainInterface;
-	//mainInterface.OutputInterface();
+	UserInterface mainInterface;
+	mainInterface.OutputInterface();
 
 
-	Company mainCompany("input.txt");
-
-	mainCompany.PrintEmptyTrucks();
 
 	return 0;
 

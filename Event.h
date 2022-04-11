@@ -3,9 +3,11 @@
 #include"UI.h"
 
 
-class Event
+class Event                                                    // pure virtual function .. cannot instantiate an object
 {
-	
+	int HourOfEvent;                            
+	int DayOfEvent;
+
 
 public:
 
