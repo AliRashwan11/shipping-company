@@ -20,9 +20,13 @@ class Company
 	LinkedQueue<truck*> NormalEmptyTrucks;
 	LinkedQueue<truck*> SpecialEmptyTrucks;
 	LinkedQueue<truck*> VIPEmptyTrucks;
+	LinkedQueue<Cargo*> NormalWaitingCargos;
+	LinkedQueue<Cargo*> SpecialWaitingCargos;
+	LinkedQueue<Cargo*> VIPWaitingCargos;
 	int NumberOfJourneysBeforeCheckup;
 	int AutoPromotionLimit;                                    // in days
 	int maxW;                                                  // in hours
+	int NumberOfEvents;
 
 	LinkedPriorityQueue<Event*> Events;                        // priQ of events
 
@@ -35,8 +39,13 @@ public:
 	void PrintNormalEmptyTrucks();
 	void PrintSpecialEmptyTrucks();
 	void PrintVIPEmptyTrucks();
+	void AddToNormalWaitingCargos(Cargo*);
+	void AddToSpecialWaitingCargos(Cargo*);
+	void AddToVIPWaitingCargos(Cargo*);
 	void PrintmaxW();
 	void PrintaAutoPromotionLimit();
+	LinkedQueue<Cargo*> GetNormalWaitingCargos();
+	void SetNormalWaitingCargos(LinkedQueue<Cargo*>);
 
 };
 

@@ -1,4 +1,5 @@
 #include "Company.h"
+#include"math.h"
 
 
 
@@ -60,7 +61,12 @@ Company::Company(string infile)
 	NumberOfJourneysBeforeCheckup = ReadFile(3,0);
 	AutoPromotionLimit = ReadFile(4,0);
 	maxW = ReadFile(4,1);
+	NumberOfEvents = ReadFile(5,0);
 
+	string EventType;
+
+
+	
 
 
 }
@@ -110,9 +116,44 @@ void Company::PrintaAutoPromotionLimit()
 	cout << AutoPromotionLimit << endl;
 }
 
+void Company::AddToNormalWaitingCargos(Cargo* newCargo)
+{
+	NormalWaitingCargos.Enqueue(newCargo);
+}
+
+void Company::AddToSpecialWaitingCargos(Cargo* newCargo)
+{
+	SpecialWaitingCargos.Enqueue(newCargo);
+}
+
+void Company::AddToVIPWaitingCargos(Cargo* newCargo)
+{
+	VIPWaitingCargos.Enqueue(newCargo);
+}
+
+LinkedQueue<Cargo*> Company::GetNormalWaitingCargos()
+{
+	return NormalWaitingCargos;
+}
+
+void Company::SetNormalWaitingCargos(LinkedQueue<Cargo*> newQueue)
+{
+	Cargo* tempCargo;
+	while (!NormalWaitingCargos.isEmpty())
+		NormalWaitingCargos.Dequeue(tempCargo);
+	while (!newQueue.isEmpty())
+	{
+		newQueue.Dequeue(tempCargo);
+		NormalWaitingCargos.Enqueue(tempCargo);
+	}
+}
+
+
 
 int Company::ReadFile(int lines, int entries)
 {
+
+
 	ifstream infile(InputFileName);
 	string ignored;
 	char dummychar;
@@ -123,35 +164,110 @@ int Company::ReadFile(int lines, int entries)
 	string str;
 	if (lines >= 6)
 	{
+		char type;
+		infile >> type;
+		int c = 0;
 
-		if (entries == 1 || entries == 2)
+		if ((entries == 3 || entries == 2) && (type == 'R'))
 		{
-			int dummy;
 
-			for (int i = 0; i < entries; i++)
+			infile >> str;
+			char dc;
+			infile >> dc;
+			int* day = new int[2];
+			int* hour = new int[2];
+			while (dc != ':')
 			{
-				infile >> dummy;
+				day[c] = dc - '0';
+				c++;
+				infile >> dc;
+			}
 
+			if (entries == 2)
+			{
+				int ret = 0;
+				for (int i = 0; i < c; i++)
+				{
+					ret = ret + (day[c - 1 - i] * pow(10, i));
+				}
+				return ret;
 			}
 
 			infile >> str;
-
-			if (str.size() == 2)
-				return (str[1] - '0');
 			return stoi(str);
 
+		}
+		else if ((entries == 1 || entries == 2) && (type != 'R'))
+		{
+			char dc;
+			infile >> dc;
+			int* day = new int[2];
+			int* hour = new int[2];
+			while (dc != ':')
+			{
+				day[c] = dc - '0';
+				c++;
+				infile >> dc;
+			}
+
+			if (entries == 1)
+			{
+				int ret = 0;
+				for (int i = 0; i < c; i++)
+				{
+					ret = ret + (day[c - 1 - i] * pow(10, i));
+				}
+				return ret;
+			}
+
+			infile >> str;
+			return stoi(str);
+		}
+		else if ((type == 'R' && entries > 3) || ((type != 'R') && entries > 2))
+		{
+			int count = 0;
+			if (type == 'R')
+			{
+				for (int i = 0; i < 3; i++)
+					infile >> str;
+				count = 4;
+			}
+			else
+			{
+				for (int i = 0; i < 2; i++)
+					infile >> str;
+				count = 3;
+			}
+			if (count == entries)
+			{
+				return stoi(str);
+			}
+			for (int i = 0; i < entries - count - 1; i++)
+			{
+				infile >> str;
+			}
+			infile >> str;
+
+			return stoi(str);
 		}
 		else
 		{
-			string dummy;
-			for (int i = 0; i < (entries - 1); i++)
+			if (entries == 0)
+				return type;
+			char dummy;
+			for (int i = 0; i < entries - 1; i++)
 			{
 				infile >> dummy;
 			}
 			infile >> str;
+			if (str == "R" || str == "N" || str == "S" || str == "V" || str == "X" || str == "P")
+			{
+				char ret = str[0];
+				return ret;
+			}
 			return stoi(str);
-
 		}
+
 	}
 	else
 	{
@@ -166,4 +282,6 @@ int Company::ReadFile(int lines, int entries)
 
 
 }
+
+
 

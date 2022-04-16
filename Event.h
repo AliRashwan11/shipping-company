@@ -1,6 +1,7 @@
 #pragma once
 #include"Cargo.h"
 #include"UI.h"
+#include"Company.h"
 
 
 class Event                                                    // pure virtual function .. cannot instantiate an object
@@ -8,11 +9,14 @@ class Event                                                    // pure virtual f
 	int HourOfEvent;                            
 	int DayOfEvent;
 
+protected:
+
+	Company* mainCompany;
 
 public:
 
-
-	virtual void Execute() = 0;
+	Event(int,int,Company);
+	virtual bool Execute(Cargo*) = 0;
 
 	
 };

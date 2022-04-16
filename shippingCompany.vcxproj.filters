@@ -66,6 +66,9 @@
     <ClInclude Include="ReadyEvent.h">
       <Filter>events</Filter>
     </ClInclude>
+    <ClInclude Include="CancelEvent.h">
+      <Filter>events</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -87,6 +90,9 @@
       <Filter>events</Filter>
     </ClCompile>
     <ClCompile Include="ReadyEvent.cpp">
+      <Filter>events</Filter>
+    </ClCompile>
+    <ClCompile Include="CancelEvent.cpp">
       <Filter>events</Filter>
     </ClCompile>
   </ItemGroup>
