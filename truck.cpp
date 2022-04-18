@@ -11,6 +11,24 @@ truck::truck(int typenum)
 	DeliveryInterval = 0;
 }
 
+truck::truck()
+{
+	TruckType = 0;
+	TruckCapacity = 0;
+	TruckSpeed = 0;
+	MaintenanceTime = 0;
+	DeliveryInterval = 0;
+}
+
+truck::truck(truck& copy)
+{
+	TruckType = copy.GetTruckType();
+	TruckCapacity = copy.GetTruckCapacity();
+	TruckSpeed = copy.GetTruckSpeed();
+	MaintenanceTime = copy.GetMaintenanceTime();
+	DeliveryInterval = copy.GetDeliveryInterval();
+}
+
 void truck::SetTruckCapacity(int a)
 {
 	TruckCapacity = a;
@@ -24,6 +42,11 @@ void truck::SetMaintenanceTime(int a)
 void truck::SetTruckSpeed(int a)
 {
 	TruckSpeed = a;
+}
+
+void truck::SetDeliveryInterval(int a)
+{
+	DeliveryInterval = a;
 }
 
 int truck::GetMaintenanceTime()
@@ -44,6 +67,11 @@ int truck::GetTruckType()
 int truck::GetTruckSpeed()
 {
 	return TruckSpeed;
+}
+
+int truck::GetDeliveryInterval()
+{
+	return DeliveryInterval;
 }
 
 /*

@@ -10,6 +10,7 @@
 #include"LinkedPriorityQueue.h"
 #include"Event.h"
 
+class Event;
 
 using namespace std;
 
@@ -20,7 +21,6 @@ class Company
 	LinkedQueue<truck*> NormalEmptyTrucks;
 	LinkedQueue<truck*> SpecialEmptyTrucks;
 	LinkedQueue<truck*> VIPEmptyTrucks;
-	LinkedQueue<Cargo*> NormalWaitingCargos;
 	LinkedQueue<Cargo*> SpecialWaitingCargos;
 	LinkedQueue<Cargo*> VIPWaitingCargos;
 	int NumberOfJourneysBeforeCheckup;
@@ -32,7 +32,7 @@ class Company
 
 
 public:
-
+	LinkedQueue<Cargo*> NormalWaitingCargos;
 	Company(string);
 	int ReadFile(int, int);                // reads a text file in specified format 
 	

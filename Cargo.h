@@ -9,11 +9,13 @@ class Cargo                                                   // class to instan
 	int Cost;
 	int CargoType;                                            // 0 for normal , 1 for special , 2 for VIP
 	int ID;
-	truck* intruck;
+	// truck* intruck;
 
 public:
 
 	Cargo(int);
+	Cargo(Cargo&);
+	Cargo();                                                  // not prefered to use
 	void SetPreparationTime(int);
 	void SetLoadUnloadTime(int);
 	void SetDeliveryDistance(int);
@@ -25,6 +27,7 @@ public:
 	int GetCost();
 	int GetCargoType();
 	int GetID();
+	void operator=(Cargo);
 
 };
 

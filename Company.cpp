@@ -8,7 +8,6 @@ Company::Company(string infile)
 {
 	InputFileName = infile;
 
-
 	int NumberOfNormalTrucks = ReadFile(0,0);
 	int SpeedOfNormalTrucks = ReadFile(1,0);
 	int NormalTruckCapacity = ReadFile(2, 0);
@@ -71,14 +70,13 @@ Company::Company(string infile)
 
 }
 
- 
 void Company::PrintNormalEmptyTrucks()                                                     // Function for testing
 {
 	LinkedQueue<truck *> temp = NormalEmptyTrucks;
 	truck* tempt(0);
 	while (!temp.isEmpty())
 	{
-		temp.Dequeue(tempt);
+		temp.Dequeue();
 		cout << tempt->GetTruckSpeed() << endl;
 	}
 }
@@ -89,7 +87,7 @@ void Company::PrintSpecialEmptyTrucks()                                         
 	truck* tempt(0);
 	while (!temp.isEmpty())
 	{
-		temp.Dequeue(tempt);
+		temp.Dequeue();
 		cout << tempt->GetTruckSpeed() << endl;
 	}
 }
@@ -101,7 +99,7 @@ void Company::PrintVIPEmptyTrucks()                                             
 	truck* tempt(0);
 	while (!temp.isEmpty())
 	{
-		temp.Dequeue(tempt);
+		temp.Dequeue();
 		cout << tempt->GetTruckCapacity() << endl;
 	}
 }
@@ -119,6 +117,7 @@ void Company::PrintaAutoPromotionLimit()
 void Company::AddToNormalWaitingCargos(Cargo* newCargo)
 {
 	NormalWaitingCargos.Enqueue(newCargo);
+	return;
 }
 
 void Company::AddToSpecialWaitingCargos(Cargo* newCargo)
@@ -138,14 +137,8 @@ LinkedQueue<Cargo*> Company::GetNormalWaitingCargos()
 
 void Company::SetNormalWaitingCargos(LinkedQueue<Cargo*> newQueue)
 {
-	Cargo* tempCargo;
-	while (!NormalWaitingCargos.isEmpty())
-		NormalWaitingCargos.Dequeue(tempCargo);
-	while (!newQueue.isEmpty())
-	{
-		newQueue.Dequeue(tempCargo);
-		NormalWaitingCargos.Enqueue(tempCargo);
-	}
+	NormalWaitingCargos = newQueue;
+	return;
 }
 
 
@@ -282,6 +275,4 @@ int Company::ReadFile(int lines, int entries)
 
 
 }
-
-
 

@@ -8,7 +8,7 @@ class ReadyEvent : public Event
 	Cargo* CargoPtr; 
 public:
 
-	ReadyEvent(int,int,Company);
+	ReadyEvent(int,int,Company*);
 
 	bool Execute(Cargo*);
 

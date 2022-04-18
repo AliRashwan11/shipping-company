@@ -19,6 +19,8 @@ public:
 	}
 
 
+
+
 	bool isEmpty()
 	{
 		if (Front !=nullptr)
@@ -29,13 +31,18 @@ public:
 
 	void Enqueue(T item)
 	{
+
 		Node<T>* newNode = new Node<T>;
 		newNode->SetItem(item);
 		newNode->SetNext(nullptr);
+
+
+
 		if (isEmpty())
 		{
 			Front = newNode;
 			Rear = newNode;
+
 		}
 		else
 		{
@@ -54,16 +61,16 @@ public:
 		}
 	}
 
-	bool Dequeue(T& dequeued)
+	bool Dequeue()
 	{
 		if (isEmpty())
 		{
-			// dequeued = -1;
+			//cout << "0" << endl;
 			return false;                         // empty queue
 		}
 		else
 		{
-			dequeued = Front->GetItem();
+			//cout << "1" << endl;
 			if (Front == Rear)
 			{
 				delete Front;
@@ -89,11 +96,11 @@ public:
 		}
 		else
 		{
+
 			peeked = Front->GetItem();
 			return true ;
 		}
 	}
-
 
 
 

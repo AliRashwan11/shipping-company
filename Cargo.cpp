@@ -7,9 +7,24 @@ Cargo::Cargo(int a)
 	if (a != 0 && a != 1 && a != 2)
 		a = 0;
 	CargoType = a;
-	intruck = nullptr;
+	//intruck = nullptr;
 }
 
+Cargo::Cargo()
+{
+	CargoType = 0;
+}
+
+Cargo::Cargo(Cargo& copy)
+{
+	PreparationTime = copy.GetPreparationTime();
+	LoadUnloadTime = copy.GetLoadUnloadTime();
+	DeliveryDistance = copy.GetDeliveryDistance();
+	Cost = copy.GetCost();
+	CargoType = copy.GetCargoType();
+	ID = copy.GetID();
+
+}
 void Cargo::SetPreparationTime(int time)
 {
 	PreparationTime = time;
@@ -63,4 +78,15 @@ int Cargo::GetPreparationTime()
 int Cargo::GetID()
 {
 	return ID;
+}
+
+void Cargo::operator= (Cargo car)
+{
+	PreparationTime = car.GetPreparationTime();
+	LoadUnloadTime = car.GetLoadUnloadTime();
+	DeliveryDistance = car.GetDeliveryDistance();
+	Cost = car.GetCost();
+	CargoType = car.GetCargoType();
+	ID = car.GetID();
+
 }

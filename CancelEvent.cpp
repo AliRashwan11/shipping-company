@@ -1,19 +1,35 @@
 #include "CancelEvent.h"
 
-CancelEvent::CancelEvent(int hour,int day,Company mcp,int id) : Event(hour,day,mcp)
+CancelEvent::CancelEvent(int hour,int day,Company* mcp,int id) : Event(hour,day,mcp)
 {
 	IdOfCancelledCargo = id;
 	WasFound = 0;
+	cancelledCargo = nullptr;
 }
 
 
-bool CancelEvent::Execute(Cargo* cancelledCargo)
+bool CancelEvent::Execute(Cargo* cancelledcargo)
 {
-	int idOfcargo = cancelledCargo->GetID();
 
-	LinkedQueue<Cargo*> temp = mainCompany->GetNormalWaitingCargos();
+	cancelledCargo = nullptr;
+
+
+
+
+	LinkedQueue<Cargo*> temp = mainCompany->GetNormalWaitingCargos();   // implemented
+
+	Cargo* tempCargo=nullptr;
+
+
 	LinkedQueue<Cargo*> temp2;
-	Cargo* tempCargo;
+
+	while (!temp2.isEmpty())
+	{
+		temp2.Peek(tempCargo);
+		temp2.Dequeue();
+		cout << tempCargo->GetID() << endl;
+		cout << "." << endl;
+	}
 
 	while (!temp.isEmpty())
 	{
@@ -21,37 +37,58 @@ bool CancelEvent::Execute(Cargo* cancelledCargo)
 		if (tempCargo->GetID() == IdOfCancelledCargo)
 		{
 			cancelledCargo = tempCargo;
+			cancelledcargo = tempCargo;
 			WasFound = 1;
 			break;
 		}
 
+		temp.Dequeue();
 		temp2.Enqueue(tempCargo);
-		temp.Dequeue(tempCargo);
 
 	}
+
+
+	// return true;
 
 	if (WasFound == 0)
 	{
 		mainCompany->SetNormalWaitingCargos(temp2);
 		return false;
+
 	}
 	else
 	{
+		
+
+		//return true;
+		temp.Peek(cancelledCargo);
+		temp.Dequeue();
+		//return true;
+
 		while (!temp.isEmpty())
 		{
-			temp.Dequeue(tempCargo);
+			temp.Peek(tempCargo);
+			temp.Dequeue();
 			temp2.Enqueue(tempCargo);
 		}
+		//return true;
+	
 
-		temp.Enqueue(cancelledCargo);
-
+		// temp.Enqueue(cancelledCargo);
 		while (!temp2.isEmpty())
 		{
-			temp2.Dequeue(tempCargo);
+			temp2.Peek(tempCargo);
+			temp2.Dequeue();
 			temp.Enqueue(tempCargo);
 		}
+		//return true;
 
+																// implemented
+
+	
 		mainCompany->SetNormalWaitingCargos(temp);
+
+		return true;
+
 	}
-	return true;
 }

@@ -3,6 +3,8 @@
 #include"UI.h"
 #include"Company.h"
 
+class Company;
+
 
 class Event                                                    // pure virtual function .. cannot instantiate an object
 {
@@ -15,8 +17,12 @@ protected:
 
 public:
 
-	Event(int,int,Company);
+	Event(int,int,Company*);
+	Event(Event&);
 	virtual bool Execute(Cargo*) = 0;
+	int GetDay();
+	int GetHour();
+	Company* GetCompany();
 
 	
 };

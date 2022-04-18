@@ -12,15 +12,17 @@ class truck
 public:
 
 	truck(int);
-
-
+	truck();
+	truck(truck&);
 	void SetTruckCapacity(int);
 	int GetTruckCapacity();
 	void SetTruckSpeed(int);
+	void SetDeliveryInterval(int);
 	int GetTruckSpeed();
 	void SetMaintenanceTime(int);
 	int GetMaintenanceTime();
 	int GetTruckType();
+	int GetDeliveryInterval();
 
 	// virtual int GetDeliveryInterval();             to be implemented later
 
