@@ -143,11 +143,14 @@
     <ClInclude Include="Cargo.h" />
     <ClInclude Include="Company.h" />
     <ClInclude Include="Event.h" />
+    <ClInclude Include="LinkedList.h" />
     <ClInclude Include="LinkedPriorityQueue.h" />
     <ClInclude Include="LinkedQueue.h" />
     <ClInclude Include="LinkedStack.h" />
+    <ClInclude Include="List.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="PriorityQueue.h" />
+    <ClInclude Include="PromotionEvent.h" />
     <ClInclude Include="Queue.h" />
     <ClInclude Include="ReadyEvent.h" />
     <ClInclude Include="stack.h" />
@@ -160,6 +163,7 @@
     <ClCompile Include="Company.cpp" />
     <ClCompile Include="Event.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="PromotionEvent.cpp" />
     <ClCompile Include="ReadyEvent.cpp" />
     <ClCompile Include="truck.cpp" />
     <ClCompile Include="UI.cpp" />

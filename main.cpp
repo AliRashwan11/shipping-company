@@ -2,6 +2,7 @@
 #include"Company.h"
 #include "LinkedStack.h"
 #include "LinkedQueue.h"
+#include"LinkedList.h"
 #include "truck.h"
 #include"LinkedPriorityQueue.h"
 #include"ReadyEvent.h"
@@ -44,8 +45,9 @@ int main()
 	return 0;
 
 */
+	// ***********************************************************************************************
 
-
+/*
 	Company maincompany("input.txt");
 	Company* cmptr = &maincompany;
 
@@ -78,7 +80,7 @@ int main()
 	LinkedQueue<Cargo*> waiting = maincompany.GetNormalWaitingCargos();
 
 	Cargo* tempp=nullptr;
-	
+
 	while (!waiting.isEmpty())
 	{
 		waiting.Peek(tempp);
@@ -86,7 +88,46 @@ int main()
 		waiting.Dequeue();
 	}
 
+*/
 	
+
+	LinkedList<Cargo*> maincargos;
+
+	Cargo cargo1;
+	Cargo cargo2;
+	Cargo cargo3;
+	Cargo cargo4;
+	Cargo cargo5;
+	cargo1.SetCost(1);
+	cargo2.SetCost(2);
+	cargo3.SetCost(3);
+	cargo4.SetCost(4);
+	cargo5.SetCost(5);
+
+	Cargo* pt1 = &cargo1;
+	Cargo* pt2 = &cargo2;
+	Cargo* pt3 = &cargo3;
+	Cargo* pt4 = &cargo4;
+	Cargo* pt5 = &cargo5;
+
+	maincargos.InsertEnd(pt1);
+	maincargos.InsertEnd(pt2);
+	maincargos.InsertEnd(pt3);
+	maincargos.InsertEnd(pt4);
+	maincargos.InsertEnd(pt5);
+
+	bool found=maincargos.Find(pt4);
+
+	maincargos.PrintList();
+
+	cout << endl;
+
+	maincargos.DeleteNode(pt3);
+	maincargos.DeleteNode(pt5);
+	maincargos.DeleteNode(pt1);
+
+	maincargos.PrintList();
+
 
 	return 0;
 

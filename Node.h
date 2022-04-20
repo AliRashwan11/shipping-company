@@ -16,6 +16,12 @@ public:
 		priority = 0;
 	}
 
+	Node(T item)
+	{
+		Next = nullptr;
+		this->item = item;
+	}
+
 	void SetNext(Node<T>* inP)
 	{
 		Next = inP;

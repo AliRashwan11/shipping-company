@@ -18,6 +18,7 @@ using namespace std;
 class Company
 {
 	string InputFileName;
+	LinkedQueue<Cargo*> NormalWaitingCargos;
 	LinkedQueue<truck*> NormalEmptyTrucks;
 	LinkedQueue<truck*> SpecialEmptyTrucks;
 	LinkedQueue<truck*> VIPEmptyTrucks;
@@ -32,7 +33,6 @@ class Company
 
 
 public:
-	LinkedQueue<Cargo*> NormalWaitingCargos;
 	Company(string);
 	int ReadFile(int, int);                // reads a text file in specified format 
 	

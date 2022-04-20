@@ -69,6 +69,15 @@
     <ClInclude Include="CancelEvent.h">
       <Filter>events</Filter>
     </ClInclude>
+    <ClInclude Include="PromotionEvent.h">
+      <Filter>events</Filter>
+    </ClInclude>
+    <ClInclude Include="List.h">
+      <Filter>ADT%27s</Filter>
+    </ClInclude>
+    <ClInclude Include="LinkedList.h">
+      <Filter>ADT%27s</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -93,6 +102,9 @@
       <Filter>events</Filter>
     </ClCompile>
     <ClCompile Include="CancelEvent.cpp">
+      <Filter>events</Filter>
+    </ClCompile>
+    <ClCompile Include="PromotionEvent.cpp">
       <Filter>events</Filter>
     </ClCompile>
   </ItemGroup>

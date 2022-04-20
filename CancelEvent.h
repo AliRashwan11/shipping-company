@@ -4,8 +4,8 @@
 class CancelEvent : public Event
 {
 	int IdOfCancelledCargo;
-	bool WasFound;
 	Cargo* cancelledCargo;
+	bool WasFound;
 
 public:
 
