@@ -10,85 +10,13 @@ CancelEvent::CancelEvent(int hour,int day,Company* mcp,int id) : Event(hour,day,
 
 bool CancelEvent::Execute(Cargo* cancelledcargo)
 {
+	WasFound = mainCompany->CargoSearch(IdOfCancelledCargo);
 
-	cancelledCargo = nullptr;
-
-
-
-
-	LinkedQueue<Cargo*> temp = mainCompany->GetNormalWaitingCargos();   // implemented
-
-	Cargo* tempCargo=nullptr;
-
-
-	LinkedQueue<Cargo*> temp2;
-
-	while (!temp2.isEmpty())
+	if (WasFound)
 	{
-		temp2.Peek(tempCargo);
-		temp2.Dequeue();
-		cout << tempCargo->GetID() << endl;
-		cout << "." << endl;
-	}
-
-	while (!temp.isEmpty())
-	{
-		temp.Peek(tempCargo);
-		if (tempCargo->GetID() == IdOfCancelledCargo)
-		{
-			cancelledCargo = tempCargo;
-			cancelledcargo = tempCargo;
-			WasFound = 1;
-			break;
-		}
-
-		temp.Dequeue();
-		temp2.Enqueue(tempCargo);
-
-	}
-
-
-	// return true;
-
-	if (WasFound == 0)
-	{
-		mainCompany->SetNormalWaitingCargos(temp2);
-		return false;
-
-	}
-	else
-	{
-		
-
-		//return true;
-		temp.Peek(cancelledCargo);
-		temp.Dequeue();
-		//return true;
-
-		while (!temp.isEmpty())
-		{
-			temp.Peek(tempCargo);
-			temp.Dequeue();
-			temp2.Enqueue(tempCargo);
-		}
-		//return true;
-	
-
-		// temp.Enqueue(cancelledCargo);
-		while (!temp2.isEmpty())
-		{
-			temp2.Peek(tempCargo);
-			temp2.Dequeue();
-			temp.Enqueue(tempCargo);
-		}
-		//return true;
-
-																// implemented
-
-	
-		mainCompany->SetNormalWaitingCargos(temp);
-
+		mainCompany->CargoCancelled(IdOfCancelledCargo);
 		return true;
-
 	}
+
+	return false;
 }

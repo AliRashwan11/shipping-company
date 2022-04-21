@@ -7,6 +7,7 @@
 #include"Event.h"
 #include"LinkedQueue.h"
 #include"LinkedStack.h"
+#include"LinkedList.h"
 #include"LinkedPriorityQueue.h"
 #include"Event.h"
 
@@ -18,7 +19,7 @@ using namespace std;
 class Company
 {
 	string InputFileName;
-	LinkedQueue<Cargo*> NormalWaitingCargos;
+	LinkedList NormalWaitingCargos;
 	LinkedQueue<truck*> NormalEmptyTrucks;
 	LinkedQueue<truck*> SpecialEmptyTrucks;
 	LinkedQueue<truck*> VIPEmptyTrucks;
@@ -39,13 +40,16 @@ public:
 	void PrintNormalEmptyTrucks();
 	void PrintSpecialEmptyTrucks();
 	void PrintVIPEmptyTrucks();
-	void AddToNormalWaitingCargos(Cargo*);
+	void AddToNormalWaitingCargos(Cargo*); //
 	void AddToSpecialWaitingCargos(Cargo*);
 	void AddToVIPWaitingCargos(Cargo*);
 	void PrintmaxW();
 	void PrintaAutoPromotionLimit();
-	LinkedQueue<Cargo*> GetNormalWaitingCargos();
-	void SetNormalWaitingCargos(LinkedQueue<Cargo*>);
+	void PrintNormalWaitingCargos();
+	bool CargoSearch(int);
+	void CargoCancelled(int);
+	LinkedList GetNormalWaitingCargos(); //
+	void SetNormalWaitingCargos(LinkedList); //
 
 };
 

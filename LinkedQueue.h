@@ -19,8 +19,6 @@ public:
 	}
 
 
-
-
 	bool isEmpty()
 	{
 		if (Front !=nullptr)

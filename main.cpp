@@ -47,7 +47,7 @@ int main()
 */
 	// ***********************************************************************************************
 
-/*
+
 	Company maincompany("input.txt");
 	Company* cmptr = &maincompany;
 
@@ -55,54 +55,52 @@ int main()
 
 	Cargo inputc(0);
 	inputc.SetID(1);
+
 	Cargo inputc2(0);
 	inputc2.SetID(0);
-	Cargo* p = &inputc;
-	Cargo* p2 = &inputc2;
 
-	Ready1.Execute(p);
-	Ready1.Execute(p2);
-	Ready1.Execute(p2);
-	Ready1.Execute(p2);
+	Cargo* p = &inputc;               // id = 1
+	Cargo* p2 = &inputc2;             // id = 0
+
+
+	//Ready1.Execute(p);
+	//Ready1.Execute(p2);
+	//Ready1.Execute(p2);
+	//Ready1.Execute(p2);
 	Ready1.Execute(p);
 	Ready1.Execute(p);;
 	Ready1.Execute(p2);
 	Ready1.Execute(p);
 
+	//LinkedList NormalWaitingCargos;
 
-	CancelEvent cancellation(2,2,cmptr,0);
+	//return 0;
+
+
+
+	CancelEvent cancellation(2,2,cmptr,1);
 
 	cancellation.Execute(p2);
-	cancellation.Execute(p);
+	//cancellation.Execute(p);
+
+	maincompany.PrintNormalWaitingCargos();
+
+	return 0;
 
 
 
-	LinkedQueue<Cargo*> waiting = maincompany.GetNormalWaitingCargos();
-
-	Cargo* tempp=nullptr;
-
-	while (!waiting.isEmpty())
-	{
-		waiting.Peek(tempp);
-		cout << tempp->GetID() << " .." << endl;
-		waiting.Dequeue();
-	}
-
-*/
-	
-
-	LinkedList<Cargo*> maincargos;
+	LinkedList maincargos;
 
 	Cargo cargo1;
 	Cargo cargo2;
 	Cargo cargo3;
 	Cargo cargo4;
 	Cargo cargo5;
-	cargo1.SetCost(1);
-	cargo2.SetCost(2);
-	cargo3.SetCost(3);
-	cargo4.SetCost(4);
-	cargo5.SetCost(5);
+	cargo1.SetID(1);
+	cargo2.SetID(2);
+	cargo3.SetID(3);
+	cargo4.SetID(4);
+	cargo5.SetID(5);
 
 	Cargo* pt1 = &cargo1;
 	Cargo* pt2 = &cargo2;
@@ -116,15 +114,17 @@ int main()
 	maincargos.InsertEnd(pt4);
 	maincargos.InsertEnd(pt5);
 
-	bool found=maincargos.Find(pt4);
+	bool found=maincargos.Find(3);
 
 	maincargos.PrintList();
 
 	cout << endl;
 
-	maincargos.DeleteNode(pt3);
-	maincargos.DeleteNode(pt5);
-	maincargos.DeleteNode(pt1);
+	cout << endl << found << endl << endl;
+
+	//maincargos.DeleteNode(pt3);
+	//maincargos.DeleteNode(pt5);
+	//maincargos.DeleteNode(pt1);
 
 	maincargos.PrintList();
 

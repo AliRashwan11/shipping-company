@@ -116,7 +116,7 @@ void Company::PrintaAutoPromotionLimit()
 
 void Company::AddToNormalWaitingCargos(Cargo* newCargo)
 {
-	NormalWaitingCargos.Enqueue(newCargo);
+	NormalWaitingCargos.InsertEnd(newCargo);
 	return;
 }
 
@@ -130,17 +130,26 @@ void Company::AddToVIPWaitingCargos(Cargo* newCargo)
 	VIPWaitingCargos.Enqueue(newCargo);
 }
 
-LinkedQueue<Cargo*> Company::GetNormalWaitingCargos()
+LinkedList Company::GetNormalWaitingCargos()        // slow execution 
 {
 	return NormalWaitingCargos;
 }
 
-void Company::SetNormalWaitingCargos(LinkedQueue<Cargo*> newQueue)
+void Company::SetNormalWaitingCargos(LinkedList newlist)
 {
-	NormalWaitingCargos = newQueue;
+	NormalWaitingCargos = newlist;
 	return;
 }
 
+bool Company::CargoSearch(int id)
+{
+	return NormalWaitingCargos.Find(id);
+}
+
+void Company::CargoCancelled(int id)
+{
+	NormalWaitingCargos.DeleteNode(id);
+}
 
 
 int Company::ReadFile(int lines, int entries)
@@ -276,3 +285,7 @@ int Company::ReadFile(int lines, int entries)
 
 }
 
+void Company::PrintNormalWaitingCargos()
+{
+	NormalWaitingCargos.PrintList();
+}

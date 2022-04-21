@@ -1,16 +1,20 @@
 #pragma once
 #include"List.h"
 
-template <typename T>
-class LinkedList : public List<T>
+class LinkedList : public List<Cargo*>
 {
-	Node<T>* Head;
+	Node<Cargo*>* Head;
 
 public:
 
 	LinkedList()
 	{
 		Head = nullptr;
+	}
+
+	LinkedList(LinkedList& copy)
+	{
+		Head = copy.Head;
 	}
 
 	~LinkedList()
@@ -20,28 +24,28 @@ public:
 
 	void PrintList()	
 	{
-		Node<T>* p = Head;
-
+		Node<Cargo*>* p = Head;
+		
 		while (p)
 		{
-			cout << "[ " << p->GetItem() << " ]";
+			cout << "[ " << p->GetItem()->GetID() << " ]";
 			cout << "--->";
 			p = p->GetNext();
 		}
+		return;
 	}
 
-	void InsertBeg(const T& data)
+	void InsertBeg(Cargo*& item)
 	{
-		Node<T>* R = new Node<T>(data);
+		Node<Cargo*>* R = new Node<Cargo*>(item);
 		R->SetNext(Head);
 		Head = R;
-
 	}
 
-	void InsertEnd(const T& data)
+	void InsertEnd(Cargo*& data)
 	{
-		Node<T>* R = Head;
-		Node<T>* obj = new Node<T>;
+		Node<Cargo*>* R = Head;
+		Node<Cargo*>* obj = new Node<Cargo*>;
 		obj->SetItem(data);
 		obj->SetNext(NULL);
 		if (Head == NULL)
@@ -59,27 +63,29 @@ public:
 
 	}
 
-	bool Find(T Key)
+	bool Find(int key)
 	{
-		Node<T>* ptr = Head;
+		Node<Cargo*>* ptr = Head;
 		while (ptr)
 		{
-			if (ptr->GetItem() == Key)
+			if (ptr->GetItem()->GetID() == key)
 			{
 				return true;
 			}
 			ptr = ptr->GetNext();
 		}
 		return false;
+
 	}
 
-	bool DeleteNode(const T& value)
+
+	bool DeleteNode(int ID)
 	{
-		Node<T>* ptr = Head;
-		Node<T>* temp = NULL;
+		Node<Cargo*>* ptr = Head;
+		Node<Cargo*>* temp = NULL;
 		if (Head)
 		{
-			if (Head->GetItem() == value)
+			if (Head->GetItem()->GetID() == ID)
 			{
 				temp = Head;
 				if (Head->GetNext())
@@ -96,7 +102,7 @@ public:
 			}
 			while (ptr->GetNext())
 			{
-				if (ptr->GetNext()->GetItem() == value)
+				if (ptr->GetNext()->GetItem()->GetID() == ID)
 				{
 					temp = ptr->GetNext();
 					ptr->SetNext(ptr->GetNext()->GetNext());
@@ -115,7 +121,7 @@ public:
 
 	void DeleteAll()
 	{
-		Node<T>* P = Head;
+		Node<Cargo*>* P = Head;
 		while (Head)
 		{
 			P = Head->GetNext();
@@ -126,14 +132,3 @@ public:
 
 };
 
-void LinkedList<Cargo*>::PrintList()
-{
-	Node<Cargo*>* p = Head;
-
-	while (p)
-	{
-		cout << "[ " << p->GetItem()->GetCost() << " ]";
-		cout << "--->";
-		p = p->GetNext();
-	}
-}
