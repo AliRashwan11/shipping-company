@@ -7,67 +7,6 @@
 Company::Company(string infile)
 {
 	InputFileName = infile;
-
-	int NumberOfNormalTrucks = ReadFile(0,0);
-	int SpeedOfNormalTrucks = ReadFile(1,0);
-	int NormalTruckCapacity = ReadFile(2, 0);
-	int CheckUpDurationOfNormalTrucks = ReadFile(3, 1);
-
-	for (int i = 0; i < NumberOfNormalTrucks; i++)
-	{
-		truck* newtruck = new truck(0);
-		newtruck->SetTruckSpeed(SpeedOfNormalTrucks);
-		newtruck->SetTruckCapacity(NormalTruckCapacity);
-		newtruck->SetMaintenanceTime(CheckUpDurationOfNormalTrucks);
-
-		NormalEmptyTrucks.Enqueue(newtruck);
-	}
-
-	// add truck delivery interval after implementing cargos
-
-
-	int NumberOfSpecialTrucks = ReadFile(0,1);
-	int SpeedOfSpecialTrucks = ReadFile(1,1);
-	int SpecialTruckCapacity = ReadFile(2,1);
-	int CheckUpDurationOfSpecialTrucks = ReadFile(3,2);
-
-	for (int i = 0; i < NumberOfSpecialTrucks; i++)
-	{
-		truck* newstruck = new truck(1);
-		newstruck->SetTruckSpeed(SpeedOfSpecialTrucks);
-		newstruck->SetTruckCapacity(SpecialTruckCapacity);
-		newstruck->SetMaintenanceTime(CheckUpDurationOfSpecialTrucks);
-
-		SpecialEmptyTrucks.Enqueue(newstruck);
-	}
-
-	int NumberOfVIPTrucks = ReadFile(0, 2);
-	int SpeedOfVIPTrucks = ReadFile(1, 2);
-	int VIPTruckCapacity = ReadFile(2, 2);
-	int CheckUpDurationOfVIPTrucks = ReadFile(3, 3);
-
-	for (int i = 0; i < NumberOfVIPTrucks; i++)
-	{
-		truck* newvtruck = new truck(2);
-		newvtruck->SetTruckSpeed(SpeedOfVIPTrucks);
-		newvtruck->SetTruckCapacity(VIPTruckCapacity);
-		newvtruck->SetMaintenanceTime(CheckUpDurationOfVIPTrucks);
-
-		VIPEmptyTrucks.Enqueue(newvtruck);
-	}
-
-
-	NumberOfJourneysBeforeCheckup = ReadFile(3,0);
-	AutoPromotionLimit = ReadFile(4,0);
-	maxW = ReadFile(4,1);
-	NumberOfEvents = ReadFile(5,0);
-
-	string EventType;
-
-
-	
-
-
 }
 
 void Company::PrintNormalEmptyTrucks()                                                     // Function for testing
@@ -152,7 +91,7 @@ void Company::CargoCancelled(int id)
 }
 
 
-int Company::ReadFile(int lines, int entries)
+int Company::ReadSubFile(int lines, int entries)
 {
 
 
@@ -282,8 +221,72 @@ int Company::ReadFile(int lines, int entries)
 		return stoi(str);
 	}
 
+}
+
+
+void Company::ReadFile()
+{
+
+	int NumberOfNormalTrucks = ReadSubFile(0, 0);
+	int SpeedOfNormalTrucks = ReadSubFile(1, 0);
+	int NormalTruckCapacity = ReadSubFile(2, 0);
+	int CheckUpDurationOfNormalTrucks = ReadSubFile(3, 1);
+
+	for (int i = 0; i < NumberOfNormalTrucks; i++)
+	{
+		truck* newtruck = new truck(0);
+		newtruck->SetTruckSpeed(SpeedOfNormalTrucks);
+		newtruck->SetTruckCapacity(NormalTruckCapacity);
+		newtruck->SetMaintenanceTime(CheckUpDurationOfNormalTrucks);
+
+		NormalEmptyTrucks.Enqueue(newtruck);
+	}
+
+	// add truck delivery interval after implementing cargos
+
+
+	int NumberOfSpecialTrucks = ReadSubFile(0, 1);
+	int SpeedOfSpecialTrucks = ReadSubFile(1, 1);
+	int SpecialTruckCapacity = ReadSubFile(2, 1);
+	int CheckUpDurationOfSpecialTrucks = ReadSubFile(3, 2);
+
+	for (int i = 0; i < NumberOfSpecialTrucks; i++)
+	{
+		truck* newstruck = new truck(1);
+		newstruck->SetTruckSpeed(SpeedOfSpecialTrucks);
+		newstruck->SetTruckCapacity(SpecialTruckCapacity);
+		newstruck->SetMaintenanceTime(CheckUpDurationOfSpecialTrucks);
+
+		SpecialEmptyTrucks.Enqueue(newstruck);
+	}
+
+	int NumberOfVIPTrucks = ReadSubFile(0, 2);
+	int SpeedOfVIPTrucks = ReadSubFile(1, 2);
+	int VIPTruckCapacity = ReadSubFile(2, 2);
+	int CheckUpDurationOfVIPTrucks = ReadSubFile(3, 3);
+
+	for (int i = 0; i < NumberOfVIPTrucks; i++)
+	{
+		truck* newvtruck = new truck(2);
+		newvtruck->SetTruckSpeed(SpeedOfVIPTrucks);
+		newvtruck->SetTruckCapacity(VIPTruckCapacity);
+		newvtruck->SetMaintenanceTime(CheckUpDurationOfVIPTrucks);
+
+		VIPEmptyTrucks.Enqueue(newvtruck);
+	}
+
+
+	NumberOfJourneysBeforeCheckup = ReadSubFile(3, 0);
+	AutoPromotionLimit = ReadSubFile(4, 0);
+	maxW = ReadSubFile(4, 1);
+	NumberOfEvents = ReadSubFile(5, 0);
+
+	string EventType;
+
 
 }
+
+
 
 void Company::PrintNormalWaitingCargos()
 {

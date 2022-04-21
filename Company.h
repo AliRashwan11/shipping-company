@@ -35,7 +35,8 @@ class Company
 
 public:
 	Company(string);
-	int ReadFile(int, int);                // reads a text file in specified format 
+	int ReadSubFile(int, int);                // reads a text file in specified format 
+	void ReadFile();                          // uses ReadSubFile to read entire input file
 	
 	void PrintNormalEmptyTrucks();
 	void PrintSpecialEmptyTrucks();
