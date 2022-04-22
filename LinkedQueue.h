@@ -3,6 +3,7 @@
 #include"Node.h"
 
 
+
 template<typename T>
 class LinkedQueue : public Queue<T>
 {
@@ -94,7 +95,6 @@ public:
 		}
 		else
 		{
-
 			peeked = Front->GetItem();
 			return true ;
 		}

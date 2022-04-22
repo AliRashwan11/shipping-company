@@ -19,7 +19,8 @@ public:
 
 	Event(int,int,Company*);
 	Event(Event&);
-	virtual bool Execute(Cargo*) = 0;
+	Event();
+	virtual bool Execute() = 0;
 	int GetDay();
 	int GetHour();
 	Company* GetCompany();

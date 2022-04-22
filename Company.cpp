@@ -1,6 +1,8 @@
 #include "Company.h"
 #include"math.h"
-
+#include"ReadyEvent.h"
+#include"CancelEvent.h"
+#include"PromotionEvent.h"
 
 
 
@@ -12,20 +14,33 @@ Company::Company(string infile)
 void Company::PrintNormalEmptyTrucks()                                                     // Function for testing
 {
 	LinkedQueue<truck *> temp = NormalEmptyTrucks;
-	truck* tempt(0);
+	truck* tempt=nullptr;
 	while (!temp.isEmpty())
 	{
+		temp.Peek(tempt);
 		temp.Dequeue();
 		cout << tempt->GetTruckSpeed() << endl;
+	}
+}
+
+void Company::PrintVIPWaitingCargos()
+{
+	Cargo* temp = nullptr;
+	while (!VIPWaitingCargos.isEmpty())
+	{
+		VIPWaitingCargos.Peek(temp);
+		VIPWaitingCargos.Dequeue();
+		cout << temp->GetID();
 	}
 }
 
 void Company::PrintSpecialEmptyTrucks()                                                     // Function for testing
 {
 	LinkedQueue<truck*> temp = SpecialEmptyTrucks;
-	truck* tempt(0);
+	truck* tempt=nullptr;
 	while (!temp.isEmpty())
 	{
+		temp.Peek(tempt);
 		temp.Dequeue();
 		cout << tempt->GetTruckSpeed() << endl;
 	}
@@ -35,11 +50,12 @@ void Company::PrintSpecialEmptyTrucks()                                         
 void Company::PrintVIPEmptyTrucks()                                                     // Function for testing
 {
 	LinkedQueue<truck*> temp = VIPEmptyTrucks;
-	truck* tempt(0);
+	truck* tempt=nullptr;
 	while (!temp.isEmpty())
 	{
+		temp.Peek(tempt);
 		temp.Dequeue();
-		cout << tempt->GetTruckCapacity() << endl;
+		cout << tempt->GetTruckSpeed() << endl;
 	}
 }
 
@@ -85,9 +101,11 @@ bool Company::CargoSearch(int id)
 	return NormalWaitingCargos.Find(id);
 }
 
-void Company::CargoCancelled(int id)
+Cargo* Company::CargoCancelled(int id)
 {
+	Cargo* ret = NormalWaitingCargos.FindCargo(id);
 	NormalWaitingCargos.DeleteNode(id);
+	return ret;
 }
 
 
@@ -290,8 +308,13 @@ void Company::ReadFile()
 	int CargoDist = -1;
 	int LT = -1;
 	int CargoCost = -1;
+	int ExtraMoney = -1;
 
 	Cargo* newCargoAdded = nullptr;
+	ReadyEvent* ready = nullptr;
+	CancelEvent* cancel = nullptr;
+	PromotionEvent* promote = nullptr;
+
 
 	for (int i=0 ; i<NumberOfEvents ; i++)
 	{
@@ -314,6 +337,7 @@ void Company::ReadFile()
 				CargoType = 2;
 			}
 
+
 			Day = ReadSubFile(6+i,2);
 			Hour = ReadSubFile(6+i,3);
 			CargoID = ReadSubFile(6+i,4);
@@ -321,29 +345,58 @@ void Company::ReadFile()
 			LT = ReadSubFile(6+i,6);
 			CargoCost = ReadSubFile(6+i,7);
 
+			// cout << Hour << endl;
+
+			newCargoAdded = new Cargo(CargoType);
 			newCargoAdded->SetCost(CargoCost);
 			newCargoAdded->SetDeliveryDistance(CargoDist);
 			newCargoAdded->SetID(CargoID);
 			newCargoAdded->SetLoadUnloadTime(LT);
-			newCargoAdded->SetType(CargoType);
-			// newCargoAdded->SetPreparationTime();
+			// newCargoAdded->SetPreparationTime();                            // preparation time calculation -- phase-2
 
+			ready = new ReadyEvent(Hour, Day, this, newCargoAdded);
+			Events.Enqueue(ready);
 		
 		}
 		else if (EventType== 88) // cancellation event
 		{
+			Day = ReadSubFile(6 + i, 1);
+			Hour = ReadSubFile(6 + i, 2);
+			CargoID = ReadSubFile(6+i,3);
 
+			cancel = new CancelEvent(Hour, Day, this, CargoID);
+			Events.Enqueue(cancel);
 		}
 		else // promotion event
 		{
+			Day = ReadSubFile(6 + i, 1);
+			Hour = ReadSubFile(6 + i, 2);
+			CargoID = ReadSubFile(6 + i, 3);
+			ExtraMoney = ReadSubFile(6+i,4);
 
+			promote = new PromotionEvent(Hour, Day, this, CargoID, ExtraMoney);
+			Events.Enqueue(promote);
 		}
 	}
 }
 
-
+LinkedQueue<Event*> Company::GetEvents()
+{
+	return Events;
+}
 
 void Company::PrintNormalWaitingCargos()
 {
 	NormalWaitingCargos.PrintList();
+}
+
+void Company::PrintEvents()
+{
+	Event* tempe = nullptr;
+	while (!Events.isEmpty())
+	{
+		Events.Peek(tempe);
+		Events.Dequeue();
+		cout << tempe->GetDay() << " . " << tempe->GetHour() << endl;
+	}
 }

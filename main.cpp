@@ -7,6 +7,7 @@
 #include"LinkedPriorityQueue.h"
 #include"ReadyEvent.h"
 #include"CancelEvent.h"
+#include"PromotionEvent.h"
 
 
 
@@ -53,45 +54,40 @@ int main()
 
 	maincompany.ReadFile();
 
-	// ReadyEvent Ready1(1,1, cmptr);
-
-	Cargo inputc0(0);
-	inputc0.SetID(0);
-
-	Cargo inputc1(0);
-	inputc1.SetID(1);
-	
-	Cargo inputc2(0);
-	inputc2.SetID(2);
-
-	Cargo* p0 = &inputc0;              
-	Cargo* p1 = &inputc1;            
-	Cargo* p2 = &inputc2;
+	//maincompany.PrintNormalEmptyTrucks();          // prints speed of normal empty trucks 'n' time .. where n=number of empty trucks
+	//maincompany.PrintSpecialEmptyTrucks();
+	//maincompany.PrintVIPEmptyTrucks();
+	maincompany.PrintEvents();                      // prints hour and day of event
 
 
-	//Ready1.Execute(p);
-	//Ready1.Execute(p2);
-	//Ready1.Execute(p2);
-	//Ready1.Execute(p2);
+	return 0;
 
-	//Ready1.Execute(p0);
-	//Ready1.Execute(p1);;
-	//Ready1.Execute(p2);
+	Cargo c0(0);
+	c0.SetID(0);
+	Cargo* ptr0 = &c0;
 
-	//LinkedList NormalWaitingCargos;
+	Cargo c100(0);
+	c100.SetID(100);
+	Cargo* ptr100 = &c100;
 
-	//return 0;
+	ReadyEvent event1(1,1,cmptr,ptr0);
+
+	ReadyEvent event100(1, 1, cmptr, ptr100);
+	event100.Execute();
+	event1.Execute();
 
 
+	CancelEvent cancel(1,1,cmptr,100);
+	cancel.Execute();
 
-	CancelEvent cancellation(2,2,cmptr,2);
 
-	cancellation.Execute(p2);
-	cancellation.Execute(p2);
-
-	//Ready1.Execute(p2);
+	PromotionEvent prom(1,1,cmptr,0,50);
+	prom.Execute();
 
 	maincompany.PrintNormalWaitingCargos();
+	cout << endl << "..." << endl;
+	maincompany.PrintVIPWaitingCargos();
+
 
 	return 0;
 

@@ -92,16 +92,14 @@ public:
 		}
 	}
 
-	bool Dequeue(T& dequeued)
+	bool Dequeue()
 	{
 		if (isEmpty())
 		{
-			//dequeued = -1;
 			return false;                         // empty queue
 		}
 		else
 		{
-			dequeued = Front->GetItem();
 			if (Front == Rear)
 			{
 				delete Front;

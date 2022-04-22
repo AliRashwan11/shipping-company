@@ -15,6 +15,10 @@ Event::Event(Event& copy)
 	DayOfEvent = copy.GetDay();
 }
 
+Event::Event()
+{
+
+}
 int Event::GetDay()
 {
 	return DayOfEvent;

@@ -11,7 +11,7 @@ public:
 
 	CancelEvent(int,int,Company*,int);
 
-	bool Execute(Cargo*);
+	bool Execute();
 
 };
 

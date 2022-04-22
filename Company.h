@@ -30,7 +30,7 @@ class Company
 	int maxW;                                                  // in hours
 	int NumberOfEvents;
 
-	LinkedPriorityQueue<Event*> Events;                        // priQ of events
+	LinkedQueue<Event*> Events;                        // priQ of events
 
 
 public:
@@ -47,9 +47,12 @@ public:
 	void PrintmaxW();
 	void PrintaAutoPromotionLimit();
 	void PrintNormalWaitingCargos();
+	void PrintVIPWaitingCargos();
+	void PrintEvents();
 	bool CargoSearch(int);
-	void CargoCancelled(int);
+	Cargo* CargoCancelled(int);
 	LinkedList GetNormalWaitingCargos(); //
+	LinkedQueue<Event*> GetEvents();
 	void SetNormalWaitingCargos(LinkedList); //
 
 };

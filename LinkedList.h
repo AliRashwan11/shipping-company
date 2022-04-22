@@ -42,6 +42,22 @@ public:
 		Head = R;
 	}
 
+	Cargo* FindCargo(int key)
+	{
+		Cargo* ret = nullptr;
+		Node<Cargo*>* ptr = Head;
+		while (ptr)
+		{
+			if (ptr->GetItem()->GetID() == key)
+			{
+				ret = ptr->GetItem();
+				break;
+			}
+			ptr = ptr->GetNext();
+		}
+		return ret;
+	}
+
 	void InsertEnd(Cargo*& data)
 	{
 		Node<Cargo*>* R = Head;

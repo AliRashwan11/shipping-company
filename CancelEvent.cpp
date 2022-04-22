@@ -8,7 +8,7 @@ CancelEvent::CancelEvent(int hour,int day,Company* mcp,int id) : Event(hour,day,
 }
 
 
-bool CancelEvent::Execute(Cargo* cancelledcargo)
+bool CancelEvent::Execute()
 {
 	WasFound = mainCompany->CargoSearch(IdOfCancelledCargo);
 
