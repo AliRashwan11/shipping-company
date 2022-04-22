@@ -21,6 +21,7 @@ public:
 	void SetDeliveryDistance(int);
 	void SetCost(int);
 	void SetID(int);
+	void SetType(int);
 	int GetPreparationTime();
 	int GetLoadUnloadTime();
 	int GetDeliveryDistance();

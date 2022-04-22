@@ -1,26 +1,25 @@
 #include"ReadyEvent.h"
 
 
-ReadyEvent::ReadyEvent(int hour,int day,Company* cmp) : Event(hour,day,cmp)
+ReadyEvent::ReadyEvent(int hour,int day,Company* cmp,Cargo* ToBeAdded) : Event(hour,day,cmp)
 {
-	CargoPtr = nullptr;
+	CargoPtr = ToBeAdded;
 }
 
 
-bool ReadyEvent::Execute(Cargo* newCargo)                                          // adds a new cargo to waiting list
+bool ReadyEvent::Execute()                                          // adds a new cargo to waiting list
 {
 
-	CargoPtr = newCargo;
 	int type = CargoPtr->GetCargoType();
 
 	if (type == 0)
 	{
-		mainCompany->AddToNormalWaitingCargos(newCargo);
+		mainCompany->AddToNormalWaitingCargos(CargoPtr);
 	}
 	else if(type==1)
-		mainCompany->AddToSpecialWaitingCargos(newCargo);
+		mainCompany->AddToSpecialWaitingCargos(CargoPtr);
 	else
-		mainCompany->AddToVIPWaitingCargos(newCargo);
+		mainCompany->AddToVIPWaitingCargos(CargoPtr);
 
 	return true;
 }

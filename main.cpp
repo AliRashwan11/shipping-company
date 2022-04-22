@@ -53,7 +53,7 @@ int main()
 
 	maincompany.ReadFile();
 
-	ReadyEvent Ready1(1,1, cmptr);
+	// ReadyEvent Ready1(1,1, cmptr);
 
 	Cargo inputc0(0);
 	inputc0.SetID(0);
@@ -74,9 +74,9 @@ int main()
 	//Ready1.Execute(p2);
 	//Ready1.Execute(p2);
 
-	Ready1.Execute(p0);
-	Ready1.Execute(p1);;
-	Ready1.Execute(p2);
+	//Ready1.Execute(p0);
+	//Ready1.Execute(p1);;
+	//Ready1.Execute(p2);
 
 	//LinkedList NormalWaitingCargos;
 
@@ -89,7 +89,7 @@ int main()
 	cancellation.Execute(p2);
 	cancellation.Execute(p2);
 
-	Ready1.Execute(p2);
+	//Ready1.Execute(p2);
 
 	maincompany.PrintNormalWaitingCargos();
 

@@ -281,9 +281,64 @@ void Company::ReadFile()
 	maxW = ReadSubFile(4, 1);
 	NumberOfEvents = ReadSubFile(5, 0);
 
-	string EventType;
+	int EventType = -1;
+	int CargoTypeIndicator = -1;
+	int CargoType = -1;
+	int Day = -1;
+	int Hour = -1;
+	int CargoID = -1;
+	int CargoDist = -1;
+	int LT = -1;
+	int CargoCost = -1;
 
+	Cargo* newCargoAdded = nullptr;
 
+	for (int i=0 ; i<NumberOfEvents ; i++)
+	{
+		EventType = ReadSubFile(6+i,0);
+
+		if (EventType == 82) // ready event
+		{
+			CargoTypeIndicator = ReadSubFile(6+i,1);
+			
+			if (CargoTypeIndicator == 78) // normal cargo
+			{
+				CargoType = 0;
+			}
+			else if (CargoTypeIndicator == 83) // special cargo
+			{
+				CargoType = 1;
+			}
+			else
+			{
+				CargoType = 2;
+			}
+
+			Day = ReadSubFile(6+i,2);
+			Hour = ReadSubFile(6+i,3);
+			CargoID = ReadSubFile(6+i,4);
+			CargoDist = ReadSubFile(6+i,5);
+			LT = ReadSubFile(6+i,6);
+			CargoCost = ReadSubFile(6+i,7);
+
+			newCargoAdded->SetCost(CargoCost);
+			newCargoAdded->SetDeliveryDistance(CargoDist);
+			newCargoAdded->SetID(CargoID);
+			newCargoAdded->SetLoadUnloadTime(LT);
+			newCargoAdded->SetType(CargoType);
+			// newCargoAdded->SetPreparationTime();
+
+		
+		}
+		else if (EventType== 88) // cancellation event
+		{
+
+		}
+		else // promotion event
+		{
+
+		}
+	}
 }
 
 

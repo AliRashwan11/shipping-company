@@ -45,6 +45,11 @@ void Cargo::SetCost(int cost)
 	Cost = cost;
 }
 
+void Cargo::SetType(int a)
+{
+	CargoType = a;
+}
+
 void Cargo::SetID(int a)
 {
 	ID = a;
