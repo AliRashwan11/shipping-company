@@ -47,46 +47,39 @@ int main()
 
 */
 	// ***********************************************************************************************
-
-
-	Company maincompany("input.txt");
+	
+	// main test //
+	UserInterface mainUI;
+	UserInterface* ptrToMainUI = &mainUI;
+	Company maincompany("input.txt", ptrToMainUI);
 	Company* cmptr = &maincompany;
 
-	maincompany.ReadFile();
+	Cargo car(0);
+	Cargo car2(1);
+	Cargo car3(2);
+	Cargo* cptr = &car;
+	Cargo* cptr2 = &car2;
+	Cargo* cptr3 = &car3;
+
+	ReadyEvent event(1,1,cmptr,cptr);
+	ReadyEvent event2(1,1,cmptr,cptr2);
+	ReadyEvent event3(1,1,cmptr,cptr3);
+	event.Execute();
+	event.Execute();
+	event2.Execute();
+	event3.Execute();
+	event.Execute();
+	event3.Execute();
+
+	//maincompany.ReadFile();
 
 	//maincompany.PrintNormalEmptyTrucks();          // prints speed of normal empty trucks 'n' time .. where n=number of empty trucks
 	//maincompany.PrintSpecialEmptyTrucks();
 	//maincompany.PrintVIPEmptyTrucks();
-	maincompany.PrintEvents();                      // prints hour and day of event
+	// maincompany.PrintEvents();                      // prints hour and day of event
 
 
-	return 0;
-
-	Cargo c0(0);
-	c0.SetID(0);
-	Cargo* ptr0 = &c0;
-
-	Cargo c100(0);
-	c100.SetID(100);
-	Cargo* ptr100 = &c100;
-
-	ReadyEvent event1(1,1,cmptr,ptr0);
-
-	ReadyEvent event100(1, 1, cmptr, ptr100);
-	event100.Execute();
-	event1.Execute();
-
-
-	CancelEvent cancel(1,1,cmptr,100);
-	cancel.Execute();
-
-
-	PromotionEvent prom(1,1,cmptr,0,50);
-	prom.Execute();
-
-	maincompany.PrintNormalWaitingCargos();
-	cout << endl << "..." << endl;
-	maincompany.PrintVIPWaitingCargos();
+	maincompany.SimpleSimulator();
 
 
 	return 0;

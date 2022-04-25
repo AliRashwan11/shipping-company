@@ -4,12 +4,14 @@
 class LinkedList : public List<Cargo*>
 {
 	Node<Cargo*>* Head;
+	int Cargos;
 
 public:
 
 	LinkedList()
 	{
 		Head = nullptr;
+		Cargos = 0;
 	}
 
 	LinkedList(LinkedList& copy)
@@ -35,11 +37,17 @@ public:
 		return;
 	}
 
+	int GetNumberOfCargos()
+	{
+		return Cargos;
+	}
+
 	void InsertBeg(Cargo*& item)
 	{
 		Node<Cargo*>* R = new Node<Cargo*>(item);
 		R->SetNext(Head);
 		Head = R;
+		Cargos++;
 	}
 
 	Cargo* FindCargo(int key)
@@ -76,6 +84,7 @@ public:
 			}
 			R->SetNext(obj);
 		}
+		Cargos++;
 
 	}
 
@@ -130,7 +139,7 @@ public:
 			}
 
 		}
-
+		Cargos--;
 		return false;
 	}
 
@@ -144,6 +153,7 @@ public:
 			delete Head;
 			Head = P;
 		}
+		Cargos = 0;
 	}
 
 };

@@ -6,9 +6,16 @@
 
 
 
-Company::Company(string infile)
+Company::Company(string infile,UserInterface* uiptr)
 {
 	InputFileName = infile;
+	mainInterface = uiptr;
+	IdsOfNormalCargos = new int[100];
+	IdsOfSpecialCargos = new int[100];
+	IdsOfVIPCargos = new int[100];
+	NumberOfNormalCargos = 0;
+	NumberOfSpecialCargos = 0;
+	NumberOfVIPCargos = 0;
 }
 
 void Company::PrintNormalEmptyTrucks()                                                     // Function for testing
@@ -242,6 +249,7 @@ int Company::ReadSubFile(int lines, int entries)
 }
 
 
+
 void Company::ReadFile()
 {
 
@@ -253,6 +261,7 @@ void Company::ReadFile()
 	for (int i = 0; i < NumberOfNormalTrucks; i++)
 	{
 		truck* newtruck = new truck(0);
+		newtruck->SetID(i);
 		newtruck->SetTruckSpeed(SpeedOfNormalTrucks);
 		newtruck->SetTruckCapacity(NormalTruckCapacity);
 		newtruck->SetMaintenanceTime(CheckUpDurationOfNormalTrucks);
@@ -271,6 +280,7 @@ void Company::ReadFile()
 	for (int i = 0; i < NumberOfSpecialTrucks; i++)
 	{
 		truck* newstruck = new truck(1);
+		newstruck->SetID(NumberOfNormalTrucks +i);
 		newstruck->SetTruckSpeed(SpeedOfSpecialTrucks);
 		newstruck->SetTruckCapacity(SpecialTruckCapacity);
 		newstruck->SetMaintenanceTime(CheckUpDurationOfSpecialTrucks);
@@ -286,6 +296,7 @@ void Company::ReadFile()
 	for (int i = 0; i < NumberOfVIPTrucks; i++)
 	{
 		truck* newvtruck = new truck(2);
+		newvtruck->SetID(NumberOfSpecialTrucks +i);
 		newvtruck->SetTruckSpeed(SpeedOfVIPTrucks);
 		newvtruck->SetTruckCapacity(VIPTruckCapacity);
 		newvtruck->SetMaintenanceTime(CheckUpDurationOfVIPTrucks);
@@ -314,7 +325,13 @@ void Company::ReadFile()
 	ReadyEvent* ready = nullptr;
 	CancelEvent* cancel = nullptr;
 	PromotionEvent* promote = nullptr;
-
+	int j1 = 100;
+	int j2 = 200;
+	int j3 = 300;
+	int k1 = 0;
+	int k2 = 0;
+	int k3 = 0;
+	int overwritten = 0;
 
 	for (int i=0 ; i<NumberOfEvents ; i++)
 	{
@@ -322,19 +339,33 @@ void Company::ReadFile()
 
 		if (EventType == 82) // ready event
 		{
+			
 			CargoTypeIndicator = ReadSubFile(6+i,1);
 			
 			if (CargoTypeIndicator == 78) // normal cargo
 			{
 				CargoType = 0;
+				IdsOfNormalCargos[k1] = j1;
+				overwritten = j1;
+				j1++;
+				k1++;
 			}
 			else if (CargoTypeIndicator == 83) // special cargo
 			{
 				CargoType = 1;
+				IdsOfSpecialCargos[k2] = j2;
+				overwritten = j2;
+				j2++;
+				k2++;
+
 			}
 			else
 			{
 				CargoType = 2;
+				IdsOfVIPCargos[k3] = j3;
+				overwritten = j3;
+				j3++;
+				k3++;
 			}
 
 
@@ -352,11 +383,16 @@ void Company::ReadFile()
 			newCargoAdded->SetDeliveryDistance(CargoDist);
 			newCargoAdded->SetID(CargoID);
 			newCargoAdded->SetLoadUnloadTime(LT);
+			newCargoAdded->SetID(overwritten);
 			// newCargoAdded->SetPreparationTime();                            // preparation time calculation -- phase-2
 
 			ready = new ReadyEvent(Hour, Day, this, newCargoAdded);
 			Events.Enqueue(ready);
-		
+			// cout << k1 << " >>>>>>> <<<<<<<<" << endl;
+			NumberOfNormalCargos = k1;
+			NumberOfSpecialCargos = k2;
+			NumberOfVIPCargos = k3;
+
 		}
 		else if (EventType== 88) // cancellation event
 		{
@@ -377,7 +413,14 @@ void Company::ReadFile()
 			promote = new PromotionEvent(Hour, Day, this, CargoID, ExtraMoney);
 			Events.Enqueue(promote);
 		}
+
 	}
+
+}
+
+void Company::PrintNumberOfNormalCargos()      // test fn .. removed later
+{
+	cout << NumberOfNormalCargos << endl;
 }
 
 LinkedQueue<Event*> Company::GetEvents()
@@ -398,5 +441,73 @@ void Company::PrintEvents()
 		Events.Peek(tempe);
 		Events.Dequeue();
 		cout << tempe->GetDay() << " . " << tempe->GetHour() << endl;
+		
 	}
+}
+
+
+void Company::SimpleSimulator()
+{
+
+	this->ReadFile();
+
+	int numberofnormaltrucks = ReadSubFile(0,0);
+	int numberofspecialtrucks = ReadSubFile(0,1);
+	int numberofviptrucks = ReadSubFile(0,2);
+
+	int numberofspecialcargos = SpecialWaitingCargos.GetNumberOfEntries();
+	int numberofvipcargos = VIPWaitingCargos.GetNumberOfEntries();
+	int numberofnormalcargos = NormalWaitingCargos.GetNumberOfCargos();
+
+
+	
+	// cout << numberofnormalcargos << ">>>>>" << endl;
+
+	int TotalNumberOfCargos = numberofspecialcargos + numberofvipcargos + numberofnormalcargos;
+
+	int TotalNumberOfTrucks = numberofnormalcargos + numberofspecialcargos + numberofvipcargos;
+
+
+
+	int Hour = 0;
+	int Day = 0;
+
+	int key = 1000;
+
+	while (true)
+	{
+		mainInterface->PrintStartSim();
+		mainInterface->PrintHourAdvance(Day,Hour);
+		mainInterface->PrintWaitingCargos(numberofnormalcargos,IdsOfNormalCargos, numberofspecialcargos, IdsOfSpecialCargos, numberofvipcargos, IdsOfVIPCargos);
+		mainInterface->DrawLines();
+		mainInterface->DemoPrintLoadingTrucks();
+		mainInterface->DrawLines();
+		mainInterface->DemoPrintEmptyTrucks(numberofnormaltrucks, numberofspecialtrucks, numberofviptrucks);
+		mainInterface->DrawLines();
+		mainInterface->DemoPrintMovingcargos();
+		mainInterface->DrawLines();
+		mainInterface->DemoPrintInCheckupTrucks();
+		mainInterface->DrawLines();
+		mainInterface->DemoPrintDeliveredCargos();
+
+		// mainInterface->PrintLoadingTrucks(numberofnormalcargos, numberofspecialcargos, numberofvipcargos);
+		//mainInterface->PrintEmptytrucks(numberofnormalcargos, numberofspecialcargos, numberofvipcargos);
+
+		// output the simulated trcuks,cargos,...
+
+		key = _getch();
+		if (key != 13)                                                           // ASCII for Key_Enter
+			break;
+		else
+		{
+			Hour++;
+			if (Hour == 24)
+			{
+				Hour = 0;
+				Day++;
+			}
+			system("cls");                                                       // clears console
+		}
+	}
+
 }

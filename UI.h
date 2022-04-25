@@ -27,6 +27,18 @@ public:
 
 	// void OutputFile();                  // allows to output to user
 
+	void PrintStartSim();
+	void PrintHourAdvance(int,int);
+	void PrintWaitingCargos(int,int*,int,int*,int,int*);
+	void DemoPrintLoadingTrucks();
+	void DemoPrintEmptyTrucks(int,int,int);
+	void DemoPrintMovingcargos();
+	void DemoPrintDeliveredCargos();
+	void DemoPrintInCheckupTrucks();
+	void DrawLines();
+	void PrintNormalWaitingCargos(int, int*);
+	void PrintSpecialWaitingCargos(int, int*);
+	void PrintVIPWaitingCargos(int, int*);
 
 	~UserInterface();
 };

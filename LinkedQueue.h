@@ -27,6 +27,17 @@ public:
 		return true;
 	}
 
+	int GetNumberOfEntries()
+	{
+		int counter = 0;
+		LinkedQueue<T> temp = *this;
+		while (!temp.isEmpty())
+		{
+			temp.Dequeue();
+			counter++;
+		}
+		return counter;
+	}
 
 	void Enqueue(T item)
 	{

@@ -31,10 +31,122 @@ UserInterface::UserInterface()
 
 	}
 
+	system("cls");
 }
 
 
+void UserInterface::PrintHourAdvance(int Day,int Hour)
+{
+	cout << "Current Time (Day:Hour) : " << Day << ":" << Hour << endl << endl;
 
+}
+
+void UserInterface::PrintStartSim()
+{
+	cout << "Press ENTER to advance an hour .. Press any other key to stop simulation " << endl;
+}
+
+
+void UserInterface::PrintNormalWaitingCargos(int n,int* arr)
+{
+	cout << "[";
+	for (int i = 0; i < n; i++)
+	{
+		cout << arr[i];
+		if (i != n - 1)
+			cout << ",";
+	}
+	cout << "]";
+}
+
+void UserInterface::PrintSpecialWaitingCargos(int n, int* arr)
+{
+	cout << "(";
+	for (int i = 0; i < n; i++)
+	{
+		cout << arr[i];
+		if (i != n - 1)
+			cout << ",";
+	}
+	cout << ")";
+}
+
+void UserInterface::PrintVIPWaitingCargos(int n, int* arr)
+{
+
+	cout << "{";
+	for (int i = 0; i < n; i++)
+	{
+		cout << arr[i];
+		if (i != n - 1)
+			cout << ",";
+	}
+	cout << "}";
+}
+
+
+void UserInterface::PrintWaitingCargos(int normal,int* arr1,int special,int*arr2,int vip,int* arr3)
+{
+	int sum = normal + special + vip;
+	cout << sum << " Waiting Cargos:";
+
+	cout << " ";
+	PrintNormalWaitingCargos(normal,arr1);
+	cout << " ";
+	PrintSpecialWaitingCargos(special,arr2);
+	cout << " ";
+	PrintVIPWaitingCargos(vip,arr3);
+
+	return;
+
+	
+}
+
+
+void UserInterface::DemoPrintLoadingTrucks()
+{
+	cout << "0 Loading Trucks: 0[] 0() 0{}" ;
+}
+
+void UserInterface::DemoPrintMovingcargos()
+{
+
+}
+
+void UserInterface::DemoPrintDeliveredCargos()
+{
+
+}
+
+void UserInterface::DemoPrintInCheckupTrucks()
+{
+	cout << "In-Checkup Trucks:";
+}
+
+void UserInterface::DrawLines()
+{
+	cout <<endl<<"------------------------------------------------------------------------"<<endl;
+}
+void UserInterface::DemoPrintEmptyTrucks(int normal,int special,int vip)
+{
+	int sum = normal + special + vip;
+	cout << sum << " Empty Trucks: ";
+	for (int i = 0; i < normal; i++)
+	{
+		cout << "[" << i+1 << "],";
+	}
+	for (int i = 0; i < special; i++)
+	{
+		cout << "(" << i + normal+1 << "),";
+	}
+	for (int i = 0; i < vip; i++)
+	{
+		cout << "{" << i + special+vip+2 << "}";
+		if (i != vip - 1)
+			cout << ",";
+
+	}
+}
 
 void UserInterface::OutputInterface()
 {

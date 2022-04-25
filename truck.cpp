@@ -82,4 +82,13 @@ int truck::GetDeliveryInterval()
 }
 */
 
+void truck::SetID(int id)
+{
+	ID = id;
+}
 
+
+int truck::GetID()
+{
+	return ID;
+}

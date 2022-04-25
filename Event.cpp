@@ -33,3 +33,4 @@ Company* Event::GetCompany()
 {
 	return mainCompany;
 }
+
