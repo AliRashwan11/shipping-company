@@ -325,13 +325,9 @@ void Company::ReadFile()
 	ReadyEvent* ready = nullptr;
 	CancelEvent* cancel = nullptr;
 	PromotionEvent* promote = nullptr;
-	int j1 = 100;
-	int j2 = 200;
-	int j3 = 300;
 	int k1 = 0;
 	int k2 = 0;
 	int k3 = 0;
-	int overwritten = 0;
 
 	for (int i=0 ; i<NumberOfEvents ; i++)
 	{
@@ -345,26 +341,17 @@ void Company::ReadFile()
 			if (CargoTypeIndicator == 78) // normal cargo
 			{
 				CargoType = 0;
-				IdsOfNormalCargos[k1] = j1;
-				overwritten = j1;
-				j1++;
 				k1++;
 			}
 			else if (CargoTypeIndicator == 83) // special cargo
 			{
 				CargoType = 1;
-				IdsOfSpecialCargos[k2] = j2;
-				overwritten = j2;
-				j2++;
 				k2++;
 
 			}
 			else
 			{
 				CargoType = 2;
-				IdsOfVIPCargos[k3] = j3;
-				overwritten = j3;
-				j3++;
 				k3++;
 			}
 
@@ -376,15 +363,15 @@ void Company::ReadFile()
 			LT = ReadSubFile(6+i,6);
 			CargoCost = ReadSubFile(6+i,7);
 
-			// cout << Hour << endl;
 
 			newCargoAdded = new Cargo(CargoType);
 			newCargoAdded->SetCost(CargoCost);
 			newCargoAdded->SetDeliveryDistance(CargoDist);
 			newCargoAdded->SetID(CargoID);
 			newCargoAdded->SetLoadUnloadTime(LT);
-			newCargoAdded->SetID(overwritten);
 			// newCargoAdded->SetPreparationTime();                            // preparation time calculation -- phase-2
+
+
 
 			ready = new ReadyEvent(Hour, Day, this, newCargoAdded);
 			Events.Enqueue(ready);
@@ -433,6 +420,45 @@ void Company::PrintNormalWaitingCargos()
 	NormalWaitingCargos.PrintList();
 }
 
+void Company::PrintWaitingCargosSim()
+{
+	int n1=NormalWaitingCargos.GetNumberOfCargos();
+	int n2=SpecialWaitingCargos.GetNumberOfEntries();
+	int n3=VIPWaitingCargos.GetNumberOfEntries();
+	int sum = n1+n2+n3;
+
+	mainInterface->PrintWaitingCargosInfo(sum);
+	NormalWaitingCargos.PrintListSimNormal();
+	SpecialWaitingCargos.PrintListSimSpecial();
+	VIPWaitingCargos.PrintListSimVIP();
+}
+
+void Company::PrintMovingCargosSim()
+{
+	int n1 = NormalMovingCargos.GetNumberOfEntries();
+	int n2 = SpecialMovingCargos.GetNumberOfEntries();
+	int n3 = VIPMovingCargos.GetNumberOfEntries();
+	int sum = n1 + n2 + n3;
+
+	mainInterface->PrintMovingCargosInfo(sum);
+	NormalMovingCargos.PrintListSimNormal();
+	SpecialMovingCargos.PrintListSimSpecial();
+	VIPMovingCargos.PrintListSimVIP();
+}
+
+void Company::PrintDeliveredCargosSim()
+{
+	int n1 = NormalDeliveredCargos.GetNumberOfEntries();
+	int n2 = SpecialDeliveredCargos.GetNumberOfEntries();
+	int n3 = VIPDeliveredCargos.GetNumberOfEntries();
+	int sum = n1 + n2 + n3;
+
+	mainInterface->PrintDeliveredCargosInfo(sum);
+	NormalDeliveredCargos.PrintListSimNormal();
+	SpecialDeliveredCargos.PrintListSimSpecial();
+	VIPDeliveredCargos.PrintListSimVIP();
+}
+
 void Company::PrintEvents()
 {
 	Event* tempe = nullptr;
@@ -444,6 +470,28 @@ void Company::PrintEvents()
 		
 	}
 }
+
+void Company::AddToNormalMovingcargos(Cargo* cgr)
+{
+	NormalMovingCargos.Enqueue(cgr);
+}
+
+void Company::AddToSpecialMovingcargos(Cargo* cgr)
+{
+	SpecialMovingCargos.Enqueue(cgr);
+}
+
+void Company::AddToVIPMovingcargos(Cargo* cgr)
+{
+	VIPMovingCargos.Enqueue(cgr);
+}
+
+Cargo* Company::GetFirstCargoInNormalWaitingCargos()
+{
+	NormalWaitingCargos.PrintIdList();
+	return nullptr;
+}
+
 
 
 void Company::SimpleSimulator()
@@ -461,7 +509,6 @@ void Company::SimpleSimulator()
 
 
 	
-	// cout << numberofnormalcargos << ">>>>>" << endl;
 
 	int TotalNumberOfCargos = numberofspecialcargos + numberofvipcargos + numberofnormalcargos;
 
@@ -473,22 +520,143 @@ void Company::SimpleSimulator()
 	int Day = 0;
 
 	int key = 1000;
+	Cargo* cargo1 = nullptr;
+	Cargo* cargo2 = nullptr;
+	Cargo* cargo3 = nullptr;
+	Event* nextevent = nullptr;
+	Events.Peek(nextevent);
+
+	int counterto5n = 0;
+	int counterto5s = 0;
+	int counterto5v = 0;
 
 	while (true)
 	{
+		
+	
+		
+	
+		
+		/*
+		if (!NormalWaitingCargos.isEmpty())
+		{
+			Cargo* tempCargo = NormalWaitingCargos.DeleteFirst();
+			//cout << tempCargo->GetID() << endl;
+			AddToNormalMovingcargos(tempCargo);
+		}
+		*/
+		
+	
+		
+
+
+		if (!SpecialWaitingCargos.isEmpty())
+		{
+			Cargo* tempCargo = nullptr;
+			SpecialWaitingCargos.Peek(tempCargo);
+			SpecialWaitingCargos.Dequeue();
+			//cout << tempCargo->GetID() << endl;
+			AddToSpecialMovingcargos(tempCargo);
+		}
+
+
+		if (!VIPWaitingCargos.isEmpty())
+		{
+			Cargo* tempCargo = nullptr;
+			VIPWaitingCargos.Peek(tempCargo);
+			VIPWaitingCargos.Dequeue();
+			//cout << tempCargo->GetID() << endl;
+			AddToVIPMovingcargos(tempCargo);
+		}
+
+	
+
+		if (!NormalMovingCargos.isEmpty())
+		{
+			if (counterto5n == 5)
+			{
+				Cargo* crg = nullptr;
+				counterto5n = 0;
+				NormalMovingCargos.Peek(crg);
+				NormalMovingCargos.Dequeue();
+				NormalDeliveredCargos.Enqueue(crg);
+			}
+			else
+				counterto5n++;
+
+			
+		}
+
+		if (!SpecialMovingCargos.isEmpty())
+		{
+			if (counterto5s == 5)
+			{
+				Cargo* crg = nullptr;
+				counterto5s = 0;
+				SpecialMovingCargos.Peek(crg);
+				SpecialMovingCargos.Dequeue();
+				SpecialDeliveredCargos.Enqueue(crg);
+			}
+			else
+				counterto5s++;
+
+
+		}
+
+		if (!VIPMovingCargos.isEmpty())
+		{
+			if (counterto5v == 5)
+			{
+				Cargo* crg = nullptr;
+				counterto5v = 0;
+				VIPMovingCargos.Peek(crg);
+				VIPMovingCargos.Dequeue();
+				VIPDeliveredCargos.Enqueue(crg);
+			}
+			else
+				counterto5v++;
+
+
+		}
+
+		if (nextevent->GetDay() == Day && nextevent->GetHour() == Hour)
+		{
+			nextevent->Execute();
+			Events.Dequeue();
+			if (!Events.isEmpty())
+			{
+				Events.Peek(nextevent);
+				while (nextevent->GetHour() == Hour && nextevent->GetDay() == Day)
+				{
+					nextevent->Execute();
+					Events.Dequeue();
+					Events.Peek(nextevent);
+				}
+			}
+		}
+
 		mainInterface->PrintStartSim();
-		mainInterface->PrintHourAdvance(Day,Hour);
-		mainInterface->PrintWaitingCargos(numberofnormalcargos,IdsOfNormalCargos, numberofspecialcargos, IdsOfSpecialCargos, numberofvipcargos, IdsOfVIPCargos);
+		mainInterface->PrintHourAdvance(Day, Hour);
+		PrintWaitingCargosSim();
 		mainInterface->DrawLines();
 		mainInterface->DemoPrintLoadingTrucks();
 		mainInterface->DrawLines();
 		mainInterface->DemoPrintEmptyTrucks(numberofnormaltrucks, numberofspecialtrucks, numberofviptrucks);
 		mainInterface->DrawLines();
-		mainInterface->DemoPrintMovingcargos();
+		PrintMovingCargosSim();
 		mainInterface->DrawLines();
+		mainInterface->DemoPrintMovingcargos();
 		mainInterface->DemoPrintInCheckupTrucks();
 		mainInterface->DrawLines();
-		mainInterface->DemoPrintDeliveredCargos();
+		PrintDeliveredCargosSim();
+		mainInterface->DrawLines();
+
+
+
+
+
+		//PrintNormalWaitingCargos();
+		//PrintSpecialWaitingcargos();
 
 		// mainInterface->PrintLoadingTrucks(numberofnormalcargos, numberofspecialcargos, numberofvipcargos);
 		//mainInterface->PrintEmptytrucks(numberofnormalcargos, numberofspecialcargos, numberofvipcargos);
@@ -508,6 +676,10 @@ void Company::SimpleSimulator()
 			}
 			system("cls");                                                       // clears console
 		}
+
+	
+
+
 	}
 
 }

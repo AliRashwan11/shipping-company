@@ -71,27 +71,116 @@ public:
 		}
 	}
 
+	void PrintListSimNormal()
+	{
+
+		cout << "[";
+
+		if (isEmpty())
+			cout << "]";
+
+
+
+		LinkedQueue<Cargo*> temp = *this;
+		Cargo* tempt;
+
+
+		while (!temp.isEmpty())
+		{
+			temp.Peek(tempt);
+			temp.Dequeue();
+			cout << tempt->GetID();
+
+			if (!temp.isEmpty())
+				cout << ",";
+			else
+				cout << "]";
+		}
+		cout << " ";
+		return;
+	}
+
+	void PrintListSimSpecial()
+	{
+
+		cout << "(";
+
+		if (isEmpty())
+			cout << ")";
+
+
+
+		LinkedQueue<Cargo*> temp = *this;
+		Cargo* tempt;
+
+
+		while (!temp.isEmpty())
+		{
+			temp.Peek(tempt);
+			temp.Dequeue();
+			cout << tempt->GetID();
+
+			if (!temp.isEmpty())
+				cout << ",";
+			else
+				cout << ")";
+		}
+		cout << " ";
+		return;
+	}
+
+	void PrintListSimVIP()
+	{
+
+		cout << "{";
+
+		if (isEmpty())
+			cout << "}";
+
+
+
+		LinkedQueue<Cargo*> temp = *this;
+		Cargo* tempt;
+
+
+		while (!temp.isEmpty())
+		{
+			temp.Peek(tempt);
+			temp.Dequeue();
+			cout << tempt->GetID();
+
+			if (!temp.isEmpty())
+				cout << ",";
+			else
+				cout << "}";
+		}
+		return;
+	}
+
 	bool Dequeue()
 	{
+
 		if (isEmpty())
 		{
-			//cout << "0" << endl;
+
 			return false;                         // empty queue
 		}
 		else
 		{
-			//cout << "1" << endl;
+
 			if (Front == Rear)
 			{
-				delete Front;
+				// delete Front;
 				Front = nullptr;
 				Rear = nullptr;
+
 			}
 			else
 			{
 				Node<T>* temp = Front;
 				Front = Front->GetNext();
-				delete temp;
+				// delete temp;
+
 			}
 			return true;
 		}

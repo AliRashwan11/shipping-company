@@ -14,6 +14,16 @@
 
 int main()
 {
+	                                               // main test //
+
+	UserInterface mainUI;
+	UserInterface* ptrToMainUI = &mainUI;
+	Company maincompany("input.txt", ptrToMainUI);
+	Company* cmptr = &maincompany;
+	maincompany.SimpleSimulator();
+
+
+
 
 	// UserInterface mainInterface;
 	 // mainInterface.OutputInterface();
@@ -48,38 +58,31 @@ int main()
 */
 	// ***********************************************************************************************
 	
-	// main test //
-	UserInterface mainUI;
-	UserInterface* ptrToMainUI = &mainUI;
-	Company maincompany("input.txt", ptrToMainUI);
-	Company* cmptr = &maincompany;
 
-	Cargo car(0);
-	Cargo car2(1);
-	Cargo car3(2);
-	Cargo* cptr = &car;
-	Cargo* cptr2 = &car2;
-	Cargo* cptr3 = &car3;
+	//Cargo car(0);
+	//Cargo car2(1);
+	//Cargo car3(2);
+	//Cargo* cptr = &car;
+	//Cargo* cptr2 = &car2;
+	//Cargo* cptr3 = &car3;
 
-	ReadyEvent event(1,1,cmptr,cptr);
-	ReadyEvent event2(1,1,cmptr,cptr2);
-	ReadyEvent event3(1,1,cmptr,cptr3);
-	event.Execute();
-	event.Execute();
-	event2.Execute();
-	event3.Execute();
-	event.Execute();
-	event3.Execute();
+	//ReadyEvent event(1,1,cmptr,cptr);
+	//ReadyEvent event2(1,1,cmptr,cptr2);
+	//ReadyEvent event3(1,1,cmptr,cptr3);
+	//event.Execute();
+	////event.Execute();
+	////event2.Execute();
+	//event3.Execute();
+	//event.Execute();
+	//event3.Execute();
 
 	//maincompany.ReadFile();
-
 	//maincompany.PrintNormalEmptyTrucks();          // prints speed of normal empty trucks 'n' time .. where n=number of empty trucks
 	//maincompany.PrintSpecialEmptyTrucks();
 	//maincompany.PrintVIPEmptyTrucks();
 	// maincompany.PrintEvents();                      // prints hour and day of event
 
 
-	maincompany.SimpleSimulator();
 
 
 	return 0;

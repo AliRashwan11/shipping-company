@@ -105,7 +105,7 @@ void UserInterface::PrintWaitingCargos(int normal,int* arr1,int special,int*arr2
 
 void UserInterface::DemoPrintLoadingTrucks()
 {
-	cout << "0 Loading Trucks: 0[] 0() 0{}" ;
+	cout << "0 Loading Trucks: " ;
 }
 
 void UserInterface::DemoPrintMovingcargos()
@@ -120,7 +120,25 @@ void UserInterface::DemoPrintDeliveredCargos()
 
 void UserInterface::DemoPrintInCheckupTrucks()
 {
-	cout << "In-Checkup Trucks:";
+	cout << "0 In-Checkup Trucks:";
+}
+
+void UserInterface::PrintWaitingCargosInfo(int n)
+{
+	cout << n << " Waiting cargos:";
+	return;
+}
+
+void UserInterface::PrintDeliveredCargosInfo(int n)
+{
+	cout << n << " Delivered cargos:";
+	return;
+}
+
+void UserInterface::PrintMovingCargosInfo(int n)
+{
+	cout << n << " Moving cargos:";
+	return;
 }
 
 void UserInterface::DrawLines()

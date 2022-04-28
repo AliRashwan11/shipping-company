@@ -30,6 +30,9 @@ public:
 	void PrintStartSim();
 	void PrintHourAdvance(int,int);
 	void PrintWaitingCargos(int,int*,int,int*,int,int*);
+	void PrintWaitingCargosInfo(int);
+	void PrintDeliveredCargosInfo(int);
+	void PrintMovingCargosInfo(int);
 	void DemoPrintLoadingTrucks();
 	void DemoPrintEmptyTrucks(int,int,int);
 	void DemoPrintMovingcargos();

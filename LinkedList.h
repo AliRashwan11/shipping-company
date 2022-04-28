@@ -28,12 +28,79 @@ public:
 	{
 		Node<Cargo*>* p = Head;
 		
+		if (!p)
+			return;
 		while (p)
 		{
 			cout << "[ " << p->GetItem()->GetID() << " ]";
 			cout << "--->";
 			p = p->GetNext();
 		}
+		return;
+	}
+
+	void PrintListSimNormal()
+	{
+
+		Node<Cargo*>* p = Head;
+
+		cout << "[";
+		
+		if (!p)
+			cout << "]";
+	
+
+
+		while (p)
+		{
+			cout << p->GetItem()->GetID();
+			if (p->GetNext())
+				cout << ",";
+			else
+				cout << "]";
+			p = p->GetNext();
+		}
+
+		cout << " ";
+		return;
+	}
+
+	void PrintListSimSpecial()
+	{
+		Node<Cargo*>* p = Head;
+
+		if (!p)
+			return;
+		while (p)
+		{
+			cout << "( " << p->GetItem()->GetID();
+			if (p->GetNext())
+				cout << ",";
+			else
+				cout << ")";
+			p = p->GetNext();
+		}
+		cout << " ";
+
+		return;
+	}
+
+	void PrintListSimVIP()
+	{
+		Node<Cargo*>* p = Head;
+
+		if (!p)
+			return;
+		while (p)
+		{
+			cout << "( " << p->GetItem()->GetID();
+			if (p->GetNext())
+				cout << ",";
+			else
+				cout << ")";
+			p = p->GetNext();
+		}
+		cout << endl;
 		return;
 	}
 
@@ -48,6 +115,17 @@ public:
 		R->SetNext(Head);
 		Head = R;
 		Cargos++;
+	}
+
+	void PrintIdList()
+	{
+		Node<Cargo*>* temp = Head;
+		while (!temp)
+		{
+			cout << temp->GetItem()->GetID() << endl;
+			temp = temp->GetNext();
+		}
+		cout << "finished" << endl;
 	}
 
 	Cargo* FindCargo(int key)
@@ -66,8 +144,16 @@ public:
 		return ret;
 	}
 
+	bool isEmpty()
+	{
+		if (!Head)
+			return true;
+		return false;
+	}
+
 	void InsertEnd(Cargo*& data)
 	{
+		Cargos++;
 		Node<Cargo*>* R = Head;
 		Node<Cargo*>* obj = new Node<Cargo*>;
 		obj->SetItem(data);
@@ -84,8 +170,27 @@ public:
 			}
 			R->SetNext(obj);
 		}
-		Cargos++;
 
+	}
+
+	Cargo* DeleteFirst()
+	{
+		Cargo* temp = nullptr;
+		if (!Head)
+			return nullptr;
+		Cargos--;
+		if (!Head->GetNext())
+		{
+			temp = Head->GetItem();
+			delete Head;
+			Head = nullptr;
+			return temp;
+		}
+		temp = Head->GetItem();
+		Node<Cargo*>* tempn = Head;
+		Head = Head->GetNext();
+		delete tempn;
+		return temp;
 	}
 
 	bool Find(int key)

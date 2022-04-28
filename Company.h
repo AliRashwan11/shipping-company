@@ -33,11 +33,20 @@ class Company
 	LinkedQueue<Cargo*> SpecialWaitingCargos;
 	LinkedQueue<Cargo*> VIPWaitingCargos;
 
+	LinkedQueue<Cargo*> NormalMovingCargos;
+	LinkedQueue<Cargo*> SpecialMovingCargos;
+	LinkedQueue<Cargo*> VIPMovingCargos;
+
+	LinkedQueue<Cargo*> NormalDeliveredCargos;
+	LinkedQueue<Cargo*> SpecialDeliveredCargos;
+	LinkedQueue<Cargo*> VIPDeliveredCargos;
+
+
 	int NumberOfJourneysBeforeCheckup;
 	int AutoPromotionLimit;                                    // in days
 	int maxW;                                                  // in hours
 	int NumberOfEvents;
-
+	
 	LinkedQueue<Event*> Events;                        
 
 	UserInterface* mainInterface;
@@ -66,14 +75,21 @@ public:
 	void PrintmaxW();
 	void PrintaAutoPromotionLimit();
 	void PrintNormalWaitingCargos();
+	void PrintWaitingCargosSim();
+	void PrintMovingCargosSim();
+	void PrintDeliveredCargosSim();
 	void PrintVIPWaitingCargos();
 	void PrintEvents();
+	void AddToNormalMovingcargos(Cargo*);
+	void AddToSpecialMovingcargos(Cargo*);
+	void AddToVIPMovingcargos(Cargo*);
 	bool CargoSearch(int);
 	Cargo* CargoCancelled(int);
 	LinkedList GetNormalWaitingCargos(); //
 	LinkedQueue<Event*> GetEvents();
 	void SetNormalWaitingCargos(LinkedList); //
 	void PrintNumberOfNormalCargos();
+	Cargo* GetFirstCargoInNormalWaitingCargos();
 
 	void SimpleSimulator();
 

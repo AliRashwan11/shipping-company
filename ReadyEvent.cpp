@@ -13,9 +13,7 @@ bool ReadyEvent::Execute()                                          // adds a ne
 	int type = CargoPtr->GetCargoType();
 
 	if (type == 0)
-	{
 		mainCompany->AddToNormalWaitingCargos(CargoPtr);
-	}
 	else if(type==1)
 		mainCompany->AddToSpecialWaitingCargos(CargoPtr);
 	else
