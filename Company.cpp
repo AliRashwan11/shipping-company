@@ -89,7 +89,8 @@ void Company::AddToSpecialWaitingCargos(Cargo* newCargo)
 
 void Company::AddToVIPWaitingCargos(Cargo* newCargo)
 {
-	VIPWaitingCargos.Enqueue(newCargo);
+	VIPWaitingCargos.Enqueue(newCargo,0);
+
 }
 
 LinkedList Company::GetNormalWaitingCargos()        // slow execution 
@@ -473,17 +474,17 @@ void Company::PrintEvents()
 
 void Company::AddToNormalMovingcargos(Cargo* cgr)
 {
-	NormalMovingCargos.Enqueue(cgr);
+	NormalMovingCargos.Enqueue(cgr,0);
 }
 
 void Company::AddToSpecialMovingcargos(Cargo* cgr)
 {
-	SpecialMovingCargos.Enqueue(cgr);
+	SpecialMovingCargos.Enqueue(cgr,0);
 }
 
 void Company::AddToVIPMovingcargos(Cargo* cgr)
 {
-	VIPMovingCargos.Enqueue(cgr);
+	VIPMovingCargos.Enqueue(cgr,0);
 }
 
 Cargo* Company::GetFirstCargoInNormalWaitingCargos()
@@ -533,22 +534,13 @@ void Company::SimpleSimulator()
 	while (true)
 	{
 		
-	
-		
-	
-		
-		/*
 		if (!NormalWaitingCargos.isEmpty())
 		{
 			Cargo* tempCargo = NormalWaitingCargos.DeleteFirst();
 			//cout << tempCargo->GetID() << endl;
 			AddToNormalMovingcargos(tempCargo);
 		}
-		*/
 		
-	
-		
-
 
 		if (!SpecialWaitingCargos.isEmpty())
 		{
@@ -622,11 +614,12 @@ void Company::SimpleSimulator()
 		if (nextevent->GetDay() == Day && nextevent->GetHour() == Hour)
 		{
 			nextevent->Execute();
+
 			Events.Dequeue();
 			if (!Events.isEmpty())
 			{
 				Events.Peek(nextevent);
-				while (nextevent->GetHour() == Hour && nextevent->GetDay() == Day)
+				while (nextevent->GetHour() == Hour && nextevent->GetDay() == Day)  // to execute multiple events at same time
 				{
 					nextevent->Execute();
 					Events.Dequeue();

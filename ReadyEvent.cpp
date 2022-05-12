@@ -19,5 +19,7 @@ bool ReadyEvent::Execute()                                          // adds a ne
 	else
 		mainCompany->AddToVIPWaitingCargos(CargoPtr);
 
+
+
 	return true;
 }

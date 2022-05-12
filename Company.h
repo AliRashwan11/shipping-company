@@ -31,11 +31,11 @@ class Company
 
 	LinkedList NormalWaitingCargos;
 	LinkedQueue<Cargo*> SpecialWaitingCargos;
-	LinkedQueue<Cargo*> VIPWaitingCargos;
+	LinkedPriorityQueue<Cargo*> VIPWaitingCargos; 
 
-	LinkedQueue<Cargo*> NormalMovingCargos;
-	LinkedQueue<Cargo*> SpecialMovingCargos;
-	LinkedQueue<Cargo*> VIPMovingCargos;
+	LinkedPriorityQueue<Cargo*> NormalMovingCargos;
+	LinkedPriorityQueue<Cargo*> SpecialMovingCargos;
+	LinkedPriorityQueue<Cargo*> VIPMovingCargos;
 
 	LinkedQueue<Cargo*> NormalDeliveredCargos;
 	LinkedQueue<Cargo*> SpecialDeliveredCargos;

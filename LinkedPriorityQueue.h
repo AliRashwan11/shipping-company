@@ -7,6 +7,7 @@ class LinkedPriorityQueue : public PriorityQueue<T>
 {
 	Node<T>* Front;
 	Node<T>* Rear;
+	int count;
 
 public:
 
@@ -14,6 +15,7 @@ public:
 	{
 		Front = nullptr;
 		Rear = nullptr;
+		count = 0;
 	}
 
 
@@ -27,7 +29,7 @@ public:
 
 	void Enqueue(T item , int priority)
 	{
-
+		count++;
 		Node<T>* Anewnode = new Node<T>;
 		Anewnode->SetItem(item);
 		Anewnode->SetNext(nullptr);
@@ -101,11 +103,14 @@ public:
 		}
 		else
 		{
-			if (Front == Rear)
+
+			if (count==1)
 			{
-				delete Front;
+
+				//delete Front;
 				Front = nullptr;
 				Rear = nullptr;
+
 			}
 			else
 			{
@@ -113,6 +118,7 @@ public:
 				Front = Front->GetNext();
 				delete temp;
 			}
+			count--;
 			return true;
 		}
 	}
@@ -176,7 +182,6 @@ public:
 	}
 	void PrintListSimVIP()
 	{
-
 		cout << "{";
 
 		if (isEmpty())
@@ -190,15 +195,20 @@ public:
 
 		while (!temp.isEmpty())
 		{
+
 			temp.Peek(tempt);
 			temp.Dequeue();
+
 			cout << tempt->GetID();
+
 
 			if (!temp.isEmpty())
 				cout << ",";
 			else
 				cout << "}";
 		}
+
+
 		return;
 	}
 
