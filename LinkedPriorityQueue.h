@@ -1,6 +1,8 @@
 #pragma once
 #include "PriorityQueue.h"
 
+//class Cargo;
+
 
 template<typename T>
 class LinkedPriorityQueue : public PriorityQueue<T>
@@ -116,102 +118,13 @@ public:
 			{
 				Node<T>* temp = Front;
 				Front = Front->GetNext();
-				delete temp;
+				//delete temp;
 			}
 			count--;
 			return true;
 		}
 	}
-	void PrintListSimNormal()
-	{
-
-		cout << "[";
-
-		if (isEmpty())
-			cout << "]";
-
-
-
-		LinkedPriorityQueue<Cargo*> temp = *this;
-		Cargo* tempt = nullptr;
-
-
-
-		while (!temp.isEmpty())
-		{
-			temp.Peek(tempt);
-			temp.Dequeue();
-			cout << tempt->GetID();
-
-			if (!temp.isEmpty())
-				cout << ",";
-			else
-				cout << "]";
-		}
-		cout << ",";
-		return;
-	}
-	void PrintListSimSpecial()
-	{
-
-		cout << "(";
-
-		if (isEmpty())
-			cout << ")";
-
-
-
-		LinkedPriorityQueue<Cargo*> temp = *this;
-		Cargo* tempt;
-
-
-		while (!temp.isEmpty())
-		{
-			temp.Peek(tempt);
-			temp.Dequeue();
-			cout << tempt->GetID();
-
-			if (!temp.isEmpty())
-				cout << ",";
-			else
-				cout << ")";
-		}
-		cout << ",";
-
-		return;
-	}
-	void PrintListSimVIP()
-	{
-		cout << "{";
-
-		if (isEmpty())
-			cout << "}";
-
-
-
-		LinkedPriorityQueue<Cargo*> temp = *this;
-		Cargo* tempt;
-
-
-		while (!temp.isEmpty())
-		{
-
-			temp.Peek(tempt);
-			temp.Dequeue();
-
-			cout << tempt->GetID();
-
-
-			if (!temp.isEmpty())
-				cout << ",";
-			else
-				cout << "}";
-		}
-
-
-		return;
-	}
-
+	
 	int GetNumberOfEntries()
 	{
 		int counter = 0;

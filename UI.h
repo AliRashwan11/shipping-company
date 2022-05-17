@@ -1,4 +1,7 @@
 #pragma once
+#include"LinkedPriorityQueue.h"
+#include"Cargo.h"
+#include"truck.h"
 #include <iostream>
 #include<conio.h>
 #include<windows.h>
@@ -42,6 +45,15 @@ public:
 	void PrintNormalWaitingCargos(int, int*);
 	void PrintSpecialWaitingCargos(int, int*);
 	void PrintVIPWaitingCargos(int, int*);
+	void PrintListSimSpecial(LinkedPriorityQueue<Cargo*>);
+	void PrintListSimNormal(LinkedPriorityQueue<Cargo*>);
+	void PrintListSimVIP(LinkedPriorityQueue<Cargo*>);
+	void PrintLoadingInfo(int);
+	void PrintLoadingTrucksInfo(truck*,truck*,truck*);
+	void PrintNormalLoading(truck*);
+	void PrintVIPLoading(truck*);
+	void PrintSpecialLoading(truck*);
+
 
 	~UserInterface();
 };

@@ -20,8 +20,8 @@ int main()
 	UserInterface* ptrToMainUI = &mainUI;
 	Company maincompany("input.txt", ptrToMainUI);
 	Company* cmptr = &maincompany;
-	maincompany.SimpleSimulator();
-
+	//maincompany.SimpleSimulator();
+	maincompany.Simulator();
 
 
 

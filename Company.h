@@ -2,7 +2,6 @@
 #include<string>
 #include<iostream>
 #include<fstream>
-#include"truck.h"
 #include"Cargo.h"
 #include"Event.h"
 #include"LinkedQueue.h"
@@ -11,6 +10,8 @@
 #include"LinkedPriorityQueue.h"
 #include"Event.h"
 #include"UI.h"
+#include"truck.h"
+
 
 class Event;
 
@@ -25,9 +26,12 @@ class Company
 	LinkedQueue<truck*> SpecialEmptyTrucks;
 	LinkedQueue<truck*> VIPEmptyTrucks;
 
-	LinkedQueue<truck*> NormalLoadingTrucks;
-	LinkedQueue<truck*> SpecialLoadingTrucks;
-	LinkedQueue<truck*> VIPLoadingTrucks;
+	//LinkedQueue<truck*> NormalLoadingTrucks;
+	//LinkedQueue<truck*> SpecialLoadingTrucks;
+	//LinkedQueue<truck*> VIPLoadingTrucks;
+
+	LinkedPriorityQueue<truck*> MovingTrucks;
+	LinkedQueue<truck*> LoadingTrucks;
 
 	LinkedList NormalWaitingCargos;
 	LinkedQueue<Cargo*> SpecialWaitingCargos;
@@ -40,6 +44,10 @@ class Company
 	LinkedQueue<Cargo*> NormalDeliveredCargos;
 	LinkedQueue<Cargo*> SpecialDeliveredCargos;
 	LinkedQueue<Cargo*> VIPDeliveredCargos;
+
+	truck* TruckLoadingNormals;
+	truck* TruckLoadingSpecials;
+	truck* TruckLoadingVIPs;
 
 
 	int NumberOfJourneysBeforeCheckup;
@@ -57,6 +65,12 @@ class Company
 	int NumberOfNormalCargos;
 	int NumberOfSpecialCargos;
 	int NumberOfVIPCargos;
+
+	int CapNormalTrucks;
+	int CapSpecialTrucks;
+	int CapVIPTrucks;
+
+	int CurrentlyLoading;
 	 
 
 
@@ -89,9 +103,11 @@ public:
 	LinkedQueue<Event*> GetEvents();
 	void SetNormalWaitingCargos(LinkedList); //
 	void PrintNumberOfNormalCargos();
+	void PrintLoadingTrucks();
 	Cargo* GetFirstCargoInNormalWaitingCargos();
 
 	void SimpleSimulator();
+	void Simulator();
 
 };
 

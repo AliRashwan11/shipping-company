@@ -9,6 +9,8 @@ truck::truck(int typenum)
 	TruckSpeed = 0;
 	MaintenanceTime = 0;
 	DeliveryInterval = 0;
+	TypeOfLoadedCargos = -1;
+	count = 0;
 }
 
 truck::truck()
@@ -18,6 +20,9 @@ truck::truck()
 	TruckSpeed = 0;
 	MaintenanceTime = 0;
 	DeliveryInterval = 0;
+	TypeOfLoadedCargos = -1;
+	count = 0;
+
 }
 
 truck::truck(truck& copy)
@@ -27,6 +32,9 @@ truck::truck(truck& copy)
 	TruckSpeed = copy.GetTruckSpeed();
 	MaintenanceTime = copy.GetMaintenanceTime();
 	DeliveryInterval = copy.GetDeliveryInterval();
+	TypeOfLoadedCargos = -1;
+	count = 0;
+
 }
 
 void truck::SetTruckCapacity(int a)
@@ -74,6 +82,15 @@ int truck::GetDeliveryInterval()
 	return DeliveryInterval;
 }
 
+int truck::GetTypeOfLoadedCargos()
+{
+	return TypeOfLoadedCargos;
+}
+
+void truck::SetTypeOfLoadedCargos(int a)
+{
+	TypeOfLoadedCargos = a;
+}
 /*
 * int truck::GetDeliveryInterval()
 {
@@ -92,3 +109,33 @@ int truck::GetID()
 {
 	return ID;
 }
+
+void truck::AddToCargos(Cargo* ToAdd)
+{
+	int pri = 1000000 - (ToAdd->GetDeliveryDistance());
+	InTruckCargos.Enqueue(ToAdd,pri);                              // priority from high to lower
+	count++;
+}
+
+void truck::RemoveFromCargos()
+{
+	InTruckCargos.Dequeue();           
+	count--;
+}
+
+int truck::GetCount()
+{
+	return count;
+}
+
+LinkedPriorityQueue<Cargo*> truck::GetCarriedCargos()
+{
+	return InTruckCargos;
+}
+
+/*
+void truck::SetLoaded(Cargo* inCargo)
+{
+	Loaded = inCargo;
+}
+*/

@@ -16,6 +16,12 @@ Company::Company(string infile,UserInterface* uiptr)
 	NumberOfNormalCargos = 0;
 	NumberOfSpecialCargos = 0;
 	NumberOfVIPCargos = 0;
+	CapNormalTrucks = 0;
+	CapSpecialTrucks = 0;
+	CapVIPTrucks = 0;
+	TruckLoadingNormals = nullptr;
+	TruckLoadingSpecials = nullptr;
+	TruckLoadingVIPs = nullptr;
 }
 
 void Company::PrintNormalEmptyTrucks()                                                     // Function for testing
@@ -257,6 +263,7 @@ void Company::ReadFile()
 	int NumberOfNormalTrucks = ReadSubFile(0, 0);
 	int SpeedOfNormalTrucks = ReadSubFile(1, 0);
 	int NormalTruckCapacity = ReadSubFile(2, 0);
+	CapNormalTrucks = NormalTruckCapacity;
 	int CheckUpDurationOfNormalTrucks = ReadSubFile(3, 1);
 
 	for (int i = 0; i < NumberOfNormalTrucks; i++)
@@ -276,6 +283,7 @@ void Company::ReadFile()
 	int NumberOfSpecialTrucks = ReadSubFile(0, 1);
 	int SpeedOfSpecialTrucks = ReadSubFile(1, 1);
 	int SpecialTruckCapacity = ReadSubFile(2, 1);
+	CapSpecialTrucks = SpecialTruckCapacity;
 	int CheckUpDurationOfSpecialTrucks = ReadSubFile(3, 2);
 
 	for (int i = 0; i < NumberOfSpecialTrucks; i++)
@@ -292,6 +300,7 @@ void Company::ReadFile()
 	int NumberOfVIPTrucks = ReadSubFile(0, 2);
 	int SpeedOfVIPTrucks = ReadSubFile(1, 2);
 	int VIPTruckCapacity = ReadSubFile(2, 2);
+	CapVIPTrucks = VIPTruckCapacity;
 	int CheckUpDurationOfVIPTrucks = ReadSubFile(3, 3);
 
 	for (int i = 0; i < NumberOfVIPTrucks; i++)
@@ -431,7 +440,7 @@ void Company::PrintWaitingCargosSim()
 	mainInterface->PrintWaitingCargosInfo(sum);
 	NormalWaitingCargos.PrintListSimNormal();
 	SpecialWaitingCargos.PrintListSimSpecial();
-	VIPWaitingCargos.PrintListSimVIP();
+	mainInterface->PrintListSimVIP(VIPWaitingCargos);
 }
 
 void Company::PrintMovingCargosSim()
@@ -441,10 +450,12 @@ void Company::PrintMovingCargosSim()
 	int n3 = VIPMovingCargos.GetNumberOfEntries();
 	int sum = n1 + n2 + n3;
 
+
 	mainInterface->PrintMovingCargosInfo(sum);
-	NormalMovingCargos.PrintListSimNormal();
-	SpecialMovingCargos.PrintListSimSpecial();
-	VIPMovingCargos.PrintListSimVIP();
+	mainInterface->PrintListSimNormal(NormalMovingCargos);
+	mainInterface->PrintListSimSpecial(SpecialMovingCargos);
+	mainInterface->PrintListSimVIP(VIPMovingCargos);
+	
 }
 
 void Company::PrintDeliveredCargosSim()
@@ -491,6 +502,425 @@ Cargo* Company::GetFirstCargoInNormalWaitingCargos()
 {
 	NormalWaitingCargos.PrintIdList();
 	return nullptr;
+}
+
+
+void Company::PrintLoadingTrucks()
+{
+	mainInterface->PrintLoadingInfo(CurrentlyLoading);
+	mainInterface->PrintLoadingTrucksInfo(TruckLoadingNormals,TruckLoadingSpecials,TruckLoadingVIPs);
+}
+
+void Company::Simulator()
+{
+	this->ReadFile();
+
+	Cargo* Next_Normal_Cargo = nullptr;
+	Cargo* Next_Special_Cargo = nullptr;
+	Cargo* Next_VIP_Cargo = nullptr;
+
+	truck* Next_Normal_Truck = nullptr;
+	truck* Next_Special_Truck = nullptr;
+	truck* Next_VIP_Truck = nullptr;
+
+
+	//TruckLoadingNormals->SetTypeOfLoadedCargos(0);
+	//TruckLoadingVIPs->SetTypeOfLoadedCargos(1);
+	//TruckLoadingSpecials->SetTypeOfLoadedCargos(2);
+
+
+	int Hour = 0;
+	int Day = 0;
+	int key = 1000;
+
+	int WaitTimeNormal = 0;
+	int WaitTimeSpecial = 0;
+	int WaitTimeVIP = 0;
+
+	bool ToNextNormalTruck = 1;
+	bool ToNextVIPTruck = 1;
+	bool ToNextSpecialTruck = 1;
+
+	bool ToChangeTruckLoadingNormals = 1;
+	bool ToChangeTruckLoadingSpecials = 1;
+	bool ToChangeTruckLoadingVIPs = 1;
+
+	int maxd1 = 0;
+	int maxd2 = 0;
+	int maxd3 = 0;
+
+	Event* nextevent = nullptr;
+	Events.Peek(nextevent);
+	
+
+
+
+	while (true)
+	{
+		cout << "MAXW = " << maxW << endl;
+		cout << "MAXW remaining = " << maxW -WaitTimeNormal << endl;
+
+	
+		
+
+		truck* temptruck = nullptr;
+
+		// set each truck to carry which cargo ..
+
+		if (ToChangeTruckLoadingNormals == 1 && !NormalWaitingCargos.isEmpty())
+		{
+			if (!NormalEmptyTrucks.isEmpty())
+			{
+				NormalEmptyTrucks.Peek(temptruck);
+				NormalEmptyTrucks.Dequeue();
+				TruckLoadingNormals = temptruck;
+			}
+			else if (!VIPEmptyTrucks.isEmpty())
+			{
+				VIPEmptyTrucks.Peek(temptruck);
+				VIPEmptyTrucks.Dequeue();
+				TruckLoadingNormals = temptruck;
+			}
+			else
+				TruckLoadingNormals = nullptr;
+
+			ToChangeTruckLoadingNormals = 0;
+		}
+		if (ToChangeTruckLoadingSpecials == 1 && !SpecialWaitingCargos.isEmpty())
+		{
+
+			if (!SpecialEmptyTrucks.isEmpty())
+			{
+				SpecialEmptyTrucks.Peek(temptruck);
+				SpecialEmptyTrucks.Dequeue();
+				TruckLoadingSpecials = temptruck;
+			}
+			else
+				TruckLoadingSpecials = nullptr;
+			ToChangeTruckLoadingSpecials = 0;
+		}
+		if (ToChangeTruckLoadingVIPs == 1 && !VIPWaitingCargos.isEmpty())
+		{
+
+			if (!VIPEmptyTrucks.isEmpty())
+			{
+				VIPEmptyTrucks.Peek(temptruck);
+				VIPEmptyTrucks.Dequeue();
+				TruckLoadingVIPs = temptruck;
+			}
+			else if (!NormalEmptyTrucks.isEmpty())
+			{
+				NormalEmptyTrucks.Peek(temptruck);
+				NormalEmptyTrucks.Dequeue();
+				TruckLoadingVIPs = temptruck;
+			}
+			else if (!SpecialEmptyTrucks.isEmpty())
+			{
+				SpecialEmptyTrucks.Peek(temptruck);
+				SpecialEmptyTrucks.Dequeue();
+				TruckLoadingVIPs = temptruck;
+			}
+			else
+				TruckLoadingVIPs = nullptr;
+
+			ToChangeTruckLoadingVIPs = 0;
+
+		}
+
+		bool NormalIsLoading = 0;
+		bool SpecialIsLoading = 0;
+		bool VIPIsLoading = 0;
+
+		if (TruckLoadingNormals)
+		{
+			NormalIsLoading = 1;
+			if (!NormalWaitingCargos.isEmpty())
+			{
+				while (!NormalWaitingCargos.isEmpty() && TruckLoadingNormals->GetCount()!=CapNormalTrucks)
+				{
+					Cargo* tempcargo = nullptr;
+					tempcargo=NormalWaitingCargos.DeleteFirst();
+					TruckLoadingNormals->AddToCargos(tempcargo);
+					if (tempcargo->GetDeliveryDistance() > maxd1)
+						maxd1 = tempcargo->GetDeliveryDistance();
+				}
+			}
+			if (TruckLoadingNormals->GetCount() == CapNormalTrucks)
+			{
+				MovingTrucks.Enqueue(TruckLoadingNormals,1000000-maxd1);
+				maxd1 = 0;
+				ToChangeTruckLoadingNormals = 1;
+			}
+		}
+		if (TruckLoadingSpecials)
+		{
+			SpecialIsLoading = 1;
+			if (!SpecialWaitingCargos.isEmpty())
+			{
+				while (!SpecialWaitingCargos.isEmpty() && TruckLoadingSpecials->GetCount() != CapSpecialTrucks)
+				{
+					Cargo* tempcargo = nullptr;
+					SpecialWaitingCargos.Peek(tempcargo);
+					SpecialWaitingCargos.Dequeue();
+					TruckLoadingSpecials->AddToCargos(tempcargo);
+					if (tempcargo->GetDeliveryDistance() > maxd2)
+						maxd2 = tempcargo->GetDeliveryDistance();
+				}
+			}
+			if (TruckLoadingSpecials->GetCount() == CapSpecialTrucks)
+			{
+				MovingTrucks.Enqueue(TruckLoadingSpecials, 1000000 - maxd2);
+				maxd2 = 0;
+				ToChangeTruckLoadingSpecials = 1;
+			}
+		}
+		if (TruckLoadingVIPs)
+		{
+			VIPIsLoading = 1;
+			if (!VIPWaitingCargos.isEmpty())
+			{
+				while (!VIPWaitingCargos.isEmpty() && TruckLoadingVIPs->GetCount() != CapVIPTrucks)
+				{
+					Cargo* tempcargo = nullptr;
+					VIPWaitingCargos.Peek(tempcargo);
+					VIPWaitingCargos.Dequeue();
+					TruckLoadingVIPs->AddToCargos(tempcargo);
+					if (tempcargo->GetDeliveryDistance() > maxd3)
+						maxd3 = tempcargo->GetDeliveryDistance();
+				}
+			}
+			if (TruckLoadingVIPs->GetCount() == CapVIPTrucks)
+			{
+				MovingTrucks.Enqueue(TruckLoadingVIPs,1000000-maxd3);
+				maxd3 = 0;
+				ToChangeTruckLoadingVIPs = 1;
+			}
+		}
+		
+
+
+		/*
+		
+		if (!NormalEmptyTrucks.isEmpty() && ToNextNormalTruck==1)
+		{
+			NormalEmptyTrucks.Peek(Next_Normal_Truck);
+			NormalEmptyTrucks.Dequeue();
+			ToNextNormalTruck = 0;
+		}
+		if (!SpecialEmptyTrucks.isEmpty() && ToNextSpecialTruck == 1)
+		{
+			SpecialEmptyTrucks.Peek(Next_Special_Truck);
+			SpecialEmptyTrucks.Dequeue();
+			ToNextSpecialTruck = 0;
+		}
+		if (!VIPEmptyTrucks.isEmpty() && ToNextVIPTruck == 1)
+		{
+			VIPEmptyTrucks.Peek(Next_VIP_Truck);
+			VIPEmptyTrucks.Dequeue();
+			ToNextVIPTruck = 0;
+		}
+
+
+		* 
+		* if (Next_Normal_Truck)
+		{
+			Cargo* tempC = nullptr;
+			if (NormalWaitingCargos.GetNumberOfCargos() == CapNormalTrucks)
+			{
+				// assign cargos to truck and make truck moving
+				for (int i = 0; i < CapNormalTrucks; i++)
+				{
+					tempC = NormalWaitingCargos.DeleteFirst();
+					Next_Normal_Truck->AddToCargos(tempC);
+				}
+				WaitTimeNormal = 0;
+				ToNextNormalTruck = 1;
+
+			}
+			else if (!NormalWaitingCargos.isEmpty() && WaitTimeNormal == maxW)
+			{
+				// assign cargos to truck and make truck moving
+				int reps = NormalWaitingCargos.GetNumberOfCargos(); 
+				for (int i = 0; i < reps ; i++)
+				{
+					tempC = NormalWaitingCargos.DeleteFirst();
+					Next_Normal_Truck->AddToCargos(tempC);
+				}
+				WaitTimeNormal = 0;
+				ToNextNormalTruck = 0;
+
+			}
+			else if (!VIPWaitingCargos.isEmpty() && WaitTimeVIP == maxW && !Next_VIP_Truck)
+			{
+				int reps = VIPWaitingCargos.GetNumberOfEntries();
+				for (int i = 0; i < reps ; i++)
+				{
+					VIPWaitingCargos.Peek(tempC);
+					VIPWaitingCargos.Dequeue();
+					Next_Normal_Truck->AddToCargos(tempC);
+				}
+				WaitTimeVIP = 0;
+				ToNextNormalTruck = 0;
+
+			}
+			else if (!NormalWaitingCargos.isEmpty())
+			{
+				WaitTimeNormal++;
+
+			}
+		}
+
+		if (Next_Special_Truck)
+		{
+			Cargo* tempC = nullptr;
+			if (SpecialWaitingCargos.GetNumberOfEntries() == CapSpecialTrucks)
+			{
+				// assign cargos to truck and make truck moving
+				for (int i = 0; i < CapSpecialTrucks; i++)
+				{
+					SpecialWaitingCargos.Peek(tempC);
+					SpecialWaitingCargos.Dequeue();
+					Next_Special_Truck->AddToCargos(tempC);
+				}
+				WaitTimeSpecial = 0;
+				ToNextSpecialTruck = 1;
+			}
+			else if (!SpecialWaitingCargos.isEmpty() && WaitTimeSpecial == maxW)
+			{
+				// assign cargos to truck and make truck moving
+				int reps = SpecialWaitingCargos.GetNumberOfEntries();
+				for (int i = 0; i < reps ; i++)
+				{
+					SpecialWaitingCargos.Peek(tempC);
+					SpecialWaitingCargos.Dequeue();
+					Next_Special_Truck->AddToCargos(tempC);
+				}
+				WaitTimeSpecial = 0;
+				ToNextSpecialTruck = 1;
+
+			}
+			else if (!VIPWaitingCargos.isEmpty() && WaitTimeVIP == maxW && !Next_VIP_Truck)
+			{
+				int reps = VIPWaitingCargos.GetNumberOfEntries();
+
+				for (int i = 0; i < reps ; i++)
+				{
+					VIPWaitingCargos.Peek(tempC);
+					VIPWaitingCargos.Dequeue();
+					Next_Normal_Truck->AddToCargos(tempC);
+				}
+				WaitTimeVIP = 0;
+				ToNextSpecialTruck = 1;
+
+			}
+			else if(!SpecialWaitingCargos.isEmpty())
+				WaitTimeSpecial++;
+		}
+
+		if (Next_VIP_Truck)
+		{
+			Cargo* tempC = nullptr;
+			if (VIPWaitingCargos.GetNumberOfEntries() == CapVIPTrucks)
+			{
+				// assign cargos to truck and make truck moving
+				for (int i = 0; i < CapVIPTrucks; i++)
+				{
+					VIPWaitingCargos.Peek(tempC);
+					VIPWaitingCargos.Dequeue();
+					Next_VIP_Truck->AddToCargos(tempC);
+				}
+				WaitTimeVIP = 0;
+				ToNextVIPTruck = 1;
+			}
+			else if (!VIPWaitingCargos.isEmpty() && WaitTimeVIP == maxW)
+			{
+				// assign cargos to truck and make truck moving
+				int reps = VIPWaitingCargos.GetNumberOfEntries();
+				for (int i = 0; i < reps ; i++)
+				{
+					VIPWaitingCargos.Peek(tempC);
+					VIPWaitingCargos.Dequeue();
+					Next_VIP_Truck->AddToCargos(tempC);
+				}
+				WaitTimeVIP = 0;
+				ToNextVIPTruck = 1;
+
+			}
+			else if (!NormalWaitingCargos.isEmpty() && WaitTimeNormal== maxW && !Next_Normal_Truck)
+			{
+				int reps = NormalWaitingCargos.GetNumberOfCargos();
+				for (int i = 0; i < reps ; i++)
+				{
+					tempC = NormalWaitingCargos.DeleteFirst();
+					Next_Normal_Truck->AddToCargos(tempC);
+				}
+				WaitTimeNormal = 0;
+				ToNextVIPTruck = 1;
+
+			}
+			else if (!VIPWaitingCargos.isEmpty())
+				WaitTimeVIP++;
+		}
+
+
+		*/
+
+
+
+		if (nextevent->GetDay() == Day && nextevent->GetHour() == Hour)
+		{
+
+
+			nextevent->Execute();
+
+			Events.Dequeue();
+			if (!Events.isEmpty())
+			{
+				Events.Peek(nextevent);
+				while (nextevent->GetHour() == Hour && nextevent->GetDay() == Day)  // to execute multiple events at same time
+				{
+					nextevent->Execute();
+					Events.Dequeue();
+					Events.Peek(nextevent);
+				}
+			}
+		}
+
+
+		mainInterface->PrintStartSim();
+		mainInterface->PrintHourAdvance(Day, Hour);
+		PrintWaitingCargosSim();
+		mainInterface->DrawLines();
+
+		// now for draing loading trucks ..
+
+		int numLoadingTrucks = (int)NormalIsLoading + (int)SpecialIsLoading + (int)VIPIsLoading;
+		CurrentlyLoading = numLoadingTrucks;
+		PrintLoadingTrucks();
+
+
+
+
+		key = _getch();
+		if (key != 13)                                                           // ASCII for Key_Enter
+			break;
+		else
+		{
+			Hour++;
+			if (Hour == 24)
+			{
+				Hour = 0;
+				Day++;
+			}
+			system("cls");                                                       // clears console
+		}
+
+
+
+	}
+
+
+
 }
 
 

@@ -10,7 +10,7 @@ CancelEvent::CancelEvent(int hour,int day,Company* mcp,int id) : Event(hour,day,
 
 bool CancelEvent::Execute()
 {
-	WasFound = mainCompany->CargoSearch(IdOfCancelledCargo);
+	WasFound = mainCompany->CargoSearch(IdOfCancelledCargo);    // searches in NormalWaitingCargos only ...
 
 	if (WasFound)
 	{

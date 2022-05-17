@@ -24,7 +24,6 @@ public:
 	int GetDay();
 	int GetHour();
 	Company* GetCompany();
-
 	
 };
 

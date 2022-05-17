@@ -17,7 +17,6 @@ Event::Event(Event& copy)
 
 Event::Event()
 {
-
 }
 int Event::GetDay()
 {
@@ -28,6 +27,8 @@ int Event::GetHour()
 {
 	return HourOfEvent;
 }
+
+
 
 Company* Event::GetCompany()
 {

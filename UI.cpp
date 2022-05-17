@@ -238,8 +238,151 @@ int UserInterface::GetHour()
 	return Hour;
 }
 
+void UserInterface::PrintListSimNormal(LinkedPriorityQueue<Cargo*> in)
+{
+
+	cout << "[";
+
+	if (in.isEmpty())
+		cout << "]";
+
+	Cargo* tempt = nullptr;
 
 
+	LinkedPriorityQueue<Cargo*> temp;
+	temp = in;
+
+
+
+
+	while (!temp.isEmpty())
+	{
+		temp.Peek(tempt);
+		temp.Dequeue();
+		cout << tempt->GetID();
+
+		if (!temp.isEmpty())
+			cout << ",";
+		else
+			cout << "]";
+	}
+	cout << ",";
+	return;
+}
+
+void UserInterface::PrintListSimSpecial(LinkedPriorityQueue<Cargo*> in)
+{
+
+	cout << "(";
+
+	if (in.isEmpty())
+		cout << ")";
+
+
+
+	LinkedPriorityQueue<Cargo*> temp;
+	temp = in;
+	Cargo* tempt;
+
+
+	while (!temp.isEmpty())
+	{
+		temp.Peek(tempt);
+		temp.Dequeue();
+		cout << tempt->GetID();
+
+		if (!temp.isEmpty())
+			cout << ",";
+		else
+			cout << ")";
+	}
+	cout << ",";
+
+	return;
+}
+void UserInterface::PrintListSimVIP(LinkedPriorityQueue<Cargo*> in)
+{
+	cout << "{";
+
+	if (in.isEmpty())
+		cout << "}";
+
+
+
+	LinkedPriorityQueue<Cargo*> temp = in;
+	Cargo* tempt;
+
+
+	while (!temp.isEmpty())
+	{
+
+		temp.Peek(tempt);
+		temp.Dequeue();
+
+		cout << tempt->GetID();
+
+
+		if (!temp.isEmpty())
+			cout << ",";
+		else
+			cout << "}";
+	}
+
+
+	return;
+}
+
+
+void UserInterface::PrintLoadingInfo(int a)
+{
+	cout << a <<" Loading Trucks: ";
+}
+
+void UserInterface::PrintLoadingTrucksInfo(truck* norm,truck* spec,truck* vip)
+{
+	if (norm)
+	{
+		PrintNormalLoading(norm);
+	}
+	/*
+	* if (spec)
+	{
+		PrintSpecialLoading(spec);
+
+	}
+	if (vip)
+	{
+		PrintVIPLoading(vip);
+
+	}
+	*/
+}
+
+void UserInterface::PrintNormalLoading(truck* in)
+{
+	Cargo* tempc = nullptr;
+	LinkedPriorityQueue<Cargo*> temp = in->GetCarriedCargos();
+	cout <<in->GetID() << "[";
+	while (!temp.isEmpty())
+	{
+		temp.Peek(tempc);
+		temp.Dequeue();
+		cout << tempc->GetID();
+		if (!temp.isEmpty())
+			cout << ",";
+	}
+	cout << "]";
+	
+}
+void UserInterface::PrintVIPLoading(truck*)
+{
+
+
+}
+void UserInterface::PrintSpecialLoading(truck*)
+{
+
+}
 
 UserInterface::~UserInterface()
 {

@@ -1,5 +1,5 @@
 #pragma once
-#include"truck.h"
+//#include"truck.h"
 
 class Cargo                                                   // class to instantiate a cargo object
 {
