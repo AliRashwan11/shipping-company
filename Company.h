@@ -95,6 +95,7 @@ public:
 	void PrintDeliveredCargosSim();
 	void PrintVIPWaitingCargos();
 	void PrintEvents();
+	void PrintMovingTrucksSim();
 	void AddToNormalMovingcargos(Cargo*);
 	void AddToSpecialMovingcargos(Cargo*);
 	void AddToVIPMovingcargos(Cargo*);

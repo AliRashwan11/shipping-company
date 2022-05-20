@@ -444,6 +444,22 @@ void Company::PrintWaitingCargosSim()
 	mainInterface->PrintListSimVIP(VIPWaitingCargos);
 }
 
+void Company::PrintMovingTrucksSim()
+{
+	int sum = 0;
+	LinkedPriorityQueue<truck*> temp = MovingTrucks;
+	truck* temptruck = nullptr;
+
+	while (!temp.isEmpty())
+	{
+		temp.Peek(temptruck);
+		temp.Dequeue();
+		sum += temptruck->GetCarriedCargos().GetNumberOfEntries();
+	}
+
+	mainInterface->PrintMovingTrucksSimIntro(sum);
+}
+
 void Company::PrintMovingCargosSim()
 {
 	int n1 = NormalMovingCargos.GetNumberOfEntries();
@@ -570,8 +586,7 @@ void Company::Simulator()
 	bool juststartedvip = 0;
 	bool juststartedspecial = 0;
 
-	int AT = 0;
-	bool ToChangeAT = 0;
+	int GapUntilDequeue = -1;
 
 
 	while (true)
@@ -591,13 +606,12 @@ void Company::Simulator()
 
 		if (ToChangeTruckLoadingNormals == 1 && !NormalWaitingCargos.isEmpty())
 		{
-
+			
 			if (!NormalEmptyTrucks.isEmpty())
 			{
 				NormalEmptyTrucks.Peek(temptruck);
 				NormalEmptyTrucks.Dequeue();
 				TruckLoadingNormals = temptruck;
-
 				//cout << "NEW TRUCK LOADING NORMAL  ..  ID = " << TruckLoadingNormals->GetID() << endl << endl;
 			}
 			else if (!VIPEmptyTrucks.isEmpty())
@@ -613,10 +627,11 @@ void Company::Simulator()
 
 			ToChangeTruckLoadingNormals = 0;
 		}
-	
+		
 		
 		if (ToChangeTruckLoadingVIPs == 1 && !VIPWaitingCargos.isEmpty())
 		{
+
 			if (!VIPEmptyTrucks.isEmpty())
 			{
 
@@ -684,16 +699,16 @@ void Company::Simulator()
 						maxd1 = tempcargo->GetDeliveryDistance();
 				}
 			}
-			if (TruckLoadingNormals->GetCount() == CapNormalTrucks)
+			if (TruckLoadingNormals->GetCount() == CapNormalTrucks && TruckLoadingNormals->GetStartedMovingBool()==0)
 			{
-				
+				TruckLoadingNormals->SetStartedMovingBool(1);
 				TruckLoadingNormals->SetStartTimeOfMoving(CurrTimeInt);
-				MovingTrucks.Enqueue(TruckLoadingNormals,1000000-maxd1);
 				maxd1 = 0;
 				ToChangeTruckLoadingNormals = 1;
 				JourneyTimeNormal = TruckLoadingNormals->GetDeliveryTime();
 				TruckLoadingNormals->SetDeliveryInterval(JourneyTimeNormal);
-
+				MovingTrucks.Enqueue(TruckLoadingNormals, 1000000 - maxd1);
+				TruckLoadingNormals = nullptr;
 			}
 		}
 		if (TruckLoadingSpecials)
@@ -711,14 +726,16 @@ void Company::Simulator()
 						maxd2 = tempcargo->GetDeliveryDistance();
 				}
 			}
-			if (TruckLoadingSpecials->GetCount() == CapSpecialTrucks)
+			if (TruckLoadingSpecials->GetCount() == CapSpecialTrucks && TruckLoadingSpecials->GetStartedMovingBool()==0)
 			{
+				TruckLoadingSpecials->SetStartedMovingBool(1);
 				TruckLoadingSpecials->SetStartTimeOfMoving(CurrTimeInt);
-				MovingTrucks.Enqueue(TruckLoadingSpecials, 1000000 - maxd2);
 				maxd2 = 0;
 				ToChangeTruckLoadingSpecials = 1;
 				JourneyTimeSpecial = TruckLoadingSpecials->GetDeliveryTime();
 				TruckLoadingSpecials->SetDeliveryInterval(JourneyTimeSpecial);
+				MovingTrucks.Enqueue(TruckLoadingSpecials, 1000000 - maxd2);
+				TruckLoadingSpecials = nullptr;
 
 			}
 		}
@@ -737,26 +754,46 @@ void Company::Simulator()
 						maxd3 = tempcargo->GetDeliveryDistance();
 				}
 			}
-			if (TruckLoadingVIPs->GetCount() == CapVIPTrucks)
+			if (TruckLoadingVIPs->GetCount() == CapVIPTrucks && TruckLoadingVIPs->GetStartedMovingBool() == 0)
 			{
+				TruckLoadingVIPs->SetStartedMovingBool(1);
 				TruckLoadingVIPs->SetStartTimeOfMoving(CurrTimeInt);
-				MovingTrucks.Enqueue(TruckLoadingVIPs,1000000-maxd3);
 				maxd3 = 0;
 				ToChangeTruckLoadingVIPs = 1;
 				JourneyTimeVIP = TruckLoadingVIPs->GetDeliveryTime();
 				TruckLoadingVIPs->SetDeliveryInterval(JourneyTimeVIP);           // delivery interval is cargo unloading time + trip time
+				MovingTrucks.Enqueue(TruckLoadingVIPs, 1000000 - maxd3);
+				TruckLoadingVIPs = nullptr;
+
 			}
 		}
 
 
 
+	                                                                     	// for testing
+		/*
+		while (!MovingTrucks.isEmpty())
+		{
+			truck* toprint = nullptr;
+			MovingTrucks.Peek(toprint);
+			MovingTrucks.Dequeue();
+			cout << "ID OF MOVING TRUCK : " << toprint->GetID() << endl;
+
+			LinkedPriorityQueue<Cargo*> tp = toprint->GetCarriedCargos();
+
+			while (!tp.isEmpty())
+			{
+				Cargo* tpp = nullptr;
+				tp.Peek(tpp);
+				tp.Dequeue();
+				cout << "CARGOS IN IT : " << tpp->GetDeliveryDistance() << endl;
+			}
+		}
+		*/
+
+
 
 		
-
-
-
-
-
 
 		LinkedPriorityQueue<truck*> temptruckptr = MovingTrucks;
 
@@ -768,8 +805,14 @@ void Company::Simulator()
 
 
 
+
 		if (!MovingTrucks.isEmpty())
 		{ 
+
+
+
+
+
 			// first check if the closest cargo is yet to be delivered ..
 
 			MovingTrucks.Peek(temptruckk); // first truck in moving trucks
@@ -781,46 +824,67 @@ void Company::Simulator()
 
 			int startoftrip = temptruckk->GetStartTimeOfMoving();
 			int tripdistance = tempcargoo->GetDeliveryDistance();
+
 			int speedoftruckk = temptruckk->GetTruckSpeed();
-			int triptime = tripdistance / speedoftruckk;
+
+			float triptimee = (float)tripdistance / (float)speedoftruckk;
+			int triptime = ceil(triptimee);
 			int unloadtimeofcargo = tempcargoo->GetLoadUnloadTime();
 			int timeoftriparrival = unloadtimeofcargo + triptime + startoftrip;
-			//cout << unloadtimeofcargo << endl;
-			//cout << triptime << endl;
-			//cout << startoftrip << endl;
 
-			cout << timeoftriparrival  << "   " << CurrTimeInt << endl << endl;
+			cout << unloadtimeofcargo << endl;
+			cout << triptime << endl;
+			cout << startoftrip << endl;
 
+
+
+			 cout << timeoftriparrival  << "   " << CurrTimeInt << endl << endl;
+			 
 			
 
-			if (timeoftriparrival == CurrTimeInt)
+
+
+			if (timeoftriparrival == CurrTimeInt)                                                         // the cargo should be moved to delivered cargos
 			{
+
+
 				int newmaxd = -1000000;
 
 				// dequeue cargo from truck .. then re enqueue truck with new priority
 
-				temptruckk->DequeueCargo();
 				MovingTrucks.Dequeue();
+				Cargo* deliveredc=temptruckk->DequeueCargo();
+				DeliveredCargos.Enqueue(deliveredc);
 
-				if (!temptruckk->GetCarriedCargos().isEmpty())
+
+				if (temptruckk->GetCarriedCargos().GetNumberOfEntries()!=0)
 				{
-					LinkedPriorityQueue<Cargo*> tq = temptruckk->GetCarriedCargos();
-					Cargo* tc = nullptr;
-
-					while (!tq.isEmpty())
+					if (!temptruckk->GetCarriedCargos().isEmpty())
 					{
-						tq.Peek(tc);
-						tq.Dequeue();
-						if (newmaxd < tc->GetDeliveryDistance())
-							newmaxd = tc->GetDeliveryDistance();
+
+						LinkedPriorityQueue<Cargo*> tq = temptruckk->GetCarriedCargos();
+						Cargo* tc = nullptr;
+
+						while (!tq.isEmpty())
+						{
+							tq.Peek(tc);
+							tq.Dequeue();
+							if (newmaxd < tc->GetDeliveryDistance())
+								newmaxd = tc->GetDeliveryDistance();
+						}
+
+
 					}
 
+					MovingTrucks.Enqueue(temptruckk, 1000000 - newmaxd);
 				}
 
-				MovingTrucks.Enqueue(temptruckk,1000000-newmaxd);
-				AT = 1;
 			}
 		}
+
+
+
+		/*
 
 		
 		while (!temptruckptr.isEmpty())                                          // as long as there is atleast a truck moving .. check if this truck has done all deliveries
@@ -830,14 +894,13 @@ void Company::Simulator()
 			temptruckptr.Dequeue();
 			int startofmoving = temptruckk->GetStartTimeOfMoving();
 
-			int JT = temptruckk->GetDeliveryInterval();
+			int JT = temptruckk->GetDeliveryInterval();                  // journey time
 
 			if (temptruckk->GetTypeOfLoadedCargos() == 0) // normal cargos
 			{
 				if (CurrTimeInt == JT + startofmoving)            // a normal truck has delivered all its cargos
 				{
 					ToChangeTruckLoadingNormals = 1;
-					
 					MovingTrucks.Dequeue();
 				}
 			}
@@ -865,12 +928,13 @@ void Company::Simulator()
 			}
 
 
-
-
 		}
 
 		
+		*/
 
+
+			//hdisdhsdjgsiydgsigdiygdidyia
 
 	
 
@@ -1067,13 +1131,15 @@ void Company::Simulator()
 		mainInterface->PrintHourAdvance(Day, Hour);
 		PrintWaitingCargosSim();
 		mainInterface->DrawLines();
+		//PrintMovingTrucksSim();
 
 		// now for drawing loading trucks ..
 
 		int numLoadingTrucks = (int)NormalIsLoading + (int)SpecialIsLoading + (int)VIPIsLoading;
 		CurrentlyLoading = numLoadingTrucks;
 		PrintLoadingTrucks();
-
+		mainInterface->DrawLines();
+		PrintMovingTrucksSim();
 
 
 
@@ -1091,7 +1157,9 @@ void Company::Simulator()
 			system("cls");                                                       // clears console
 		}
 
+		//cout << "ufjdgfidk" << endl;
 
+		
 
 	}
 

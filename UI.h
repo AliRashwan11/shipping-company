@@ -53,7 +53,7 @@ public:
 	void PrintNormalLoading(truck*);
 	void PrintVIPLoading(truck*);
 	void PrintSpecialLoading(truck*);
-
+	void PrintMovingTrucksSimIntro(int);
 
 	~UserInterface();
 };

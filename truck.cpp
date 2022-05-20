@@ -11,6 +11,7 @@ truck::truck(int typenum)
 	DeliveryInterval = 0;
 	TypeOfLoadedCargos = -1;
 	count = 0;
+	StartedMoving = 0;
 }
 
 truck::truck()
@@ -22,6 +23,7 @@ truck::truck()
 	DeliveryInterval = 0;
 	TypeOfLoadedCargos = -1;
 	count = 0;
+	StartedMoving = 0;
 
 }
 
@@ -34,7 +36,7 @@ truck::truck(truck& copy)
 	DeliveryInterval = copy.GetDeliveryInterval();
 	TypeOfLoadedCargos = -1;
 	count = 0;
-
+	StartedMoving = 0;
 }
 
 void truck::SetTruckCapacity(int a)
@@ -92,7 +94,15 @@ void truck::SetTypeOfLoadedCargos(int a)
 	TypeOfLoadedCargos = a;
 }
 
+void truck::SetStartedMovingBool(bool a)
+{
+	StartedMoving = a;
+}
 
+bool truck::GetStartedMovingBool()
+{
+	return StartedMoving;
+}
 
 
 

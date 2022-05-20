@@ -409,6 +409,11 @@ void UserInterface::PrintSpecialLoading(truck* in)
 	cout << ") ";
 }
 
+void UserInterface::PrintMovingTrucksSimIntro(int a)
+{
+	cout << a << " Moving Cargos: ";
+}
+
 UserInterface::~UserInterface()
 {
 	// destrcutor
