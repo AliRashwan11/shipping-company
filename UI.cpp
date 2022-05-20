@@ -340,22 +340,25 @@ void UserInterface::PrintLoadingInfo(int a)
 
 void UserInterface::PrintLoadingTrucksInfo(truck* norm,truck* spec,truck* vip)
 {
+
+
 	if (norm)
 	{
 		PrintNormalLoading(norm);
 	}
-	/*
-	* if (spec)
+
+	 if (spec)
 	{
 		PrintSpecialLoading(spec);
 
 	}
+	
 	if (vip)
 	{
 		PrintVIPLoading(vip);
-
 	}
-	*/
+	
+	
 }
 
 void UserInterface::PrintNormalLoading(truck* in)
@@ -371,17 +374,39 @@ void UserInterface::PrintNormalLoading(truck* in)
 		if (!temp.isEmpty())
 			cout << ",";
 	}
-	cout << "]";
+	cout << "] ";
 	
 }
-void UserInterface::PrintVIPLoading(truck*)
+void UserInterface::PrintVIPLoading(truck* in)
 {
-
+	Cargo* tempv = nullptr;
+	LinkedPriorityQueue<Cargo*> temp = in->GetCarriedCargos();
+	cout << in->GetID() << "{";
+	while (!temp.isEmpty())
+	{
+		temp.Peek(tempv);
+		temp.Dequeue();
+		cout << tempv->GetID();
+		if (!temp.isEmpty())
+			cout << ",";
+	}
+	cout << "} ";
 
 }
-void UserInterface::PrintSpecialLoading(truck*)
+void UserInterface::PrintSpecialLoading(truck* in)
 {
-
+	Cargo* temps = nullptr;
+	LinkedPriorityQueue<Cargo*> temp = in->GetCarriedCargos();
+	cout << in->GetID() << "(";
+	while (!temp.isEmpty())
+	{
+		temp.Peek(temps);
+		temp.Dequeue();
+		cout << temps->GetID();
+		if (!temp.isEmpty())
+			cout << ",";
+	}
+	cout << ") ";
 }
 
 UserInterface::~UserInterface()

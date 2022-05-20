@@ -91,6 +91,11 @@ void truck::SetTypeOfLoadedCargos(int a)
 {
 	TypeOfLoadedCargos = a;
 }
+
+
+
+
+
 /*
 * int truck::GetDeliveryInterval()
 {
@@ -131,6 +136,50 @@ int truck::GetCount()
 LinkedPriorityQueue<Cargo*> truck::GetCarriedCargos()
 {
 	return InTruckCargos;
+}
+
+int truck::GetDeliveryTime()
+{
+	int max = -1;
+	int currdist = -1;
+	int currspeed = -1;
+	int unloadtime = -1;
+	Cargo* tempcargo = nullptr;
+	LinkedPriorityQueue<Cargo*> temp = InTruckCargos;
+	while (!temp.isEmpty())
+	{
+		temp.Peek(tempcargo);
+		currdist = tempcargo->GetDeliveryDistance();
+		if (currdist > max)
+			max = currdist;
+		unloadtime = tempcargo->GetLoadUnloadTime();
+		temp.Dequeue();
+	}
+
+	currspeed = this->GetTruckCapacity();
+	int TimeOfJourney = max / currspeed;
+
+	int TotalTimeTaken = TimeOfJourney + unloadtime;
+
+	return TotalTimeTaken;
+
+}
+
+void truck::SetStartTimeOfMoving(int a)
+{
+	StartTimeOfMoving = a;
+}
+int truck::GetStartTimeOfMoving()
+{
+	return StartTimeOfMoving;
+}
+
+Cargo* truck::DequeueCargo()
+{
+	Cargo* ret = nullptr;
+	InTruckCargos.Peek(ret);
+	InTruckCargos.Dequeue();
+	return ret;
 }
 
 /*

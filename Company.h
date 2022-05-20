@@ -41,9 +41,8 @@ class Company
 	LinkedPriorityQueue<Cargo*> SpecialMovingCargos;
 	LinkedPriorityQueue<Cargo*> VIPMovingCargos;
 
-	LinkedQueue<Cargo*> NormalDeliveredCargos;
-	LinkedQueue<Cargo*> SpecialDeliveredCargos;
-	LinkedQueue<Cargo*> VIPDeliveredCargos;
+	LinkedQueue<Cargo*> DeliveredCargos;
+	
 
 	truck* TruckLoadingNormals;
 	truck* TruckLoadingSpecials;
@@ -71,6 +70,8 @@ class Company
 	int CapVIPTrucks;
 
 	int CurrentlyLoading;
+
+	int NumberOfDeliveredCargos;
 	 
 
 

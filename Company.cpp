@@ -22,6 +22,7 @@ Company::Company(string infile,UserInterface* uiptr)
 	TruckLoadingNormals = nullptr;
 	TruckLoadingSpecials = nullptr;
 	TruckLoadingVIPs = nullptr;
+	NumberOfDeliveredCargos = -1;
 }
 
 void Company::PrintNormalEmptyTrucks()                                                     // Function for testing
@@ -306,7 +307,7 @@ void Company::ReadFile()
 	for (int i = 0; i < NumberOfVIPTrucks; i++)
 	{
 		truck* newvtruck = new truck(2);
-		newvtruck->SetID(NumberOfSpecialTrucks +i);
+		newvtruck->SetID(NumberOfSpecialTrucks +i+1);
 		newvtruck->SetTruckSpeed(SpeedOfVIPTrucks);
 		newvtruck->SetTruckCapacity(VIPTruckCapacity);
 		newvtruck->SetMaintenanceTime(CheckUpDurationOfVIPTrucks);
@@ -460,7 +461,8 @@ void Company::PrintMovingCargosSim()
 
 void Company::PrintDeliveredCargosSim()
 {
-	int n1 = NormalDeliveredCargos.GetNumberOfEntries();
+	/*
+		int n1 = NormalDeliveredCargos.GetNumberOfEntries();
 	int n2 = SpecialDeliveredCargos.GetNumberOfEntries();
 	int n3 = VIPDeliveredCargos.GetNumberOfEntries();
 	int sum = n1 + n2 + n3;
@@ -469,6 +471,7 @@ void Company::PrintDeliveredCargosSim()
 	NormalDeliveredCargos.PrintListSimNormal();
 	SpecialDeliveredCargos.PrintListSimSpecial();
 	VIPDeliveredCargos.PrintListSimVIP();
+	*/
 }
 
 void Company::PrintEvents()
@@ -545,22 +548,41 @@ void Company::Simulator()
 	bool ToChangeTruckLoadingSpecials = 1;
 	bool ToChangeTruckLoadingVIPs = 1;
 
+	int JourneyTimeNormal = -1;
+	int JourneyTimeSpecial = -1;
+	int JourneyTimeVIP = -1;
+
+	int MTNormal = -1;
+	int MTSpecial = -1;
+	int MTVIP = -1;
+
+
 	int maxd1 = 0;
 	int maxd2 = 0;
 	int maxd3 = 0;
 
 	Event* nextevent = nullptr;
 	Events.Peek(nextevent);
-	
 
+	int CurrTimeInt = -1;
+	
+	bool juststartednormal = 0;
+	bool juststartedvip = 0;
+	bool juststartedspecial = 0;
+
+	int AT = 0;
+	bool ToChangeAT = 0;
 
 
 	while (true)
 	{
-		cout << "MAXW = " << maxW << endl;
-		cout << "MAXW remaining = " << maxW -WaitTimeNormal << endl;
+		CurrTimeInt = (24 * Day) + Hour;
 
-	
+
+		cout << "Current time as int = " << CurrTimeInt << endl;
+		cout << "MAXW = " << maxW << endl;
+		cout << "MAXW remaining = " << maxW -WaitTimeNormal << endl << endl;
+
 		
 
 		truck* temptruck = nullptr;
@@ -569,41 +591,35 @@ void Company::Simulator()
 
 		if (ToChangeTruckLoadingNormals == 1 && !NormalWaitingCargos.isEmpty())
 		{
+
 			if (!NormalEmptyTrucks.isEmpty())
 			{
 				NormalEmptyTrucks.Peek(temptruck);
 				NormalEmptyTrucks.Dequeue();
 				TruckLoadingNormals = temptruck;
+
+				//cout << "NEW TRUCK LOADING NORMAL  ..  ID = " << TruckLoadingNormals->GetID() << endl << endl;
 			}
 			else if (!VIPEmptyTrucks.isEmpty())
 			{
 				VIPEmptyTrucks.Peek(temptruck);
 				VIPEmptyTrucks.Dequeue();
 				TruckLoadingNormals = temptruck;
+				//cout << "NEW TRUCK LOADING NORMAL  ..  ID = " << TruckLoadingNormals->GetID() << endl << endl;
+
 			}
 			else
 				TruckLoadingNormals = nullptr;
 
 			ToChangeTruckLoadingNormals = 0;
 		}
-		if (ToChangeTruckLoadingSpecials == 1 && !SpecialWaitingCargos.isEmpty())
-		{
-
-			if (!SpecialEmptyTrucks.isEmpty())
-			{
-				SpecialEmptyTrucks.Peek(temptruck);
-				SpecialEmptyTrucks.Dequeue();
-				TruckLoadingSpecials = temptruck;
-			}
-			else
-				TruckLoadingSpecials = nullptr;
-			ToChangeTruckLoadingSpecials = 0;
-		}
+	
+		
 		if (ToChangeTruckLoadingVIPs == 1 && !VIPWaitingCargos.isEmpty())
 		{
-
 			if (!VIPEmptyTrucks.isEmpty())
 			{
+
 				VIPEmptyTrucks.Peek(temptruck);
 				VIPEmptyTrucks.Dequeue();
 				TruckLoadingVIPs = temptruck;
@@ -616,6 +632,7 @@ void Company::Simulator()
 			}
 			else if (!SpecialEmptyTrucks.isEmpty())
 			{
+
 				SpecialEmptyTrucks.Peek(temptruck);
 				SpecialEmptyTrucks.Dequeue();
 				TruckLoadingVIPs = temptruck;
@@ -623,13 +640,35 @@ void Company::Simulator()
 			else
 				TruckLoadingVIPs = nullptr;
 
+
 			ToChangeTruckLoadingVIPs = 0;
 
+		}
+		if (ToChangeTruckLoadingSpecials == 1 && !SpecialWaitingCargos.isEmpty())
+		{
+
+
+
+			if (!SpecialEmptyTrucks.isEmpty())
+			{
+				SpecialEmptyTrucks.Peek(temptruck);
+				SpecialEmptyTrucks.Dequeue();
+				TruckLoadingSpecials = temptruck;
+			}
+			else
+				TruckLoadingSpecials = nullptr;
+
+
+
+
+			ToChangeTruckLoadingSpecials = 0;
 		}
 
 		bool NormalIsLoading = 0;
 		bool SpecialIsLoading = 0;
 		bool VIPIsLoading = 0;
+
+		// enquing moving cargos with the on priority of being closest to deliver a cargo
 
 		if (TruckLoadingNormals)
 		{
@@ -647,9 +686,14 @@ void Company::Simulator()
 			}
 			if (TruckLoadingNormals->GetCount() == CapNormalTrucks)
 			{
+				
+				TruckLoadingNormals->SetStartTimeOfMoving(CurrTimeInt);
 				MovingTrucks.Enqueue(TruckLoadingNormals,1000000-maxd1);
 				maxd1 = 0;
 				ToChangeTruckLoadingNormals = 1;
+				JourneyTimeNormal = TruckLoadingNormals->GetDeliveryTime();
+				TruckLoadingNormals->SetDeliveryInterval(JourneyTimeNormal);
+
 			}
 		}
 		if (TruckLoadingSpecials)
@@ -669,9 +713,13 @@ void Company::Simulator()
 			}
 			if (TruckLoadingSpecials->GetCount() == CapSpecialTrucks)
 			{
+				TruckLoadingSpecials->SetStartTimeOfMoving(CurrTimeInt);
 				MovingTrucks.Enqueue(TruckLoadingSpecials, 1000000 - maxd2);
 				maxd2 = 0;
 				ToChangeTruckLoadingSpecials = 1;
+				JourneyTimeSpecial = TruckLoadingSpecials->GetDeliveryTime();
+				TruckLoadingSpecials->SetDeliveryInterval(JourneyTimeSpecial);
+
 			}
 		}
 		if (TruckLoadingVIPs)
@@ -691,13 +739,140 @@ void Company::Simulator()
 			}
 			if (TruckLoadingVIPs->GetCount() == CapVIPTrucks)
 			{
+				TruckLoadingVIPs->SetStartTimeOfMoving(CurrTimeInt);
 				MovingTrucks.Enqueue(TruckLoadingVIPs,1000000-maxd3);
 				maxd3 = 0;
 				ToChangeTruckLoadingVIPs = 1;
+				JourneyTimeVIP = TruckLoadingVIPs->GetDeliveryTime();
+				TruckLoadingVIPs->SetDeliveryInterval(JourneyTimeVIP);           // delivery interval is cargo unloading time + trip time
 			}
 		}
+
+
+
+
 		
 
+
+
+
+
+
+		LinkedPriorityQueue<truck*> temptruckptr = MovingTrucks;
+
+		truck* temptruckk = nullptr;
+
+		LinkedPriorityQueue<Cargo*> tempcargoptr;
+		Cargo* tempcargoo = nullptr;
+
+
+
+
+		if (!MovingTrucks.isEmpty())
+		{ 
+			// first check if the closest cargo is yet to be delivered ..
+
+			MovingTrucks.Peek(temptruckk); // first truck in moving trucks
+
+			tempcargoptr = temptruckk->GetCarriedCargos(); 
+			tempcargoptr.Peek(tempcargoo);                // first cargo in first moving truck
+
+			// tempcargoo is first in queue of carried cargos
+
+			int startoftrip = temptruckk->GetStartTimeOfMoving();
+			int tripdistance = tempcargoo->GetDeliveryDistance();
+			int speedoftruckk = temptruckk->GetTruckSpeed();
+			int triptime = tripdistance / speedoftruckk;
+			int unloadtimeofcargo = tempcargoo->GetLoadUnloadTime();
+			int timeoftriparrival = unloadtimeofcargo + triptime + startoftrip;
+			//cout << unloadtimeofcargo << endl;
+			//cout << triptime << endl;
+			//cout << startoftrip << endl;
+
+			cout << timeoftriparrival  << "   " << CurrTimeInt << endl << endl;
+
+			
+
+			if (timeoftriparrival == CurrTimeInt)
+			{
+				int newmaxd = -1000000;
+
+				// dequeue cargo from truck .. then re enqueue truck with new priority
+
+				temptruckk->DequeueCargo();
+				MovingTrucks.Dequeue();
+
+				if (!temptruckk->GetCarriedCargos().isEmpty())
+				{
+					LinkedPriorityQueue<Cargo*> tq = temptruckk->GetCarriedCargos();
+					Cargo* tc = nullptr;
+
+					while (!tq.isEmpty())
+					{
+						tq.Peek(tc);
+						tq.Dequeue();
+						if (newmaxd < tc->GetDeliveryDistance())
+							newmaxd = tc->GetDeliveryDistance();
+					}
+
+				}
+
+				MovingTrucks.Enqueue(temptruckk,1000000-newmaxd);
+				AT = 1;
+			}
+		}
+
+		
+		while (!temptruckptr.isEmpty())                                          // as long as there is atleast a truck moving .. check if this truck has done all deliveries
+		{
+
+			temptruckptr.Peek(temptruckk);
+			temptruckptr.Dequeue();
+			int startofmoving = temptruckk->GetStartTimeOfMoving();
+
+			int JT = temptruckk->GetDeliveryInterval();
+
+			if (temptruckk->GetTypeOfLoadedCargos() == 0) // normal cargos
+			{
+				if (CurrTimeInt == JT + startofmoving)            // a normal truck has delivered all its cargos
+				{
+					ToChangeTruckLoadingNormals = 1;
+					
+					MovingTrucks.Dequeue();
+				}
+			}
+
+			if (temptruckk->GetTypeOfLoadedCargos() == 1) // Special cargos
+			{
+				if (CurrTimeInt == JT + startofmoving)            // a special truck has delivered all its cargos
+				{
+					ToChangeTruckLoadingSpecials = 1;
+
+					MovingTrucks.Dequeue();
+
+				}
+			}
+
+			if (temptruckk->GetTypeOfLoadedCargos() == 2) // VIP cargos
+			{
+				if (CurrTimeInt == JT + startofmoving)            // a vip truck has delivered all its cargos
+				{
+					ToChangeTruckLoadingVIPs = 1;
+
+					MovingTrucks.Dequeue();
+
+				}
+			}
+
+
+
+
+		}
+
+		
+
+
+	
 
 		/*
 		
@@ -879,6 +1054,7 @@ void Company::Simulator()
 				Events.Peek(nextevent);
 				while (nextevent->GetHour() == Hour && nextevent->GetDay() == Day)  // to execute multiple events at same time
 				{
+					
 					nextevent->Execute();
 					Events.Dequeue();
 					Events.Peek(nextevent);
@@ -892,7 +1068,7 @@ void Company::Simulator()
 		PrintWaitingCargosSim();
 		mainInterface->DrawLines();
 
-		// now for draing loading trucks ..
+		// now for drawing loading trucks ..
 
 		int numLoadingTrucks = (int)NormalIsLoading + (int)SpecialIsLoading + (int)VIPIsLoading;
 		CurrentlyLoading = numLoadingTrucks;
@@ -1001,7 +1177,7 @@ void Company::SimpleSimulator()
 				counterto5n = 0;
 				NormalMovingCargos.Peek(crg);
 				NormalMovingCargos.Dequeue();
-				NormalDeliveredCargos.Enqueue(crg);
+				//NormalDeliveredCargos.Enqueue(crg);
 			}
 			else
 				counterto5n++;
@@ -1017,7 +1193,7 @@ void Company::SimpleSimulator()
 				counterto5s = 0;
 				SpecialMovingCargos.Peek(crg);
 				SpecialMovingCargos.Dequeue();
-				SpecialDeliveredCargos.Enqueue(crg);
+				//SpecialDeliveredCargos.Enqueue(crg);
 			}
 			else
 				counterto5s++;
@@ -1033,7 +1209,7 @@ void Company::SimpleSimulator()
 				counterto5v = 0;
 				VIPMovingCargos.Peek(crg);
 				VIPMovingCargos.Dequeue();
-				VIPDeliveredCargos.Enqueue(crg);
+				//VIPDeliveredCargos.Enqueue(crg);
 			}
 			else
 				counterto5v++;

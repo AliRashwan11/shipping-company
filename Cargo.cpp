@@ -7,12 +7,16 @@ Cargo::Cargo(int a)
 	if (a != 0 && a != 1 && a != 2)
 		a = 0;
 	CargoType = a;
+	DeliveryTime = 0;
+
 	//intruck = nullptr;
 }
 
 Cargo::Cargo()
 {
 	CargoType = 0;
+	DeliveryTime = 0;
+
 }
 
 Cargo::Cargo(Cargo& copy)
@@ -23,6 +27,7 @@ Cargo::Cargo(Cargo& copy)
 	Cost = copy.GetCost();
 	CargoType = copy.GetCargoType();
 	ID = copy.GetID();
+	DeliveryTime = 0;
 
 }
 void Cargo::SetPreparationTime(int time)
@@ -32,7 +37,7 @@ void Cargo::SetPreparationTime(int time)
 
 void Cargo::SetLoadUnloadTime(int time)
 {
-	PreparationTime = time;
+	LoadUnloadTime = time;
 }
 
 void Cargo::SetDeliveryDistance(int dist)
@@ -83,6 +88,16 @@ int Cargo::GetPreparationTime()
 int Cargo::GetID()
 {
 	return ID;
+}
+
+void Cargo::SetDeliveryTime(int a)
+{
+	DeliveryTime = a;
+}
+
+int Cargo::GetDeliveryTime()
+{
+	return DeliveryTime;
 }
 
 void Cargo::operator= (Cargo car)

@@ -12,10 +12,10 @@ class truck
 	int DeliveryInterval;
 	int TruckType;                                                // 0 for normal , 1 for special , 2 for vip       
 	int ID;                                                       // 10n for normal , 20n for special , 30n for VIP
-	int TypeOfLoadedCargos;                           // 0 for normal , 1 for vip , 2 for special
+	int TypeOfLoadedCargos;                           // 0 for normal , 1 for special , 2 for vip
 	int count;                                        // count of cargos in truck
 
-
+	int StartTimeOfMoving;
 	LinkedPriorityQueue<Cargo*> InTruckCargos;                                           // pointer to last cargo
 
 public:
@@ -40,6 +40,10 @@ public:
 	void SetTypeOfLoadedCargos(int);
 	int GetCount();
 	LinkedPriorityQueue<Cargo*> GetCarriedCargos();
+	int GetDeliveryTime();
+	void SetStartTimeOfMoving(int);
+	int GetStartTimeOfMoving();
+	Cargo* DequeueCargo();
 
 	// virtual int GetDeliveryInterval();             to be implemented later
 
