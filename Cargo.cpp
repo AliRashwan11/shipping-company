@@ -8,6 +8,7 @@ Cargo::Cargo(int a)
 		a = 0;
 	CargoType = a;
 	DeliveryTime = 0;
+	AV = -1;
 
 	//intruck = nullptr;
 }
@@ -16,6 +17,7 @@ Cargo::Cargo()
 {
 	CargoType = 0;
 	DeliveryTime = 0;
+	AV = -1;
 
 }
 
@@ -28,6 +30,7 @@ Cargo::Cargo(Cargo& copy)
 	CargoType = copy.GetCargoType();
 	ID = copy.GetID();
 	DeliveryTime = 0;
+	AV = -1;
 
 }
 void Cargo::SetPreparationTime(int time)
@@ -98,6 +101,26 @@ void Cargo::SetDeliveryTime(int a)
 int Cargo::GetDeliveryTime()
 {
 	return DeliveryTime;
+}
+
+int Cargo::GetAV()
+{
+	return AV;
+}
+
+void Cargo::SetAV(int a)
+{
+	AV = a;
+}
+
+void Cargo::SetFT(int a)
+{
+	FT = a;
+}
+
+int Cargo::GetFT()
+{
+	return FT;
 }
 
 void Cargo::operator= (Cargo car)

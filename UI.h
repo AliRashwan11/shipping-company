@@ -54,6 +54,7 @@ public:
 	void PrintVIPLoading(truck*);
 	void PrintSpecialLoading(truck*);
 	void PrintMovingTrucksSimIntro(int);
+	void PrintMovingTrucksSim(LinkedPriorityQueue<truck*>);
 
 	~UserInterface();
 };

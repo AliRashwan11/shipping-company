@@ -9,7 +9,6 @@ truck::truck(int typenum)
 	TruckSpeed = 0;
 	MaintenanceTime = 0;
 	DeliveryInterval = 0;
-	TypeOfLoadedCargos = -1;
 	count = 0;
 	StartedMoving = 0;
 }
@@ -21,7 +20,6 @@ truck::truck()
 	TruckSpeed = 0;
 	MaintenanceTime = 0;
 	DeliveryInterval = 0;
-	TypeOfLoadedCargos = -1;
 	count = 0;
 	StartedMoving = 0;
 
@@ -34,7 +32,6 @@ truck::truck(truck& copy)
 	TruckSpeed = copy.GetTruckSpeed();
 	MaintenanceTime = copy.GetMaintenanceTime();
 	DeliveryInterval = copy.GetDeliveryInterval();
-	TypeOfLoadedCargos = -1;
 	count = 0;
 	StartedMoving = 0;
 }
@@ -104,6 +101,16 @@ bool truck::GetStartedMovingBool()
 	return StartedMoving;
 }
 
+void truck::RemoveCargos()
+{
+	LinkedPriorityQueue<Cargo*> empty;
+	InTruckCargos = empty;
+}
+
+void truck::SetCarriedCargos(LinkedPriorityQueue<Cargo*> a)
+{
+	InTruckCargos = a;
+}
 
 
 /*

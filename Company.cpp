@@ -23,6 +23,7 @@ Company::Company(string infile,UserInterface* uiptr)
 	TruckLoadingSpecials = nullptr;
 	TruckLoadingVIPs = nullptr;
 	NumberOfDeliveredCargos = -1;
+	
 }
 
 void Company::PrintNormalEmptyTrucks()                                                     // Function for testing
@@ -458,6 +459,7 @@ void Company::PrintMovingTrucksSim()
 	}
 
 	mainInterface->PrintMovingTrucksSimIntro(sum);
+	mainInterface->PrintMovingTrucksSim(MovingTrucks);
 }
 
 void Company::PrintMovingCargosSim()
@@ -533,6 +535,8 @@ void Company::PrintLoadingTrucks()
 void Company::Simulator()
 {
 	this->ReadFile();
+
+	
 
 	Cargo* Next_Normal_Cargo = nullptr;
 	Cargo* Next_Special_Cargo = nullptr;
@@ -694,6 +698,7 @@ void Company::Simulator()
 				{
 					Cargo* tempcargo = nullptr;
 					tempcargo=NormalWaitingCargos.DeleteFirst();
+					tempcargo->SetAV(tempcargo->GetLoadUnloadTime() + (tempcargo->GetDeliveryDistance() / TruckLoadingNormals->GetTruckSpeed()));           // new lineeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
 					TruckLoadingNormals->AddToCargos(tempcargo);
 					if (tempcargo->GetDeliveryDistance() > maxd1)
 						maxd1 = tempcargo->GetDeliveryDistance();
@@ -707,7 +712,27 @@ void Company::Simulator()
 				ToChangeTruckLoadingNormals = 1;
 				JourneyTimeNormal = TruckLoadingNormals->GetDeliveryTime();
 				TruckLoadingNormals->SetDeliveryInterval(JourneyTimeNormal);
-				MovingTrucks.Enqueue(TruckLoadingNormals, 1000000 - maxd1);
+
+
+				LinkedPriorityQueue<Cargo*> midd = TruckLoadingNormals->GetCarriedCargos();
+				LinkedPriorityQueue<Cargo*> midd2;
+				int mintime = 1000000;
+
+				while (!midd.isEmpty())
+				{
+					Cargo* midcrg = nullptr;
+					midd.Peek(midcrg);
+					midd.Dequeue();
+					int priofarrival = CurrTimeInt + midcrg->GetAV();
+					midcrg->SetFT(priofarrival);
+					midd2.Enqueue(midcrg, 1000000 - priofarrival);
+
+					if (priofarrival < mintime)
+						mintime = priofarrival;
+				}
+
+
+				MovingTrucks.Enqueue(TruckLoadingNormals, 1000000 - mintime);
 				TruckLoadingNormals = nullptr;
 			}
 		}
@@ -721,6 +746,7 @@ void Company::Simulator()
 					Cargo* tempcargo = nullptr;
 					SpecialWaitingCargos.Peek(tempcargo);
 					SpecialWaitingCargos.Dequeue();
+					tempcargo->SetAV(tempcargo->GetLoadUnloadTime() + (tempcargo->GetDeliveryDistance() / TruckLoadingSpecials->GetTruckSpeed()));           // new lineeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
 					TruckLoadingSpecials->AddToCargos(tempcargo);
 					if (tempcargo->GetDeliveryDistance() > maxd2)
 						maxd2 = tempcargo->GetDeliveryDistance();
@@ -734,14 +760,32 @@ void Company::Simulator()
 				ToChangeTruckLoadingSpecials = 1;
 				JourneyTimeSpecial = TruckLoadingSpecials->GetDeliveryTime();
 				TruckLoadingSpecials->SetDeliveryInterval(JourneyTimeSpecial);
-				MovingTrucks.Enqueue(TruckLoadingSpecials, 1000000 - maxd2);
+
+				LinkedPriorityQueue<Cargo*> midd = TruckLoadingSpecials->GetCarriedCargos();
+				LinkedPriorityQueue<Cargo*> midd2;
+				int mintime = 1000000;
+
+				while (!midd.isEmpty())
+				{
+					Cargo* midcrg = nullptr;
+					midd.Peek(midcrg);
+					midd.Dequeue();
+					int priofarrival = CurrTimeInt + midcrg->GetAV();
+					midcrg->SetFT(priofarrival);
+					midd2.Enqueue(midcrg, 1000000 - priofarrival);
+
+					if (priofarrival < mintime)
+						mintime = priofarrival;
+				}
+
+
+				MovingTrucks.Enqueue(TruckLoadingSpecials, 1000000 - mintime);
 				TruckLoadingSpecials = nullptr;
 
 			}
 		}
 		if (TruckLoadingVIPs)
 		{
-			VIPIsLoading = 1;
 			if (!VIPWaitingCargos.isEmpty())
 			{
 				while (!VIPWaitingCargos.isEmpty() && TruckLoadingVIPs->GetCount() != CapVIPTrucks)
@@ -749,6 +793,7 @@ void Company::Simulator()
 					Cargo* tempcargo = nullptr;
 					VIPWaitingCargos.Peek(tempcargo);
 					VIPWaitingCargos.Dequeue();
+					tempcargo->SetAV(tempcargo->GetLoadUnloadTime() + (tempcargo->GetDeliveryDistance() / TruckLoadingVIPs->GetTruckSpeed()));           // new lineeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
 					TruckLoadingVIPs->AddToCargos(tempcargo);
 					if (tempcargo->GetDeliveryDistance() > maxd3)
 						maxd3 = tempcargo->GetDeliveryDistance();
@@ -762,7 +807,29 @@ void Company::Simulator()
 				ToChangeTruckLoadingVIPs = 1;
 				JourneyTimeVIP = TruckLoadingVIPs->GetDeliveryTime();
 				TruckLoadingVIPs->SetDeliveryInterval(JourneyTimeVIP);           // delivery interval is cargo unloading time + trip time
-				MovingTrucks.Enqueue(TruckLoadingVIPs, 1000000 - maxd3);
+				
+
+				// enqueue cargos with priority of arriving first
+
+				LinkedPriorityQueue<Cargo*> midd = TruckLoadingVIPs->GetCarriedCargos();
+				LinkedPriorityQueue<Cargo*> midd2;
+				int mintime = 1000000;
+
+				while (!midd.isEmpty())
+				{
+					Cargo* midcrg = nullptr;
+					midd.Peek(midcrg);
+					midd.Dequeue();
+					int priofarrival = CurrTimeInt + midcrg->GetAV();
+					midcrg->SetFT(priofarrival);
+					midd2.Enqueue(midcrg,1000000-priofarrival);
+
+					if (priofarrival < mintime)
+						mintime = priofarrival;
+				}
+
+				TruckLoadingVIPs->SetCarriedCargos(midd2);
+				MovingTrucks.Enqueue(TruckLoadingVIPs, 1000000 - mintime);
 				TruckLoadingVIPs = nullptr;
 
 			}
@@ -807,9 +874,7 @@ void Company::Simulator()
 
 
 		if (!MovingTrucks.isEmpty())
-		{ 
-
-
+		{  
 
 
 
@@ -817,8 +882,11 @@ void Company::Simulator()
 
 			MovingTrucks.Peek(temptruckk); // first truck in moving trucks
 
+			//cout << temptruckk->GetID() << endl;
+
 			tempcargoptr = temptruckk->GetCarriedCargos(); 
 			tempcargoptr.Peek(tempcargoo);                // first cargo in first moving truck
+			
 
 			// tempcargoo is first in queue of carried cargos
 
@@ -832,52 +900,88 @@ void Company::Simulator()
 			int unloadtimeofcargo = tempcargoo->GetLoadUnloadTime();
 			int timeoftriparrival = unloadtimeofcargo + triptime + startoftrip;
 
-			cout << unloadtimeofcargo << endl;
-			cout << triptime << endl;
-			cout << startoftrip << endl;
+			//cout <<"UNLOAD TIME OF CARGO : " << unloadtimeofcargo << endl;
+			//cout <<"TRIPTIME :" << triptime << endl;
+			//cout << "START OF TRIP " << startoftrip << endl;
 
 
 
-			 cout << timeoftriparrival  << "   " << CurrTimeInt << endl << endl;
+			 //cout << timeoftriparrival  << "   " << CurrTimeInt << endl << endl;
 			 
 			
+			//cout << "TIME OF ARRIVAL : " << timeoftriparrival << endl;
+			//cout << "AV : " << tempcargoo->GetAV() << endl;
 
 
-
-			if (timeoftriparrival == CurrTimeInt)                                                         // the cargo should be moved to delivered cargos
+			while (timeoftriparrival == CurrTimeInt)                                                         // the cargo should be moved to delivered cargos
 			{
 
-
-				int newmaxd = -1000000;
+				int mintime = 1000000;
 
 				// dequeue cargo from truck .. then re enqueue truck with new priority
 
 				MovingTrucks.Dequeue();
 				Cargo* deliveredc=temptruckk->DequeueCargo();
+				tempcargoptr.Dequeue();
+				tempcargoptr.Peek(tempcargoo);
 				DeliveredCargos.Enqueue(deliveredc);
 
 
-				if (temptruckk->GetCarriedCargos().GetNumberOfEntries()!=0)
+
+				LinkedPriorityQueue<Cargo*> newcrgptrpriq=temptruckk->GetCarriedCargos();
+				Cargo* newcrgptr = nullptr;
+				newcrgptrpriq.Peek(newcrgptr);
+
+
+
+				// then re-order trucks in MovingTrucks where first truck contains next dequeue and etc
+				if (newcrgptr==nullptr)
 				{
-					if (!temptruckk->GetCarriedCargos().isEmpty())
-					{
-
-						LinkedPriorityQueue<Cargo*> tq = temptruckk->GetCarriedCargos();
-						Cargo* tc = nullptr;
-
-						while (!tq.isEmpty())
-						{
-							tq.Peek(tc);
-							tq.Dequeue();
-							if (newmaxd < tc->GetDeliveryDistance())
-								newmaxd = tc->GetDeliveryDistance();
-						}
+					// TO DO .. MOVE TO TRUCKS THAT ARE DELIVERED
+					// DONT RE ENQUEUE 
 
 
-					}
-
-					MovingTrucks.Enqueue(temptruckk, 1000000 - newmaxd);
 				}
+				else
+				{
+					// re enqueue to MovingTrucks at the end
+
+					int pri2=newcrgptr->GetFT();
+					MovingTrucks.Enqueue(temptruckk,1000000-pri2);
+					
+				}
+
+				////////////
+
+		
+				if (!MovingTrucks.isEmpty())
+				{
+
+					MovingTrucks.Peek(temptruckk); // first truck in moving trucks
+
+					//cout << temptruckk->GetID() << endl;
+
+					tempcargoptr = temptruckk->GetCarriedCargos();
+					tempcargoptr.Peek(tempcargoo);                // first cargo in first moving truck
+
+
+					// tempcargoo is first in queue of carried cargos
+					if (tempcargoo == nullptr || temptruckk == nullptr)
+						break;
+
+					startoftrip = temptruckk->GetStartTimeOfMoving();
+					tripdistance = tempcargoo->GetDeliveryDistance();
+
+					speedoftruckk = temptruckk->GetTruckSpeed();
+
+					triptimee = (float)tripdistance / (float)speedoftruckk;
+					triptime = ceil(triptimee);
+					unloadtimeofcargo = tempcargoo->GetLoadUnloadTime();
+					timeoftriparrival = unloadtimeofcargo + triptime + startoftrip;
+
+				}
+				else
+					break;
 
 			}
 		}

@@ -10,6 +10,8 @@ class Cargo                                                   // class to instan
 	int CargoType;                                            // 0 for normal , 1 for special , 2 for VIP
 	int ID;
 	int DeliveryTime;
+	int AV;                                                   // arrival time of cargo
+	int FT;                                     
 	// truck* intruck;
 
 public:
@@ -31,6 +33,10 @@ public:
 	int GetID();
 	void SetDeliveryTime(int);
 	int GetDeliveryTime();
+	int GetAV();
+	void SetAV(int);
+	void SetFT(int);
+	int GetFT();
 	void operator=(Cargo);
 
 };

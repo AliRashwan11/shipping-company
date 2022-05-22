@@ -36,6 +36,7 @@ public:
 	int GetDeliveryInterval();
 	int GetID();
 	void AddToCargos(Cargo*);
+	void RemoveCargos();
 	void RemoveFromCargos();
 	int GetTypeOfLoadedCargos();
 	void SetTypeOfLoadedCargos(int);
@@ -47,6 +48,7 @@ public:
 	Cargo* DequeueCargo();
 	void SetStartedMovingBool(bool);
 	bool GetStartedMovingBool();
+	void SetCarriedCargos(LinkedPriorityQueue<Cargo*>);
 
 	// virtual int GetDeliveryInterval();             to be implemented later
 
