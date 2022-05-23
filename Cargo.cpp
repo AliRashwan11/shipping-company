@@ -10,6 +10,7 @@ Cargo::Cargo(int a)
 	DeliveryTime = 0;
 	AV = -1;
 
+	PreparationTime = -1;
 	//intruck = nullptr;
 }
 
@@ -18,6 +19,7 @@ Cargo::Cargo()
 	CargoType = 0;
 	DeliveryTime = 0;
 	AV = -1;
+	PreparationTime = -1;
 
 }
 
@@ -31,6 +33,7 @@ Cargo::Cargo(Cargo& copy)
 	ID = copy.GetID();
 	DeliveryTime = 0;
 	AV = -1;
+	PreparationTime = -1;
 
 }
 void Cargo::SetPreparationTime(int time)

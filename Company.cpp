@@ -378,6 +378,7 @@ void Company::ReadFile()
 
 			newCargoAdded = new Cargo(CargoType);
 			newCargoAdded->SetCost(CargoCost);
+			newCargoAdded->SetPreparationTime((Day*24)+Hour);
 			newCargoAdded->SetDeliveryDistance(CargoDist);
 			newCargoAdded->SetID(CargoID);
 			newCargoAdded->SetLoadUnloadTime(LT);
@@ -581,6 +582,45 @@ void Company::PrintEmptyTrucks()
 	mainInterface->PrintEmptyTrucks(VIPEmptyTruckspriq);
 
 }
+
+void Company::OutputFile()
+{
+	ofstream OutFile("OutPut.txt");
+	int WaitingTime = 0;
+	int EV = 0; // EV=Tf-Ti(Start of delivry untill shipping the cargo)
+	OutFile << "CDT" << '\t' << "ID" << '\t' << "PT" << '\t' << "WT" << '\t' << "TID" << endl;
+	Cargo* TempCargo = nullptr;
+	LinkedPriorityQueue<Cargo*> TempDelivery=DeliveredCargos;
+
+	while (!TempDelivery.isEmpty())
+	{
+
+		TempDelivery.Peek(TempCargo);
+		TempDelivery.Dequeue();
+
+		OutFile << to_string(TempCargo->GetDeliveryTime()) << '\t' << to_string(TempCargo->GetID()) << '\t' << to_string(TempCargo->GetPreparationTime()) << '\t';
+		int TempFT = TempCargo->GetFT();
+		int Days = 0;
+		int Hours=0;
+		
+		
+
+		int tTemp = TempFT;
+		while (TempFT >= 24)
+		{
+			TempFT -= 24;
+			Days++;
+		}
+
+		Hours = tTemp - (Days * 24);
+		OutFile << to_string(Days) << ":" << to_string(Hours) << '\t' << endl;
+		
+
+	}
+	OutFile.close();
+}
+
+
 void Company::Simulator()
 {
 	this->ReadFile();
@@ -766,6 +806,8 @@ void Company::Simulator()
 				LinkedPriorityQueue<Cargo*> midd = TruckLoadingNormals->GetCarriedCargos();
 				LinkedPriorityQueue<Cargo*> midd2;
 				int mintime = 1000000;
+				int maxtime = -1000000;
+
 
 				while (!midd.isEmpty())
 				{
@@ -778,9 +820,11 @@ void Company::Simulator()
 
 					if (priofarrival < mintime)
 						mintime = priofarrival;
+					if (priofarrival-midcrg->GetLoadUnloadTime() > maxtime)
+						maxtime = priofarrival-midcrg->GetLoadUnloadTime();
 				}
 
-
+				TruckLoadingNormals->SetBackTripTime(maxtime - CurrTimeInt + 1);
 				MovingTrucks.Enqueue(TruckLoadingNormals, 1000000 - mintime);
 				TruckLoadingNormals = nullptr;
 			}
@@ -813,6 +857,8 @@ void Company::Simulator()
 				LinkedPriorityQueue<Cargo*> midd = TruckLoadingSpecials->GetCarriedCargos();
 				LinkedPriorityQueue<Cargo*> midd2;
 				int mintime = 1000000;
+				int maxtime = -1000000;
+
 
 				while (!midd.isEmpty())
 				{
@@ -825,9 +871,11 @@ void Company::Simulator()
 
 					if (priofarrival < mintime)
 						mintime = priofarrival;
+					if (priofarrival - midcrg->GetLoadUnloadTime() > maxtime)
+						maxtime = priofarrival - midcrg->GetLoadUnloadTime();
 				}
 
-
+				TruckLoadingSpecials->SetBackTripTime(maxtime - CurrTimeInt+1);
 				MovingTrucks.Enqueue(TruckLoadingSpecials, 1000000 - mintime);
 				TruckLoadingSpecials = nullptr;
 
@@ -863,6 +911,7 @@ void Company::Simulator()
 				LinkedPriorityQueue<Cargo*> midd = TruckLoadingVIPs->GetCarriedCargos();
 				LinkedPriorityQueue<Cargo*> midd2;
 				int mintime = 1000000;
+				int maxtime = -1000000;
 
 				while (!midd.isEmpty())
 				{
@@ -875,9 +924,12 @@ void Company::Simulator()
 
 					if (priofarrival < mintime)
 						mintime = priofarrival;
+					if (priofarrival - midcrg->GetLoadUnloadTime() > maxtime)
+						maxtime = priofarrival - midcrg->GetLoadUnloadTime();
 				}
 
 				TruckLoadingVIPs->SetCarriedCargos(midd2);
+				TruckLoadingVIPs->SetBackTripTime(maxtime-CurrTimeInt+1);
 				MovingTrucks.Enqueue(TruckLoadingVIPs, 1000000 - mintime);
 				TruckLoadingVIPs = nullptr;
 
@@ -991,6 +1043,14 @@ void Company::Simulator()
 					// DONT RE ENQUEUE 
 
 
+					LinkedPriorityQueue<Cargo*> empty;
+					temptruckk->SetCarriedCargos(empty);
+					temptruckk->SetBackTripTime(temptruckk->GetBackTripTime()+CurrTimeInt);
+					temptruckk->SetNumberOfTripsDone(temptruckk->GetNumberOfTripsDone()+1);
+					OnWayBackTrucks.Enqueue(temptruckk, 1000000 - temptruckk->GetBackTripTime());       // enqueue to trucks that are making their way back to company
+
+
+					cout << "BACK AT : " << temptruckk->GetBackTripTime() << endl;
 				}
 				else
 				{
@@ -1035,6 +1095,43 @@ void Company::Simulator()
 
 			}
 		}
+
+
+		if (!OnWayBackTrucks.isEmpty())            // if there are trucks that are on their way back to company
+		{
+			truck* temptruck = nullptr;
+			OnWayBackTrucks.Peek(temptruck);
+			int temptime = temptruck->GetBackTripTime();
+
+			while (temptime == CurrTimeInt)
+			{
+				OnWayBackTrucks.Dequeue();
+
+				if (temptruck->GetTruckType() == 0)
+				{
+					if (temptruck->GetNumberOfTripsDone() == NumberOfJourneysBeforeCheckup)       // enqueue to incheckup trucks instead of normal waiting
+					{
+
+					}
+					else
+						NormalEmptyTrucks.Enqueue(temptruck);
+				}
+				else if(temptruck->GetTruckType() ==1)
+					SpecialEmptyTrucks.Enqueue(temptruck);
+				else
+					VIPEmptyTrucks.Enqueue(temptruck);
+
+				if (!OnWayBackTrucks.isEmpty())
+				{
+					OnWayBackTrucks.Peek(temptruck);
+					temptime = temptruck->GetBackTripTime();
+				}
+				else
+					break;
+				
+			}
+		}
+
 
 
 
@@ -1283,7 +1380,7 @@ void Company::Simulator()
 
 		mainInterface->PrintStartSim();
 		mainInterface->PrintHourAdvance(Day, Hour);
-		PrintWaitingCargosSim();
+		PrintWaitingCargosSim();                                       // 1st line
 		mainInterface->DrawLines();
 		//PrintMovingTrucksSim();
 
@@ -1291,15 +1388,17 @@ void Company::Simulator()
 
 		int numLoadingTrucks = (int)NormalIsLoading + (int)SpecialIsLoading + (int)VIPIsLoading;
 		CurrentlyLoading = numLoadingTrucks;
-		PrintLoadingTrucks();
+		PrintLoadingTrucks();                                       // 2nd line
+		mainInterface->DrawLines();
+		PrintEmptyTrucks();                                        // 3rd line
 		mainInterface->DrawLines();
 		PrintMovingTrucksSim();
 		mainInterface->DrawLines();
 		PrintDeliveredCargos();
 		mainInterface->DrawLines();
-		PrintEmptyTrucks(); 
 
 
+		 OutputFile();
 
 		key = _getch();
 		if (key != 13)                                                           // ASCII for Key_Enter
@@ -1315,7 +1414,6 @@ void Company::Simulator()
 			system("cls");                                                       // clears console
 		}
 
-		//cout << "ufjdgfidk" << endl;
 
 		
 

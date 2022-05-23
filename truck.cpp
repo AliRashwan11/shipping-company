@@ -11,6 +11,7 @@ truck::truck(int typenum)
 	DeliveryInterval = 0;
 	count = 0;
 	StartedMoving = 0;
+	NumberOfTripsDone = 0;
 }
 
 truck::truck()
@@ -22,7 +23,7 @@ truck::truck()
 	DeliveryInterval = 0;
 	count = 0;
 	StartedMoving = 0;
-
+	NumberOfTripsDone = 0;
 }
 
 truck::truck(truck& copy)
@@ -34,6 +35,17 @@ truck::truck(truck& copy)
 	DeliveryInterval = copy.GetDeliveryInterval();
 	count = 0;
 	StartedMoving = 0;
+	NumberOfTripsDone = 0;
+}
+
+void truck::SetNumberOfTripsDone(int a)
+{
+	NumberOfTripsDone = a;
+}
+
+int truck::GetNumberOfTripsDone()
+{
+	return NumberOfTripsDone;
 }
 
 void truck::SetTruckCapacity(int a)
@@ -112,6 +124,15 @@ void truck::SetCarriedCargos(LinkedPriorityQueue<Cargo*> a)
 	InTruckCargos = a;
 }
 
+void truck::SetBackTripTime(int a)
+{
+	BackTripTime = a;
+}
+
+int truck::GetBackTripTime()
+{
+	return BackTripTime;
+}
 
 /*
 * int truck::GetDeliveryInterval()

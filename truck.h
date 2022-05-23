@@ -15,6 +15,8 @@ class truck
 	int TypeOfLoadedCargos;                           // 0 for normal , 1 for special , 2 for vip
 	int count;                                        // count of cargos in truck
 	bool StartedMoving;
+	int BackTripTime;                                 // time taken by truck's trip back to company
+	int NumberOfTripsDone;
 
 	int StartTimeOfMoving;
 	LinkedPriorityQueue<Cargo*> InTruckCargos;                                           // pointer to last cargo
@@ -49,6 +51,10 @@ public:
 	void SetStartedMovingBool(bool);
 	bool GetStartedMovingBool();
 	void SetCarriedCargos(LinkedPriorityQueue<Cargo*>);
+	void SetBackTripTime(int);
+	int GetBackTripTime();
+	int GetNumberOfTripsDone();
+	void SetNumberOfTripsDone(int);
 
 	// virtual int GetDeliveryInterval();             to be implemented later
 

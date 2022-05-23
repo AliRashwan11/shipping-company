@@ -43,6 +43,7 @@ class Company
 
 	LinkedPriorityQueue<Cargo*> DeliveredCargos;
 	
+	LinkedPriorityQueue<truck*> OnWayBackTrucks;
 
 	truck* TruckLoadingNormals;
 	truck* TruckLoadingSpecials;
@@ -109,6 +110,7 @@ public:
 	void PrintNumberOfNormalCargos();
 	void PrintLoadingTrucks();
 	Cargo* GetFirstCargoInNormalWaitingCargos();
+	void OutputFile();
 
 	void SimpleSimulator();
 	void Simulator();
