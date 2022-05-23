@@ -1,5 +1,6 @@
 #pragma once
 #include"LinkedPriorityQueue.h"
+//#include"LinkedQueue.h"
 #include"Cargo.h"
 #include"truck.h"
 #include <iostream>
@@ -55,7 +56,10 @@ public:
 	void PrintSpecialLoading(truck*);
 	void PrintMovingTrucksSimIntro(int);
 	void PrintMovingTrucksSim(LinkedPriorityQueue<truck*>);
-
+	void PrintDelieverdCargos(int);
+	void PrintDeliveredCargosUI(LinkedPriorityQueue<Cargo*>);
+	void PrintEmptyTrucksInfo(int);
+	void PrintEmptyTrucks(LinkedPriorityQueue<truck*>);
 	~UserInterface();
 };
 

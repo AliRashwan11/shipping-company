@@ -141,6 +141,71 @@ void UserInterface::PrintMovingCargosInfo(int n)
 	return;
 }
 
+void UserInterface::PrintDeliveredCargosUI(LinkedPriorityQueue<Cargo*> in)
+{
+	LinkedPriorityQueue<Cargo*> tempq = in;
+	Cargo* tempcargo = nullptr;
+	int type = -1;
+
+	while (!tempq.isEmpty())
+	{
+		tempq.Peek(tempcargo);
+		tempq.Dequeue();
+		
+		type = tempcargo->GetCargoType();
+		if (type == 0) // normal
+		{
+			cout << "[" << tempcargo->GetID() << "] ";
+		}
+		else if (type == 1) // special
+		{
+			cout << "(" << tempcargo->GetID() << ") ";
+
+		}
+		else // VIP
+		{
+			cout << "{" << tempcargo->GetID() << "} ";
+
+		}
+	}
+	
+}
+
+void UserInterface::PrintEmptyTrucksInfo(int a)
+{
+	cout << a << " Empty Trucks: ";
+}
+
+void UserInterface::PrintEmptyTrucks(LinkedPriorityQueue<truck*> in)
+{
+	int type = -1;
+	LinkedPriorityQueue<truck*> temp = in;
+	truck* temptruck = nullptr;
+
+	while (!temp.isEmpty())
+	{
+		temp.Peek(temptruck);
+		temp.Dequeue();
+
+		type = temptruck->GetTruckType();
+		if (type == 0) // normal
+		{
+			cout << "[" << temptruck->GetID() << "] ";
+		}
+		else if (type == 1) // special
+		{
+			cout << "(" << temptruck->GetID() << ") ";
+
+		}
+		else // vip
+		{
+			cout << "{" << temptruck->GetID() << "} ";
+
+		}
+	}
+}
+
+
 void UserInterface::DrawLines()
 {
 	cout <<endl<<"------------------------------------------------------------------------"<<endl;
@@ -412,6 +477,11 @@ void UserInterface::PrintSpecialLoading(truck* in)
 void UserInterface::PrintMovingTrucksSimIntro(int a)
 {
 	cout << a << " Moving Cargos: ";
+}
+
+void UserInterface::PrintDelieverdCargos(int a)
+{
+	cout << a << " Delivered Cargos: ";
 }
 
 void UserInterface::PrintMovingTrucksSim(LinkedPriorityQueue<truck*> q)

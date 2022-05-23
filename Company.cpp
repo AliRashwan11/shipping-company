@@ -22,7 +22,7 @@ Company::Company(string infile,UserInterface* uiptr)
 	TruckLoadingNormals = nullptr;
 	TruckLoadingSpecials = nullptr;
 	TruckLoadingVIPs = nullptr;
-	NumberOfDeliveredCargos = -1;
+	NumberOfDeliveredCargos = 0;
 	
 }
 
@@ -308,7 +308,7 @@ void Company::ReadFile()
 	for (int i = 0; i < NumberOfVIPTrucks; i++)
 	{
 		truck* newvtruck = new truck(2);
-		newvtruck->SetID(NumberOfSpecialTrucks +i+1);
+		newvtruck->SetID(NumberOfSpecialTrucks +i+ NumberOfNormalTrucks);
 		newvtruck->SetTruckSpeed(SpeedOfVIPTrucks);
 		newvtruck->SetTruckCapacity(VIPTruckCapacity);
 		newvtruck->SetMaintenanceTime(CheckUpDurationOfVIPTrucks);
@@ -532,6 +532,55 @@ void Company::PrintLoadingTrucks()
 	mainInterface->PrintLoadingTrucksInfo(TruckLoadingNormals,TruckLoadingSpecials,TruckLoadingVIPs);
 }
 
+
+void Company::PrintDeliveredCargos()
+{
+	mainInterface->PrintDelieverdCargos(NumberOfDeliveredCargos);
+	mainInterface->PrintDeliveredCargosUI(DeliveredCargos);
+}
+
+void Company::PrintEmptyTrucks()
+{
+	int NumberOfNormalEmptyTrucks = NormalEmptyTrucks.GetNumberOfEntries();
+	int NumberOfSpecialEmptyTrucks = SpecialEmptyTrucks.GetNumberOfEntries();
+	int NumberOfVIPEmptyTrucks = VIPEmptyTrucks.GetNumberOfEntries();
+	int NumberOfAllEmptyTrucks = NumberOfNormalEmptyTrucks + NumberOfSpecialEmptyTrucks + NumberOfVIPEmptyTrucks;
+
+	LinkedPriorityQueue<truck*> NormalEmptyTruckspriq;
+	LinkedPriorityQueue<truck*> SpecialEmptyTruckspriq;
+	LinkedPriorityQueue<truck*> VIPEmptyTruckspriq;
+
+	LinkedQueue<truck*> tempnormal = NormalEmptyTrucks;
+	LinkedQueue<truck*> tempspecial = SpecialEmptyTrucks;
+	LinkedQueue<truck*> tempvip = VIPEmptyTrucks;
+
+	truck* temptruckptr = nullptr;
+
+	while (!tempnormal.isEmpty())
+	{
+		tempnormal.Peek(temptruckptr);
+		tempnormal.Dequeue();
+		NormalEmptyTruckspriq.Enqueue(temptruckptr,0);
+	}
+	while (!tempspecial.isEmpty())
+	{
+		tempspecial.Peek(temptruckptr);
+		tempspecial.Dequeue();
+		SpecialEmptyTruckspriq.Enqueue(temptruckptr,0);
+	}
+	while (!tempvip.isEmpty())
+	{
+		tempvip.Peek(temptruckptr);
+		tempvip.Dequeue();
+		VIPEmptyTruckspriq.Enqueue(temptruckptr,0);
+	}
+
+	mainInterface->PrintEmptyTrucksInfo(NumberOfAllEmptyTrucks);
+	mainInterface->PrintEmptyTrucks(NormalEmptyTruckspriq);
+	mainInterface->PrintEmptyTrucks(SpecialEmptyTruckspriq);
+	mainInterface->PrintEmptyTrucks(VIPEmptyTruckspriq);
+
+}
 void Company::Simulator()
 {
 	this->ReadFile();
@@ -915,6 +964,7 @@ void Company::Simulator()
 
 			while (timeoftriparrival == CurrTimeInt)                                                         // the cargo should be moved to delivered cargos
 			{
+				NumberOfDeliveredCargos++;
 
 				int mintime = 1000000;
 
@@ -924,7 +974,7 @@ void Company::Simulator()
 				Cargo* deliveredc=temptruckk->DequeueCargo();
 				tempcargoptr.Dequeue();
 				tempcargoptr.Peek(tempcargoo);
-				DeliveredCargos.Enqueue(deliveredc);
+				DeliveredCargos.Enqueue(deliveredc,0);
 
 
 
@@ -1244,6 +1294,10 @@ void Company::Simulator()
 		PrintLoadingTrucks();
 		mainInterface->DrawLines();
 		PrintMovingTrucksSim();
+		mainInterface->DrawLines();
+		PrintDeliveredCargos();
+		mainInterface->DrawLines();
+		PrintEmptyTrucks(); 
 
 
 

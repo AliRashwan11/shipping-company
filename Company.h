@@ -41,7 +41,7 @@ class Company
 	LinkedPriorityQueue<Cargo*> SpecialMovingCargos;
 	LinkedPriorityQueue<Cargo*> VIPMovingCargos;
 
-	LinkedQueue<Cargo*> DeliveredCargos;
+	LinkedPriorityQueue<Cargo*> DeliveredCargos;
 	
 
 	truck* TruckLoadingNormals;
@@ -94,6 +94,8 @@ public:
 	void PrintMovingCargosSim();
 	void PrintDeliveredCargosSim();
 	void PrintVIPWaitingCargos();
+	void PrintDeliveredCargos();
+	void PrintEmptyTrucks();
 	void PrintEvents();
 	void PrintMovingTrucksSim();
 	void AddToNormalMovingcargos(Cargo*);
