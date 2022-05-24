@@ -11,6 +11,7 @@ Cargo::Cargo(int a)
 	AV = -1;
 
 	PreparationTime = -1;
+	WaitTime = 0;
 	//intruck = nullptr;
 }
 
@@ -20,7 +21,7 @@ Cargo::Cargo()
 	DeliveryTime = 0;
 	AV = -1;
 	PreparationTime = -1;
-
+	WaitTime = 0;
 
 }
 
@@ -35,7 +36,7 @@ Cargo::Cargo(Cargo& copy)
 	DeliveryTime = 0;
 	AV = -1;
 	PreparationTime = -1;
-
+	WaitTime = 0;
 
 }
 void Cargo::SetPreparationTime(int time)
@@ -128,6 +129,15 @@ int Cargo::GetFT()
 	return FT;
 }
 
+int Cargo::GetWaitTime()
+{
+	return WaitTime;
+}
+
+void Cargo::SetWaitTime(int a)
+{
+	WaitTime = a;
+}
 
 
 void Cargo::operator= (Cargo car)

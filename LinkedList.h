@@ -193,6 +193,17 @@ public:
 		return temp;
 	}
 
+	void IncrementWaitTime()
+	{
+		Node<Cargo*>* temp = Head;
+		while (temp)
+		{
+			temp->GetItem()->SetWaitTime(temp->GetItem()->GetWaitTime()+1);
+			temp = temp->GetNext();
+		}
+
+	}
+
 	bool Find(int key)
 	{
 		Node<Cargo*>* ptr = Head;

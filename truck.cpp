@@ -13,6 +13,7 @@ truck::truck(int typenum)
 	StartedMoving = 0;
 	NumberOfTripsDone = 0;
 	TimeToGetOutOfCheckup = -1;
+	WaitTime = 0;
 
 }
 
@@ -27,6 +28,8 @@ truck::truck()
 	StartedMoving = 0;
 	NumberOfTripsDone = 0;
 	TimeToGetOutOfCheckup = -1;
+	WaitTime = 0;
+
 
 }
 
@@ -41,6 +44,8 @@ truck::truck(truck& copy)
 	StartedMoving = 0;
 	NumberOfTripsDone = 0;
 	TimeToGetOutOfCheckup = -1;
+	WaitTime = 0;
+
 
 }
 
@@ -187,6 +192,16 @@ int truck::GetCount()
 	return count;
 }
 
+int truck::GetWaitTime()
+{
+	return WaitTime;
+}
+
+void truck::SetWaitTime(int a)
+{
+	WaitTime = a;
+}
+
 LinkedPriorityQueue<Cargo*> truck::GetCarriedCargos()
 {
 	return InTruckCargos;
@@ -217,6 +232,16 @@ int truck::GetDeliveryTime()
 
 	return TotalTimeTaken;
 
+}
+
+void truck::SetStartTimeOfLoading(int a)
+{
+	StartTimeOfLoading = a;
+}
+
+int truck::GetStartTimeOfLoading()
+{
+	return StartTimeOfLoading;
 }
 
 void truck::SetStartTimeOfMoving(int a)

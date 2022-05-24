@@ -26,6 +26,9 @@ Company::Company(string infile,UserInterface* uiptr)
 	MaintenanceTimeOfSpecials = 0;
 	MaintenanceTimeOfNormals = 0;
 	MaintenanceTimeOfVIPs = 0;
+	UpdateStartTimeOfLoadingNormals = 1;
+	UpdateStartTimeOfLoadingSpecials = 1;
+	UpdateStartTimeOfLoadingVIPs = 1;
 	
 }
 
@@ -835,6 +838,11 @@ void Company::Simulator()
 
 		if (TruckLoadingNormals)
 		{
+			if (UpdateStartTimeOfLoadingNormals==1)
+			{
+				TruckLoadingNormals->SetStartTimeOfLoading(CurrTimeInt);
+				UpdateStartTimeOfLoadingNormals = 0;
+			}
 			NormalIsLoading = 1;
 			if (!NormalWaitingCargos.isEmpty())
 			{
@@ -848,8 +856,10 @@ void Company::Simulator()
 						maxd1 = tempcargo->GetDeliveryDistance();
 				}
 			}
-			if (TruckLoadingNormals->GetCount() == CapNormalTrucks && TruckLoadingNormals->GetStartedMovingBool()==0)
+			if ((TruckLoadingNormals->GetCount() == CapNormalTrucks || CurrTimeInt-TruckLoadingNormals->GetStartTimeOfLoading()==maxW) && TruckLoadingNormals->GetStartedMovingBool()==0)
 			{
+				// TruckLoadingNormals->SetWaitTime(0);
+				UpdateStartTimeOfLoadingNormals = 1;
 				TruckLoadingNormals->SetStartedMovingBool(1);
 				TruckLoadingNormals->SetStartTimeOfMoving(CurrTimeInt);
 				maxd1 = 0;
@@ -883,9 +893,19 @@ void Company::Simulator()
 				MovingTrucks.Enqueue(TruckLoadingNormals, 1000000 - mintime);
 				TruckLoadingNormals = nullptr;
 			}
+			else
+			{
+				NormalWaitingCargos.IncrementWaitTime(); // ass
+				TruckLoadingNormals->SetWaitTime(TruckLoadingNormals->GetWaitTime()+1);
+			}
 		}
 		if (TruckLoadingSpecials)
 		{
+			if (UpdateStartTimeOfLoadingSpecials == 1)
+			{
+				TruckLoadingSpecials->SetStartTimeOfLoading(CurrTimeInt);
+				UpdateStartTimeOfLoadingSpecials = 0;
+			}
 			SpecialIsLoading = 1;
 			if (!SpecialWaitingCargos.isEmpty())
 			{
@@ -900,8 +920,9 @@ void Company::Simulator()
 						maxd2 = tempcargo->GetDeliveryDistance();
 				}
 			}
-			if (TruckLoadingSpecials->GetCount() == CapSpecialTrucks && TruckLoadingSpecials->GetStartedMovingBool()==0)
+			if ((TruckLoadingSpecials->GetCount() == CapSpecialTrucks || CurrTimeInt - TruckLoadingSpecials->GetStartTimeOfLoading() == maxW) && TruckLoadingSpecials->GetStartedMovingBool()==0)
 			{
+				UpdateStartTimeOfLoadingSpecials = 1;
 				TruckLoadingSpecials->SetStartedMovingBool(1);
 				TruckLoadingSpecials->SetStartTimeOfMoving(CurrTimeInt);
 				maxd2 = 0;
@@ -935,9 +956,26 @@ void Company::Simulator()
 				TruckLoadingSpecials = nullptr;
 
 			}
+			else
+			{
+				LinkedQueue<Cargo*> temprcgq = SpecialWaitingCargos;
+				while (!temprcgq.isEmpty())
+				{
+					Cargo* crgt = nullptr;
+					temprcgq.Peek(crgt);
+					temprcgq.Dequeue();
+					crgt->SetWaitTime(crgt->GetWaitTime()+1);
+				}
+				TruckLoadingSpecials->SetWaitTime(TruckLoadingNormals->GetWaitTime() + 1);
+			}
 		}
 		if (TruckLoadingVIPs)
 		{
+			if (UpdateStartTimeOfLoadingVIPs == 1)
+			{
+				TruckLoadingVIPs->SetStartTimeOfLoading(CurrTimeInt);
+				UpdateStartTimeOfLoadingVIPs = 0;
+			}
 			if (!VIPWaitingCargos.isEmpty())
 			{
 				while (!VIPWaitingCargos.isEmpty() && TruckLoadingVIPs->GetCount() != CapVIPTrucks)
@@ -951,8 +989,9 @@ void Company::Simulator()
 						maxd3 = tempcargo->GetDeliveryDistance();
 				}
 			}
-			if (TruckLoadingVIPs->GetCount() == CapVIPTrucks && TruckLoadingVIPs->GetStartedMovingBool() == 0)
+			if ((TruckLoadingVIPs->GetCount() == CapVIPTrucks || CurrTimeInt - TruckLoadingVIPs->GetStartTimeOfLoading() == maxW) && TruckLoadingVIPs->GetStartedMovingBool() == 0)
 			{
+				UpdateStartTimeOfLoadingVIPs = 1;
 				TruckLoadingVIPs->SetStartedMovingBool(1);
 				TruckLoadingVIPs->SetStartTimeOfMoving(CurrTimeInt);
 				maxd3 = 0;
@@ -988,6 +1027,18 @@ void Company::Simulator()
 				MovingTrucks.Enqueue(TruckLoadingVIPs, 1000000 - mintime);
 				TruckLoadingVIPs = nullptr;
 
+			}
+			else
+			{
+				LinkedPriorityQueue<Cargo*> temprcgq = VIPWaitingCargos;
+				while (!temprcgq.isEmpty())
+				{
+					Cargo* crgt = nullptr;
+					temprcgq.Peek(crgt);
+					temprcgq.Dequeue();
+					crgt->SetWaitTime(crgt->GetWaitTime() + 1);
+				}
+				TruckLoadingVIPs->SetWaitTime(TruckLoadingVIPs->GetWaitTime() + 1);
 			}
 		}
 

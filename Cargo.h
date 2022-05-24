@@ -12,6 +12,7 @@ class Cargo                                                   // class to instan
 	int DeliveryTime;
 	int AV;                                                   // arrival time of cargo
 	int FT;                                     
+	int WaitTime;
 	// truck* intruck;
 
 public:
@@ -37,6 +38,8 @@ public:
 	void SetAV(int);
 	void SetFT(int);
 	int GetFT();
+	void SetWaitTime(int);
+	int GetWaitTime();
 	
 	void operator=(Cargo);
 

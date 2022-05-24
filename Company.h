@@ -92,6 +92,10 @@ class Company
 	int MaintenanceTimeOfSpecials;
 	int MaintenanceTimeOfVIPs;
 
+	bool UpdateStartTimeOfLoadingNormals;
+	bool UpdateStartTimeOfLoadingSpecials;
+	bool UpdateStartTimeOfLoadingVIPs;
+
 
 public:
 	Company(string,UserInterface*);

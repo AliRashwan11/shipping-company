@@ -18,6 +18,8 @@ class truck
 	int BackTripTime;                                 // time taken by truck's trip back to company
 	int NumberOfTripsDone;
 	int TimeToGetOutOfCheckup;
+	int StartTimeOfLoading;
+	int WaitTime;
 
 	int StartTimeOfMoving;
 	LinkedPriorityQueue<Cargo*> InTruckCargos;                                           // pointer to last cargo
@@ -58,6 +60,10 @@ public:
 	void SetNumberOfTripsDone(int);
 	int GetTimeToGetOutOfCheckup();
 	void SetTimeToGetOutOfCheckup(int);
+	void SetStartTimeOfLoading(int);
+	int GetStartTimeOfLoading();
+	int GetWaitTime();
+	void SetWaitTime(int);
 
 	// virtual int GetDeliveryInterval();             to be implemented later
 
