@@ -365,6 +365,8 @@ void UserInterface::PrintListSimSpecial(LinkedPriorityQueue<Cargo*> in)
 
 	return;
 }
+
+
 void UserInterface::PrintListSimVIP(LinkedPriorityQueue<Cargo*> in)
 {
 	cout << "{";
@@ -442,6 +444,13 @@ void UserInterface::PrintNormalLoading(truck* in)
 	cout << "] ";
 	
 }
+
+void UserInterface::PrintInCheckupsIntro(int a)
+{
+	cout << a << " In-Checkup Trucks: ";
+}
+
+
 void UserInterface::PrintVIPLoading(truck* in)
 {
 	Cargo* tempv = nullptr;

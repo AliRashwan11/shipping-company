@@ -37,6 +37,7 @@ public:
 	void SetAV(int);
 	void SetFT(int);
 	int GetFT();
+	
 	void operator=(Cargo);
 
 };

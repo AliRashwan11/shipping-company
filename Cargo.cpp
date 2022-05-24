@@ -21,6 +21,7 @@ Cargo::Cargo()
 	AV = -1;
 	PreparationTime = -1;
 
+
 }
 
 Cargo::Cargo(Cargo& copy)
@@ -34,6 +35,7 @@ Cargo::Cargo(Cargo& copy)
 	DeliveryTime = 0;
 	AV = -1;
 	PreparationTime = -1;
+
 
 }
 void Cargo::SetPreparationTime(int time)
@@ -125,6 +127,8 @@ int Cargo::GetFT()
 {
 	return FT;
 }
+
+
 
 void Cargo::operator= (Cargo car)
 {

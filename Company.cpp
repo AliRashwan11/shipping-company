@@ -23,6 +23,9 @@ Company::Company(string infile,UserInterface* uiptr)
 	TruckLoadingSpecials = nullptr;
 	TruckLoadingVIPs = nullptr;
 	NumberOfDeliveredCargos = 0;
+	MaintenanceTimeOfSpecials = 0;
+	MaintenanceTimeOfNormals = 0;
+	MaintenanceTimeOfVIPs = 0;
 	
 }
 
@@ -267,6 +270,8 @@ void Company::ReadFile()
 	int NormalTruckCapacity = ReadSubFile(2, 0);
 	CapNormalTrucks = NormalTruckCapacity;
 	int CheckUpDurationOfNormalTrucks = ReadSubFile(3, 1);
+	MaintenanceTimeOfNormals = CheckUpDurationOfNormalTrucks;
+
 
 	for (int i = 0; i < NumberOfNormalTrucks; i++)
 	{
@@ -287,6 +292,8 @@ void Company::ReadFile()
 	int SpecialTruckCapacity = ReadSubFile(2, 1);
 	CapSpecialTrucks = SpecialTruckCapacity;
 	int CheckUpDurationOfSpecialTrucks = ReadSubFile(3, 2);
+	MaintenanceTimeOfSpecials = CheckUpDurationOfSpecialTrucks;
+
 
 	for (int i = 0; i < NumberOfSpecialTrucks; i++)
 	{
@@ -304,6 +311,8 @@ void Company::ReadFile()
 	int VIPTruckCapacity = ReadSubFile(2, 2);
 	CapVIPTrucks = VIPTruckCapacity;
 	int CheckUpDurationOfVIPTrucks = ReadSubFile(3, 3);
+	MaintenanceTimeOfVIPs = CheckUpDurationOfVIPTrucks;
+
 
 	for (int i = 0; i < NumberOfVIPTrucks; i++)
 	{
@@ -580,6 +589,52 @@ void Company::PrintEmptyTrucks()
 	mainInterface->PrintEmptyTrucks(NormalEmptyTruckspriq);
 	mainInterface->PrintEmptyTrucks(SpecialEmptyTruckspriq);
 	mainInterface->PrintEmptyTrucks(VIPEmptyTruckspriq);
+
+}
+
+void Company::PrintIncheckups()
+{
+
+	int n1 = InCheckupNormal.GetNumberOfEntries();
+	int n2 = InCheckupSpecial.GetNumberOfEntries();
+	int n3 = InCheckupVIP.GetNumberOfEntries();
+
+	mainInterface->PrintInCheckupsIntro(n1+n2+n3);
+
+
+	LinkedPriorityQueue<truck*> NormalEmptyTruckspriq;
+	LinkedPriorityQueue<truck*> SpecialEmptyTruckspriq;
+	LinkedPriorityQueue<truck*> VIPEmptyTruckspriq;
+
+	LinkedQueue<truck*> tempnormal = InCheckupNormal;
+	LinkedQueue<truck*> tempspecial = InCheckupSpecial;
+	LinkedQueue<truck*> tempvip = InCheckupVIP;
+
+	truck* temptruckptr = nullptr;
+
+	while (!tempnormal.isEmpty())
+	{
+		tempnormal.Peek(temptruckptr);
+		tempnormal.Dequeue();
+		NormalEmptyTruckspriq.Enqueue(temptruckptr, 0);
+	}
+	while (!tempspecial.isEmpty())
+	{
+		tempspecial.Peek(temptruckptr);
+		tempspecial.Dequeue();
+		SpecialEmptyTruckspriq.Enqueue(temptruckptr, 0);
+	}
+	while (!tempvip.isEmpty())
+	{
+		tempvip.Peek(temptruckptr);
+		tempvip.Dequeue();
+		VIPEmptyTruckspriq.Enqueue(temptruckptr, 0);
+	}
+
+	mainInterface->PrintEmptyTrucks(NormalEmptyTruckspriq);
+	mainInterface->PrintEmptyTrucks(SpecialEmptyTruckspriq);
+	mainInterface->PrintEmptyTrucks(VIPEmptyTruckspriq);
+
 
 }
 
@@ -1047,10 +1102,9 @@ void Company::Simulator()
 					temptruckk->SetCarriedCargos(empty);
 					temptruckk->SetBackTripTime(temptruckk->GetBackTripTime()+CurrTimeInt);
 					temptruckk->SetNumberOfTripsDone(temptruckk->GetNumberOfTripsDone()+1);
-					OnWayBackTrucks.Enqueue(temptruckk, 1000000 - temptruckk->GetBackTripTime());       // enqueue to trucks that are making their way back to company
+					OnWayBackTrucks.Enqueue(temptruckk, 1000000 - temptruckk->GetBackTripTime());    // enqueue to trucks that are making their way back to company
 
 
-					cout << "BACK AT : " << temptruckk->GetBackTripTime() << endl;
 				}
 				else
 				{
@@ -1112,14 +1166,40 @@ void Company::Simulator()
 					if (temptruck->GetNumberOfTripsDone() == NumberOfJourneysBeforeCheckup)       // enqueue to incheckup trucks instead of normal waiting
 					{
 
+						temptruck->SetTimeToGetOutOfCheckup(CurrTimeInt+MaintenanceTimeOfNormals);
+						temptruck->SetNumberOfTripsDone(0);
+						InCheckupNormal.Enqueue(temptruck);
+
+
 					}
 					else
 						NormalEmptyTrucks.Enqueue(temptruck);
 				}
-				else if(temptruck->GetTruckType() ==1)
-					SpecialEmptyTrucks.Enqueue(temptruck);
+				else if (temptruck->GetTruckType() == 1)
+				{
+					if (temptruck->GetNumberOfTripsDone() == NumberOfJourneysBeforeCheckup)
+					{
+						temptruck->SetTimeToGetOutOfCheckup(CurrTimeInt + MaintenanceTimeOfSpecials);
+						temptruck->SetNumberOfTripsDone(0);
+						InCheckupSpecial.Enqueue(temptruck);
+					}
+					else
+						SpecialEmptyTrucks.Enqueue(temptruck);
+
+				}
+
 				else
-					VIPEmptyTrucks.Enqueue(temptruck);
+				{
+					if (temptruck->GetNumberOfTripsDone() == NumberOfJourneysBeforeCheckup)
+					{
+						temptruck->SetTimeToGetOutOfCheckup(CurrTimeInt + MaintenanceTimeOfVIPs);
+						temptruck->SetNumberOfTripsDone(0);
+						InCheckupVIP.Enqueue(temptruck);
+					}
+					else
+						VIPEmptyTrucks.Enqueue(temptruck);
+
+				}
 
 				if (!OnWayBackTrucks.isEmpty())
 				{
@@ -1133,6 +1213,71 @@ void Company::Simulator()
 		}
 
 
+
+		if (!InCheckupNormal.isEmpty())
+		{
+			truck* nextcheckup = nullptr;
+			InCheckupNormal.Peek(nextcheckup);
+
+
+
+			while (nextcheckup->GetTimeToGetOutOfCheckup() == CurrTimeInt)
+			{
+				NormalEmptyTrucks.Enqueue(nextcheckup);
+				InCheckupNormal.Dequeue();
+
+				if (!InCheckupNormal.isEmpty())
+					InCheckupNormal.Peek(nextcheckup);
+				else
+					break;
+			}
+
+		}
+
+
+
+		if (!InCheckupSpecial.isEmpty())
+		{
+			truck* nextcheckup = nullptr;
+			InCheckupSpecial.Peek(nextcheckup);
+
+
+
+			while (nextcheckup->GetTimeToGetOutOfCheckup() == CurrTimeInt)
+			{
+				//cout << CurrTimeInt << endl;
+
+				InCheckupSpecial.Dequeue();
+				SpecialEmptyTrucks.Enqueue(nextcheckup);
+				//cout << "vdjev" << endl;
+
+				if (!InCheckupSpecial.isEmpty())
+					InCheckupSpecial.Peek(nextcheckup);
+				else
+					break;
+			}
+
+
+
+		}
+
+		if (!InCheckupVIP.isEmpty())
+		{
+			truck* nextcheckup = nullptr;
+			InCheckupVIP.Peek(nextcheckup);
+
+
+			while (nextcheckup->GetTimeToGetOutOfCheckup() == CurrTimeInt)
+			{
+				InCheckupVIP.Dequeue();
+				VIPEmptyTrucks.Enqueue(nextcheckup);
+
+				if (!InCheckupVIP.isEmpty())
+					InCheckupVIP.Peek(nextcheckup);
+				else
+					break;
+			}
+		}
 
 
 		/*
@@ -1394,8 +1539,9 @@ void Company::Simulator()
 		mainInterface->DrawLines();
 		PrintMovingTrucksSim();
 		mainInterface->DrawLines();
-		PrintDeliveredCargos();
+		PrintIncheckups();
 		mainInterface->DrawLines();
+		PrintDeliveredCargos();
 
 
 		 OutputFile();

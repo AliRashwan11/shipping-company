@@ -12,6 +12,8 @@ truck::truck(int typenum)
 	count = 0;
 	StartedMoving = 0;
 	NumberOfTripsDone = 0;
+	TimeToGetOutOfCheckup = -1;
+
 }
 
 truck::truck()
@@ -24,6 +26,8 @@ truck::truck()
 	count = 0;
 	StartedMoving = 0;
 	NumberOfTripsDone = 0;
+	TimeToGetOutOfCheckup = -1;
+
 }
 
 truck::truck(truck& copy)
@@ -36,6 +40,8 @@ truck::truck(truck& copy)
 	count = 0;
 	StartedMoving = 0;
 	NumberOfTripsDone = 0;
+	TimeToGetOutOfCheckup = -1;
+
 }
 
 void truck::SetNumberOfTripsDone(int a)
@@ -117,6 +123,16 @@ void truck::RemoveCargos()
 {
 	LinkedPriorityQueue<Cargo*> empty;
 	InTruckCargos = empty;
+}
+
+int truck::GetTimeToGetOutOfCheckup()
+{
+	return TimeToGetOutOfCheckup;
+}
+
+void truck::SetTimeToGetOutOfCheckup(int a)
+{
+	TimeToGetOutOfCheckup = a;
 }
 
 void truck::SetCarriedCargos(LinkedPriorityQueue<Cargo*> a)

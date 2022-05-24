@@ -60,6 +60,8 @@ public:
 	void PrintDeliveredCargosUI(LinkedPriorityQueue<Cargo*>);
 	void PrintEmptyTrucksInfo(int);
 	void PrintEmptyTrucks(LinkedPriorityQueue<truck*>);
+	void PrintInCheckupsIntro(int);
+
 	~UserInterface();
 };
 

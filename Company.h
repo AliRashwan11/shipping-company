@@ -41,6 +41,12 @@ class Company
 	LinkedPriorityQueue<Cargo*> SpecialMovingCargos;
 	LinkedPriorityQueue<Cargo*> VIPMovingCargos;
 
+	LinkedQueue<truck*> InCheckupNormal;
+	LinkedQueue<truck*> InCheckupSpecial;
+	LinkedQueue<truck*> InCheckupVIP;
+
+
+
 	LinkedPriorityQueue<Cargo*> DeliveredCargos;
 	
 	LinkedPriorityQueue<truck*> OnWayBackTrucks;
@@ -74,7 +80,17 @@ class Company
 
 	int NumberOfDeliveredCargos;
 	 
+	int NumberOfDeliveredNormalCargos;
+	int NumberOfDeliveredSpecialCargos;
+	int NumberOfDeliveredVIPCargos;
 
+	int NumberOfNormalTrucks;
+	int NumberOfSpecialTrucks;
+	int NumberOfVIPTrucks;
+
+	int MaintenanceTimeOfNormals;
+	int MaintenanceTimeOfSpecials;
+	int MaintenanceTimeOfVIPs;
 
 
 public:
@@ -109,6 +125,7 @@ public:
 	void SetNormalWaitingCargos(LinkedList); //
 	void PrintNumberOfNormalCargos();
 	void PrintLoadingTrucks();
+	void PrintIncheckups();
 	Cargo* GetFirstCargoInNormalWaitingCargos();
 	void OutputFile();
 
