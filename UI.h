@@ -61,6 +61,9 @@ public:
 	void PrintEmptyTrucksInfo(int);
 	void PrintEmptyTrucks(LinkedPriorityQueue<truck*>);
 	void PrintInCheckupsIntro(int);
+	void PrintErrorMSG();
+	void PrintSilentMode();
+	int GetMode();
 
 	~UserInterface();
 };

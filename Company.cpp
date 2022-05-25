@@ -29,6 +29,11 @@ Company::Company(string infile,UserInterface* uiptr)
 	UpdateStartTimeOfLoadingNormals = 1;
 	UpdateStartTimeOfLoadingSpecials = 1;
 	UpdateStartTimeOfLoadingVIPs = 1;
+	NumberOfPromotedCargos = 0;
+	InterfaceMode = -1;
+	SimulationEnds = 0;
+	ToPrintSilentMode = 0;
+	ToPrint = 1;
 	
 }
 
@@ -263,6 +268,15 @@ int Company::ReadSubFile(int lines, int entries)
 
 }
 
+void Company::SetNumberOfPromotedCargos(int a)
+{
+	NumberOfPromotedCargos = a;
+}
+
+int Company::GetNumberOfPromotedCargos()
+{
+	return NumberOfPromotedCargos;
+}
 
 
 void Company::ReadFile()
@@ -389,6 +403,7 @@ void Company::ReadFile()
 
 
 			newCargoAdded = new Cargo(CargoType);
+			newCargoAdded->SetReadyTime((Day*24)+Hour);
 			newCargoAdded->SetCost(CargoCost);
 			newCargoAdded->SetPreparationTime((Day*24)+Hour);
 			newCargoAdded->SetDeliveryDistance(CargoDist);
@@ -592,7 +607,7 @@ void Company::PrintEmptyTrucks()
 	mainInterface->PrintEmptyTrucks(NormalEmptyTruckspriq);
 	mainInterface->PrintEmptyTrucks(SpecialEmptyTruckspriq);
 	mainInterface->PrintEmptyTrucks(VIPEmptyTruckspriq);
-
+	cout << endl;
 }
 
 void Company::PrintIncheckups()
@@ -644,8 +659,7 @@ void Company::PrintIncheckups()
 void Company::OutputFile()
 {
 	ofstream OutFile("OutPut.txt");
-	int WaitingTime = 0;
-	int EV = 0; // EV=Tf-Ti(Start of delivry untill shipping the cargo)
+	
 	OutFile << "CDT" << '\t' << "ID" << '\t' << "PT" << '\t' << "WT" << '\t' << "TID" << endl;
 	Cargo* TempCargo = nullptr;
 	LinkedPriorityQueue<Cargo*> TempDelivery=DeliveredCargos;
@@ -656,12 +670,11 @@ void Company::OutputFile()
 		TempDelivery.Peek(TempCargo);
 		TempDelivery.Dequeue();
 
-		OutFile << to_string(TempCargo->GetDeliveryTime()) << '\t' << to_string(TempCargo->GetID()) << '\t' << to_string(TempCargo->GetPreparationTime()) << '\t';
 		int TempFT = TempCargo->GetFT();
 		int Days = 0;
-		int Hours=0;
-		
-		
+		int Hours = 0;
+
+
 
 		int tTemp = TempFT;
 		while (TempFT >= 24)
@@ -671,19 +684,170 @@ void Company::OutputFile()
 		}
 
 		Hours = tTemp - (Days * 24);
-		OutFile << to_string(Days) << ":" << to_string(Hours) << '\t' << endl;
+		OutFile << to_string(Days) << ":" << to_string(Hours) << '\t' ;
+
+		OutFile << to_string(TempCargo->GetID()) << '\t';
+		
+
+		int TempFT3 = TempCargo->GetReadyTime();
+		int Days3 = 0;
+		int Hours3 = 0;
+		
+
+
+		int tTemp3 = TempFT3;
+		while (TempFT3 >= 24)
+		{
+			TempFT3 -= 24;
+			Days3++;
+		}
+
+		Hours3 = tTemp3 - (Days3 * 24);
+		OutFile << to_string(Days3) << ":" << to_string(Hours3) << '\t';
+
+		
+		int TempFT4 = TempCargo->GetWaitTime();
+		int Days4 = 0;
+		int Hours4 = 0;
+
+
+
+		int tTemp4 = TempFT4;
+		while (TempFT4 >= 24)
+		{
+			TempFT4 -= 24;
+			Days4++;
+		}
+
+		Hours4 = tTemp4 - (Days4 * 24);
+		OutFile << to_string(Days4) << ":" << to_string(Hours4) << '\t' << to_string(TempCargo->GetIdOfTruckCarryingCargo()) << endl;
+
 		
 
 	}
+
+
+	int NumberOfWaitingCargosN = NormalWaitingCargos.GetNumberOfCargos() + NumberOfDeliveredNormalCargos;
+	int NumberOfWaitingCargosS = SpecialWaitingCargos.GetNumberOfEntries() + NumberOfDeliveredSpecialCargos;
+	int NumberOfWaitingCargosV = VIPWaitingCargos.GetNumberOfEntries() + NumberOfDeliveredVIPCargos;
+	int NumberOfWaitingCargosT = NumberOfWaitingCargosN + NumberOfWaitingCargosS + NumberOfWaitingCargosV;
+
+	OutFile << endl << "Cargos: " << to_string(NumberOfWaitingCargosT) << '\t' << "[N: " << NumberOfWaitingCargosN << ", S: " << NumberOfWaitingCargosS << ", V:" << NumberOfWaitingCargosV << "]" << endl << endl;
+
+
+
+	OutFile << "Cargo AVG Wait = ";
+	int TotalWaitTime = 0;
+
+	LinkedPriorityQueue<Cargo*> temppriq = DeliveredCargos;
+	Cargo* tempcrgg = nullptr;
+
+
+
+	while (!temppriq.isEmpty())
+	{
+		temppriq.Peek(tempcrgg);
+		temppriq.Dequeue();
+		TotalWaitTime += tempcrgg->GetWaitTime();
+	}
+
+	int AvgWaitTime = 0;
+	if ((NumberOfDeliveredNormalCargos + NumberOfDeliveredSpecialCargos + NumberOfDeliveredVIPCargos) != 0)
+		AvgWaitTime = TotalWaitTime / (NumberOfDeliveredNormalCargos + NumberOfDeliveredSpecialCargos + NumberOfDeliveredVIPCargos);
+
+	int TempFT = AvgWaitTime;
+	int Days = 0;
+	int Hours = 0;
+
+
+
+	int tTemp = TempFT;
+	while (TempFT >= 24)
+	{
+		TempFT -= 24;
+		Days++;
+	}
+	Hours = tTemp - (Days * 24);
+
+
+	OutFile << to_string(Days) << ":" << to_string(Hours) << '\t' << endl << endl;
+
+	if (NumberOfPromotedCargos != 0)
+		OutFile << "Auto-Promoted Cargos: " << to_string((NumberOfPromotedCargos / (NumberOfWaitingCargosN + NumberOfPromotedCargos)) * 100) << "%" << endl << endl;
+	else
+		OutFile << "Auto-Promoted Cargos: "  << "0 %" << endl << endl;
+
+
+	int TotalNumberOfNormalTrucks = NormalEmptyTrucks.GetNumberOfEntries() + InCheckupNormal.GetNumberOfEntries();
+	int TotalNumberOfSpecialTrucks = SpecialEmptyTrucks.GetNumberOfEntries() + InCheckupSpecial.GetNumberOfEntries();
+	int TotalNumberOfVIPTrucks = VIPEmptyTrucks.GetNumberOfEntries() + InCheckupVIP.GetNumberOfEntries();
+
+	LinkedPriorityQueue<truck*> temptomoving = MovingTrucks;
+	truck* temptruckk = nullptr;
+
+	while (!temptomoving.isEmpty())
+	{
+		temptomoving.Peek(temptruckk);
+		temptomoving.Dequeue();
+		if (temptruckk->GetTruckType() == 0)
+			TotalNumberOfNormalTrucks++;
+		else if (temptruckk->GetTruckType() == 1)
+			TotalNumberOfSpecialTrucks++;
+		else
+			TotalNumberOfVIPTrucks;
+
+	}
+
+	LinkedQueue<truck*> temptoloading = LoadingTrucks;
+	temptruckk = nullptr;
+
+	while (!temptoloading.isEmpty())
+	{
+		temptoloading.Peek(temptruckk);
+		temptoloading.Dequeue();
+		if (temptruckk->GetTruckType() == 0)
+			TotalNumberOfNormalTrucks++;
+		else if (temptruckk->GetTruckType() == 1)
+			TotalNumberOfSpecialTrucks++;
+		else
+			TotalNumberOfVIPTrucks;
+
+	}
+
+	LinkedPriorityQueue<truck*> temptoonwayback = OnWayBackTrucks;
+	temptruckk = nullptr;
+
+	while (!temptoonwayback.isEmpty())
+	{
+		temptoonwayback.Peek(temptruckk);
+		temptoonwayback.Dequeue();
+		if (temptruckk->GetTruckType() == 0)
+			TotalNumberOfNormalTrucks++;
+		else if (temptruckk->GetTruckType() == 1)
+			TotalNumberOfSpecialTrucks++;
+		else
+			TotalNumberOfVIPTrucks;
+
+	}
+
+	int TotalNumberOfTrucks = TotalNumberOfNormalTrucks + TotalNumberOfSpecialTrucks + TotalNumberOfVIPTrucks;
+
+	OutFile << "Trucks: " << to_string(TotalNumberOfTrucks) << "[N: " << TotalNumberOfNormalTrucks << ", S: " << TotalNumberOfSpecialTrucks << ", V: " << TotalNumberOfVIPTrucks << "]" << endl << endl;
+
 	OutFile.close();
+
+
 }
 
 
 void Company::Simulator()
 {
-	this->ReadFile();
+	InterfaceMode = mainInterface->GetMode();
 
-	
+	if (InterfaceMode == 3)
+		ToPrint = 0;
+
+	this->ReadFile();
 
 	Cargo* Next_Normal_Cargo = nullptr;
 	Cargo* Next_Special_Cargo = nullptr;
@@ -745,9 +909,9 @@ void Company::Simulator()
 		CurrTimeInt = (24 * Day) + Hour;
 
 
-		cout << "Current time as int = " << CurrTimeInt << endl;
-		cout << "MAXW = " << maxW << endl;
-		cout << "MAXW remaining = " << maxW -WaitTimeNormal << endl << endl;
+		//cout << "Current time as int = " << CurrTimeInt << endl;
+		//cout << "MAXW = " << maxW << endl;
+		//cout << "MAXW remaining = " << maxW -WaitTimeNormal << endl << endl;
 
 		
 
@@ -836,9 +1000,22 @@ void Company::Simulator()
 
 		// enquing moving cargos with the on priority of being closest to deliver a cargo
 
+		if (!NormalWaitingCargos.isEmpty())                // checks for auto promotions ...
+		{
+			Cargo* ret = nullptr;
+			ret=NormalWaitingCargos.CheckForAutoPromotion(AutoPromotionLimit);        // checks if there are cargos that waited long enough to be promoted .. if so they are dequeued from normal waiting and enqueued to vip waiting
+			if (ret)
+			{
+				VIPWaitingCargos.Enqueue(ret, 0);
+				NumberOfPromotedCargos++;
+			}
+
+		}
+
+
 		if (TruckLoadingNormals)
 		{
-			if (UpdateStartTimeOfLoadingNormals==1)
+			if (UpdateStartTimeOfLoadingNormals == 1)
 			{
 				TruckLoadingNormals->SetStartTimeOfLoading(CurrTimeInt);
 				UpdateStartTimeOfLoadingNormals = 0;
@@ -846,17 +1023,22 @@ void Company::Simulator()
 			NormalIsLoading = 1;
 			if (!NormalWaitingCargos.isEmpty())
 			{
-				while (!NormalWaitingCargos.isEmpty() && TruckLoadingNormals->GetCount()!=CapNormalTrucks)
+				ToEndSimNormal = 0;
+				while (!NormalWaitingCargos.isEmpty() && TruckLoadingNormals->GetCount() != CapNormalTrucks)
 				{
 					Cargo* tempcargo = nullptr;
-					tempcargo=NormalWaitingCargos.DeleteFirst();
-					tempcargo->SetAV(tempcargo->GetLoadUnloadTime() + (tempcargo->GetDeliveryDistance() / TruckLoadingNormals->GetTruckSpeed()));           // new lineeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+					tempcargo = NormalWaitingCargos.DeleteFirst();
+					tempcargo->SetIdOfTruckCarryingCargo(TruckLoadingNormals->GetID());
+					tempcargo->SetAV(tempcargo->GetLoadUnloadTime() + (tempcargo->GetDeliveryDistance() / TruckLoadingNormals->GetTruckSpeed()));
 					TruckLoadingNormals->AddToCargos(tempcargo);
 					if (tempcargo->GetDeliveryDistance() > maxd1)
 						maxd1 = tempcargo->GetDeliveryDistance();
 				}
 			}
-			if ((TruckLoadingNormals->GetCount() == CapNormalTrucks || CurrTimeInt-TruckLoadingNormals->GetStartTimeOfLoading()==maxW) && TruckLoadingNormals->GetStartedMovingBool()==0)
+			else
+				ToEndSimNormal = 1;
+
+			if ((TruckLoadingNormals->GetCount() == CapNormalTrucks || CurrTimeInt - TruckLoadingNormals->GetStartTimeOfLoading() == maxW) && TruckLoadingNormals->GetStartedMovingBool() == 0)
 			{
 				// TruckLoadingNormals->SetWaitTime(0);
 				UpdateStartTimeOfLoadingNormals = 1;
@@ -885,20 +1067,40 @@ void Company::Simulator()
 
 					if (priofarrival < mintime)
 						mintime = priofarrival;
-					if (priofarrival-midcrg->GetLoadUnloadTime() > maxtime)
-						maxtime = priofarrival-midcrg->GetLoadUnloadTime();
+					if (priofarrival - midcrg->GetLoadUnloadTime() > maxtime)
+						maxtime = priofarrival - midcrg->GetLoadUnloadTime();
 				}
+
 
 				TruckLoadingNormals->SetBackTripTime(maxtime - CurrTimeInt + 1);
 				MovingTrucks.Enqueue(TruckLoadingNormals, 1000000 - mintime);
 				TruckLoadingNormals = nullptr;
+
+
 			}
 			else
 			{
-				NormalWaitingCargos.IncrementWaitTime(); // ass
-				TruckLoadingNormals->SetWaitTime(TruckLoadingNormals->GetWaitTime()+1);
+				LinkedPriorityQueue<Cargo*> tempcrg = TruckLoadingNormals->GetCarriedCargos();
+				Cargo* tempcargo3 = nullptr;
+				while (!tempcrg.isEmpty())
+				{
+					tempcrg.Peek(tempcargo3);
+					tempcrg.Dequeue();
+					tempcargo3->SetWaitTime(tempcargo3->GetWaitTime() + 1);
+				}
+				TruckLoadingNormals->SetWaitTime(TruckLoadingNormals->GetWaitTime() + 1);
 			}
 		}
+		else
+		{
+			if(!NormalWaitingCargos.isEmpty())
+				NormalWaitingCargos.IncrementWaitTime();
+
+			ToEndSimNormal = 1;
+
+		}
+
+
 		if (TruckLoadingSpecials)
 		{
 			if (UpdateStartTimeOfLoadingSpecials == 1)
@@ -909,17 +1111,20 @@ void Company::Simulator()
 			SpecialIsLoading = 1;
 			if (!SpecialWaitingCargos.isEmpty())
 			{
+				ToEndSimSpecial = 0;
 				while (!SpecialWaitingCargos.isEmpty() && TruckLoadingSpecials->GetCount() != CapSpecialTrucks)
 				{
 					Cargo* tempcargo = nullptr;
 					SpecialWaitingCargos.Peek(tempcargo);
 					SpecialWaitingCargos.Dequeue();
-					tempcargo->SetAV(tempcargo->GetLoadUnloadTime() + (tempcargo->GetDeliveryDistance() / TruckLoadingSpecials->GetTruckSpeed()));           // new lineeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+					tempcargo->SetIdOfTruckCarryingCargo(TruckLoadingSpecials->GetID());
+					tempcargo->SetAV(tempcargo->GetLoadUnloadTime() + (tempcargo->GetDeliveryDistance() / TruckLoadingSpecials->GetTruckSpeed()));         
 					TruckLoadingSpecials->AddToCargos(tempcargo);
 					if (tempcargo->GetDeliveryDistance() > maxd2)
 						maxd2 = tempcargo->GetDeliveryDistance();
 				}
 			}
+			ToEndSimSpecial = 1;
 			if ((TruckLoadingSpecials->GetCount() == CapSpecialTrucks || CurrTimeInt - TruckLoadingSpecials->GetStartTimeOfLoading() == maxW) && TruckLoadingSpecials->GetStartedMovingBool()==0)
 			{
 				UpdateStartTimeOfLoadingSpecials = 1;
@@ -958,17 +1163,30 @@ void Company::Simulator()
 			}
 			else
 			{
-				LinkedQueue<Cargo*> temprcgq = SpecialWaitingCargos;
-				while (!temprcgq.isEmpty())
+
+				LinkedPriorityQueue<Cargo*> tempcrg = TruckLoadingSpecials->GetCarriedCargos();
+
+
+
+				Cargo* tempcargo3 = nullptr;
+				while (!tempcrg.isEmpty())
 				{
-					Cargo* crgt = nullptr;
-					temprcgq.Peek(crgt);
-					temprcgq.Dequeue();
-					crgt->SetWaitTime(crgt->GetWaitTime()+1);
+					tempcrg.Peek(tempcargo3);
+
+					tempcrg.Dequeue();
+
+					tempcargo3->SetWaitTime(tempcargo3->GetWaitTime() + 1);
+
 				}
-				TruckLoadingSpecials->SetWaitTime(TruckLoadingNormals->GetWaitTime() + 1);
+
+				TruckLoadingSpecials->SetWaitTime(TruckLoadingSpecials->GetWaitTime() + 1);
+
+
 			}
 		}
+		else
+			ToEndSimSpecial = 1;
+
 		if (TruckLoadingVIPs)
 		{
 			if (UpdateStartTimeOfLoadingVIPs == 1)
@@ -978,17 +1196,21 @@ void Company::Simulator()
 			}
 			if (!VIPWaitingCargos.isEmpty())
 			{
+				ToEndSimVIP = 0;
 				while (!VIPWaitingCargos.isEmpty() && TruckLoadingVIPs->GetCount() != CapVIPTrucks)
 				{
 					Cargo* tempcargo = nullptr;
 					VIPWaitingCargos.Peek(tempcargo);
 					VIPWaitingCargos.Dequeue();
-					tempcargo->SetAV(tempcargo->GetLoadUnloadTime() + (tempcargo->GetDeliveryDistance() / TruckLoadingVIPs->GetTruckSpeed()));           // new lineeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+					tempcargo->SetIdOfTruckCarryingCargo(TruckLoadingVIPs->GetID());
+					tempcargo->SetAV(tempcargo->GetLoadUnloadTime() + (tempcargo->GetDeliveryDistance() / TruckLoadingVIPs->GetTruckSpeed()));
 					TruckLoadingVIPs->AddToCargos(tempcargo);
 					if (tempcargo->GetDeliveryDistance() > maxd3)
 						maxd3 = tempcargo->GetDeliveryDistance();
 				}
 			}
+			else
+				ToEndSimVIP = 1;
 			if ((TruckLoadingVIPs->GetCount() == CapVIPTrucks || CurrTimeInt - TruckLoadingVIPs->GetStartTimeOfLoading() == maxW) && TruckLoadingVIPs->GetStartedMovingBool() == 0)
 			{
 				UpdateStartTimeOfLoadingVIPs = 1;
@@ -998,7 +1220,7 @@ void Company::Simulator()
 				ToChangeTruckLoadingVIPs = 1;
 				JourneyTimeVIP = TruckLoadingVIPs->GetDeliveryTime();
 				TruckLoadingVIPs->SetDeliveryInterval(JourneyTimeVIP);           // delivery interval is cargo unloading time + trip time
-				
+
 
 				// enqueue cargos with priority of arriving first
 
@@ -1014,7 +1236,7 @@ void Company::Simulator()
 					midd.Dequeue();
 					int priofarrival = CurrTimeInt + midcrg->GetAV();
 					midcrg->SetFT(priofarrival);
-					midd2.Enqueue(midcrg,1000000-priofarrival);
+					midd2.Enqueue(midcrg, 1000000 - priofarrival);
 
 					if (priofarrival < mintime)
 						mintime = priofarrival;
@@ -1023,27 +1245,41 @@ void Company::Simulator()
 				}
 
 				TruckLoadingVIPs->SetCarriedCargos(midd2);
-				TruckLoadingVIPs->SetBackTripTime(maxtime-CurrTimeInt+1);
+				TruckLoadingVIPs->SetBackTripTime(maxtime - CurrTimeInt + 1);
 				MovingTrucks.Enqueue(TruckLoadingVIPs, 1000000 - mintime);
 				TruckLoadingVIPs = nullptr;
 
 			}
 			else
 			{
-				LinkedPriorityQueue<Cargo*> temprcgq = VIPWaitingCargos;
-				while (!temprcgq.isEmpty())
+				LinkedPriorityQueue<Cargo*> tempcrg = TruckLoadingVIPs->GetCarriedCargos();
+
+
+
+				Cargo* tempcargo3 = nullptr;
+				while (!tempcrg.isEmpty())
 				{
-					Cargo* crgt = nullptr;
-					temprcgq.Peek(crgt);
-					temprcgq.Dequeue();
-					crgt->SetWaitTime(crgt->GetWaitTime() + 1);
+					tempcrg.Peek(tempcargo3);
+
+					tempcrg.Dequeue();
+
+					tempcargo3->SetWaitTime(tempcargo3->GetWaitTime() + 1);
+
 				}
 				TruckLoadingVIPs->SetWaitTime(TruckLoadingVIPs->GetWaitTime() + 1);
 			}
 		}
+		else
+			ToEndSimVIP = 1;
 
 
-
+		if (ToEndSimSpecial == 1 && ToEndSimNormal == 1 && ToEndSimVIP == 1)
+		{
+			SimulationEnds++;
+			ToPrintSilentMode = 0;
+		}
+		else
+			SimulationEnds = 0;
 	                                                                     	// for testing
 		/*
 		while (!MovingTrucks.isEmpty())
@@ -1133,6 +1369,13 @@ void Company::Simulator()
 				tempcargoptr.Dequeue();
 				tempcargoptr.Peek(tempcargoo);
 				DeliveredCargos.Enqueue(deliveredc,0);
+
+				if(deliveredc->GetCargoType()==0)
+					NumberOfDeliveredNormalCargos++;
+				else if (deliveredc->GetCargoType() == 1)
+					NumberOfDeliveredSpecialCargos++;
+				else 
+					NumberOfDeliveredVIPCargos++;
 
 
 
@@ -1573,51 +1816,84 @@ void Company::Simulator()
 			}
 		}
 
+		if (ToPrint == 1)
+		{
 
-		mainInterface->PrintStartSim();
-		mainInterface->PrintHourAdvance(Day, Hour);
-		PrintWaitingCargosSim();                                       // 1st line
-		mainInterface->DrawLines();
-		//PrintMovingTrucksSim();
+			mainInterface->PrintStartSim();
+			mainInterface->PrintHourAdvance(Day, Hour);
+			PrintWaitingCargosSim();                                       // 1st line
+			mainInterface->DrawLines();
+			//PrintMovingTrucksSim();
 
-		// now for drawing loading trucks ..
+			// now for drawing loading trucks ..
 
-		int numLoadingTrucks = (int)NormalIsLoading + (int)SpecialIsLoading + (int)VIPIsLoading;
-		CurrentlyLoading = numLoadingTrucks;
-		PrintLoadingTrucks();                                       // 2nd line
-		mainInterface->DrawLines();
-		PrintEmptyTrucks();                                        // 3rd line
-		mainInterface->DrawLines();
-		PrintMovingTrucksSim();
-		mainInterface->DrawLines();
-		PrintIncheckups();
-		mainInterface->DrawLines();
-		PrintDeliveredCargos();
+			int numLoadingTrucks = (int)NormalIsLoading + (int)SpecialIsLoading + (int)VIPIsLoading;
+			CurrentlyLoading = numLoadingTrucks;
+			PrintLoadingTrucks();                                       // 2nd line
+			mainInterface->DrawLines();
+			PrintEmptyTrucks();                                        // 3rd line
+			mainInterface->DrawLines();
+			PrintMovingTrucksSim();
+			mainInterface->DrawLines();
+			PrintIncheckups();
+			mainInterface->DrawLines();
+			PrintDeliveredCargos();
 
+		}
 
 		 OutputFile();
 
-		key = _getch();
-		if (key != 13)                                                           // ASCII for Key_Enter
-			break;
-		else
+
+		 if (InterfaceMode == 1)
+		 {
+			 key = _getch();
+			 if (key != 13)                                                           // ASCII for Key_Enter
+				 break;
+			 else
+			 {
+				 Hour++;
+				 if (Hour == 24)
+				 {
+					 Hour = 0;
+					 Day++;
+				 }
+				 system("cls");                                                       // clears console
+			 }
+
+		 }
+		 else if(InterfaceMode == 2)                                                    // step by step mode
+		 {
+			 Hour++;
+			 if (Hour == 24)
+			 {
+				 Hour = 0;
+				 Day++;
+			 }
+			 Sleep(1000);
+
+			 system("cls");
+		 }
+		else																			// silent mode
 		{
-			Hour++;
-			if (Hour == 24)
-			{
-				Hour = 0;
-				Day++;
-			}
-			system("cls");                                                       // clears console
+			 Hour++;
+			 if (Hour == 24)
+			 {
+				 Hour = 0;
+				 Day++;
+			 }
+			 system("cls");
+			 if (ToPrintSilentMode == 1)
+			 {
+				 ToPrintSilentMode = 0;
+			 }
+			 if (SimulationEnds == 100)
+			 {
+				 mainInterface->PrintSilentMode();
+				 break;
+
+			 }
 		}
-
-
-		
-
 	}
-
-
-
 }
 
 

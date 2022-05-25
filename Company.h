@@ -11,6 +11,7 @@
 #include"Event.h"
 #include"UI.h"
 #include"truck.h"
+#include<thread>
 
 
 class Event;
@@ -57,7 +58,7 @@ class Company
 
 
 	int NumberOfJourneysBeforeCheckup;
-	int AutoPromotionLimit;                                    // in days
+	int AutoPromotionLimit;                                    // in hours
 	int maxW;                                                  // in hours
 	int NumberOfEvents;
 	
@@ -96,6 +97,15 @@ class Company
 	bool UpdateStartTimeOfLoadingSpecials;
 	bool UpdateStartTimeOfLoadingVIPs;
 
+	int NumberOfPromotedCargos;
+	int InterfaceMode;
+
+	bool ToEndSimNormal;
+	bool ToEndSimSpecial;
+	bool ToEndSimVIP;
+	int SimulationEnds;
+	bool ToPrintSilentMode;
+	bool ToPrint;
 
 public:
 	Company(string,UserInterface*);
@@ -130,6 +140,8 @@ public:
 	void PrintNumberOfNormalCargos();
 	void PrintLoadingTrucks();
 	void PrintIncheckups();
+	void SetNumberOfPromotedCargos(int);
+	int GetNumberOfPromotedCargos();
 	Cargo* GetFirstCargoInNormalWaitingCargos();
 	void OutputFile();
 

@@ -46,6 +46,10 @@ void UserInterface::PrintStartSim()
 	cout << "Press ENTER to advance an hour .. Press any other key to stop simulation " << endl;
 }
 
+int UserInterface::GetMode()
+{
+	return Mode;
+}
 
 void UserInterface::PrintNormalWaitingCargos(int n,int* arr)
 {
@@ -399,7 +403,15 @@ void UserInterface::PrintListSimVIP(LinkedPriorityQueue<Cargo*> in)
 	return;
 }
 
+void UserInterface::PrintErrorMSG()
+{
+	cout << "Incorrect Entry ! Please enter (1) for Interactive mode , (2) for step by step mode , (3) for Silent mode ..." << endl;
+}
 
+void UserInterface::PrintSilentMode()
+{
+	cout << "Silent Mode" << endl << "Simulation Starts... " << endl << "Simulation ends, Output file created" << endl;
+}
 void UserInterface::PrintLoadingInfo(int a)
 {
 	cout << a <<" Loading Trucks: ";

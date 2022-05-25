@@ -193,10 +193,29 @@ public:
 		return temp;
 	}
 
+	Cargo* CheckForAutoPromotion(int a)
+	{
+
+		Cargo* tempcargo = nullptr;
+		Node<Cargo*>* temp = Head;
+		if (temp == nullptr)
+			return nullptr;
+
+
+		while (temp!=nullptr && temp->GetItem()->GetWaitTime() == a)
+		{
+
+			tempcargo = this->DeleteFirst();
+			temp = this->Head;
+		}
+		return tempcargo;
+
+	}
+
 	void IncrementWaitTime()
 	{
 		Node<Cargo*>* temp = Head;
-		while (temp)
+		while (temp!=nullptr)
 		{
 			temp->GetItem()->SetWaitTime(temp->GetItem()->GetWaitTime()+1);
 			temp = temp->GetNext();

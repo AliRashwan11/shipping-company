@@ -12,6 +12,8 @@ Cargo::Cargo(int a)
 
 	PreparationTime = -1;
 	WaitTime = 0;
+	ReadyTime = 0;
+	IdOfTruckCarryingCargo = -1;
 	//intruck = nullptr;
 }
 
@@ -21,6 +23,8 @@ Cargo::Cargo()
 	DeliveryTime = 0;
 	AV = -1;
 	PreparationTime = -1;
+	ReadyTime = 0;
+	IdOfTruckCarryingCargo = -1;
 	WaitTime = 0;
 
 }
@@ -37,6 +41,10 @@ Cargo::Cargo(Cargo& copy)
 	AV = -1;
 	PreparationTime = -1;
 	WaitTime = 0;
+	IdOfTruckCarryingCargo = -1;
+	ReadyTime = 0;
+
+
 
 }
 void Cargo::SetPreparationTime(int time)
@@ -139,6 +147,26 @@ void Cargo::SetWaitTime(int a)
 	WaitTime = a;
 }
 
+void Cargo::SetReadyTime(int a)
+{
+	ReadyTime = a;
+}
+
+int Cargo::GetReadyTime()
+{
+	return ReadyTime;
+
+}
+
+int Cargo::GetIdOfTruckCarryingCargo()
+{
+	return IdOfTruckCarryingCargo;
+}
+
+void Cargo::SetIdOfTruckCarryingCargo(int a)
+{
+	IdOfTruckCarryingCargo = a;
+}
 
 void Cargo::operator= (Cargo car)
 {
