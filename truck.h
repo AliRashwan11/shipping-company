@@ -64,6 +64,7 @@ public:
 	int GetStartTimeOfLoading();
 	int GetWaitTime();
 	void SetWaitTime(int);
+	void SetCount(int);
 
 	// virtual int GetDeliveryInterval();             to be implemented later
 

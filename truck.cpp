@@ -192,6 +192,11 @@ int truck::GetCount()
 	return count;
 }
 
+void truck::SetCount(int a)
+{
+	count = a;
+}
+
 int truck::GetWaitTime()
 {
 	return WaitTime;

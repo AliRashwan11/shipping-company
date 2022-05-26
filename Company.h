@@ -100,6 +100,7 @@ class Company
 	int NumberOfPromotedCargos;
 	int InterfaceMode;
 
+
 	bool ToEndSimNormal;
 	bool ToEndSimSpecial;
 	bool ToEndSimVIP;
