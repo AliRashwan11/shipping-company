@@ -515,25 +515,32 @@ void UserInterface::PrintMovingTrucksSim(LinkedPriorityQueue<truck*> q)
 
 	while (!temp.isEmpty())
 	{
+
 		temp.Peek(tr);
 		temp.Dequeue();
 		cout << tr->GetID();
 		type = tr->GetTypeOfLoadedCargos();
+
 		LinkedPriorityQueue<Cargo*> tempcr= tr->GetCarriedCargos();
+
 		if (type == 0)   // normal
 		{
 			cout << "[";
 			while (!tempcr.isEmpty())
 			{
+
 				tempcr.Peek(cr);
 				tempcr.Dequeue();
+
 				cout << cr->GetID();
 				if (!tempcr.isEmpty())
 					cout << ",";
 				else
 					cout << "]";
+
 			}
 			cout << " ";
+
 		}
 		else if (type == 1)   // special
 		{

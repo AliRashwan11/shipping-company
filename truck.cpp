@@ -142,7 +142,16 @@ void truck::SetTimeToGetOutOfCheckup(int a)
 
 void truck::SetCarriedCargos(LinkedPriorityQueue<Cargo*> a)
 {
-	InTruckCargos = a;
+	Cargo* temp = nullptr;
+	while (!InTruckCargos.isEmpty())
+		InTruckCargos.Dequeue();
+
+	while (!a.isEmpty())
+	{
+		a.Peek(temp);
+		a.Dequeue();
+		InTruckCargos.Enqueue(temp,0);
+	}
 }
 
 void truck::SetBackTripTime(int a)
